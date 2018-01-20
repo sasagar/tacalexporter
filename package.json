@@ -1,0 +1,26 @@
+{
+  "name": "calenderfileexporter",
+  "version": "1.0.0",
+  "description": "TechAcademy用メンタリングカレンダーファイル出力アプリ",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.asiist.com/sasagawa/tacalexport.git"
+  },
+  "author": "SASAGAWA, Kiyoshi",
+  "license": "ISC",
+  "devDependencies": {
+    "bootstrap": "^4.0.0",
+    "electron": "^1.7.10",
+    "font-awesome": "^4.7.0",
+    "jQuery": "^1.7.4",
+    "jquery": "^3.3.0",
+    "npm": "^5.6.0",
+    "path": "^0.12.7",
+    "popper": "^1.0.1",
+    "popper.js": "^1.12.9"
+  }
+}

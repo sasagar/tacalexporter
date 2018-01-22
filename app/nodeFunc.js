@@ -3,8 +3,10 @@
 function funcInterval (val1, val2) {
 	// 未来の曜日を手前に。（そこまでの日数）
 	var res;
+	val1 = val1 * 1;
+	val2 = val2 * 2;
 	if (val2 > val1) {
-		res = val1 + 7 - val2;
+		res = (val1 + 7) - val2;
 	} else {
 		res = val1 - val2;
 	}
@@ -13,7 +15,7 @@ function funcInterval (val1, val2) {
 
 const findTimes = function (week, course, addon = false) {
 	// 回数の計算
-	// addonがtrue出来たら、週二回。
+	// addonがtrueで来たら、週二回。
 	// addonがfalseで、courseが'WW'だったら2回削る
 	var times = 0;
 	if (addon) {
@@ -39,17 +41,12 @@ const datePrep = function (dateStr, timeStr = '00:00') {
 	return date;
 };
 
-const weekdayFinder = function (date) {
-	var weekday = date.getDay();
-	return weekday;
-};
-
 const scheduleMaker = function (obj) {
 	var array = [];
 
 	// 初回
 	var startDate = datePrep(obj.start.value);
-	var startWDay = weekdayFinder(startDate);
+	var startWDay = startDate.getDay();
 	// スタート日と初回の日数差を出す。
 	var interval1 = funcInterval(obj.first.value, startWDay);
 
@@ -130,7 +127,6 @@ const eventTitleMaker = function (obj) {
 module.exports = {
 	findTimes: findTimes,
 	datePrep: datePrep,
-	weekdayFinder: weekdayFinder,
 	scheduleMaker: scheduleMaker,
 	eventTitleMaker: eventTitleMaker
 };

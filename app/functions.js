@@ -36,13 +36,11 @@ $(document).ready(function () {
 		$('#data').val(JSON.stringify(response));
 		console.log($('#data').val());
 	});
+
+	$('#applydata').on('click', function () {
+		var data = $('#data').val();
+		var schedule = JSON.parse(data);
+		var response = ipcRenderer.sendSync('addschedule', schedule);
+		// console.log(response);
+	});
 });
-/*
-function pushNumButton (input, result, operand) {
-	// json形式でリクエストを送信
-	var data = {input: input, result: result, operand: operand};
-	var response = ipcRenderer.sendSync('push-num-button', data);
-	// レスポンス結果を元にディスプレイを変更。
-	$('#result').val(response.result);
-}
-*/

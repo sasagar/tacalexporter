@@ -1,5 +1,5 @@
 {
-  "name": "TechAcademyメンタリングカレンダー登録",
+  "name": "MentorSchduler",
   "version": "0.2.0",
   "description": "TechAcademy用メンタリングカレンダーファイル出力アプリ",
   "main": "main.js",

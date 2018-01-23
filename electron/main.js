@@ -38,9 +38,7 @@ let mainWindow;
 
 // 全てのウィンドウが閉じたら終了
 app.on('window-all-closed', function () {
-	if (process.platform !== 'darwin') {
-		app.quit();
-	}
+	app.quit();
 });
 
 // Electronの初期化完了後に実行

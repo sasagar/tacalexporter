@@ -25,6 +25,7 @@
     "popper.js": "^1.13.0"
   },
   "dependencies": {
-    "electron-config": "^1.0.0"
+    "electron-config": "^1.0.0",
+    "electron-json-storage": "^4.0.2"
   }
 }

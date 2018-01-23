@@ -15,8 +15,21 @@ const BrowserWindow = electron.BrowserWindow;
 // ipcRenderer
 const {ipcMain} = require('electron');
 
-// ipcRenderer
+// nodeFuncの読み込み
 const nf = require('./app/nodeFunc.js');
+
+// configを使う。
+const Config = require('electron-config');
+
+// ウィンドウサイズの基準
+const config = new Config({
+	defaults: {
+		bounds: {
+			width: 800,
+			height: 600
+		}
+	}
+});
 
 // calendarId
 const calID = '9sm28disndol3mo1et2rer7p18@group.calendar.google.com';
@@ -26,6 +39,7 @@ var fs = require('fs');
 var readline = require('readline');
 var google = require('googleapis');
 const {OAuth2Client} = require('google-auth-library');
+
 // If modifying these scopes, delete your previously saved credentials
 // at ~/.credentials/calendar-nodejs-quickstart.json
 var SCOPES = ['https://www.googleapis.com/auth/calendar'];
@@ -43,9 +57,16 @@ app.on('window-all-closed', function () {
 
 // Electronの初期化完了後に実行
 app.on('ready', function () {
-	// メイン画面の表示。ウィンドウの幅、高さを指定できる
-	mainWindow = new BrowserWindow({ width: 800, height: 600, webPreferences: { nodeIntegration: true } });
+	// メイン画面の表示。
+	const {width, height, x, y} = config.get('bounds');
+	mainWindow = new BrowserWindow({ title: 'TechAcademyメンタリングカレンダー登録', width, height, x, y, webPreferences: { nodeIntegration: true } });
 	mainWindow.loadURL(path.join('file://', __dirname, '/index.html'));
+
+	['resize', 'move'].forEach(ev => {
+		mainWindow.on(ev, () => {
+			config.set('bounds', mainWindow.getBounds());
+		});
+	});
 
 	// ウィンドウが閉じられたらアプリも終了
 	mainWindow.on('closed', function () {

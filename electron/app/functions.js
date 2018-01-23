@@ -47,13 +47,15 @@ $(document).ready(function () {
 		}
 
 		$('#data').val(JSON.stringify(response));
-		console.log($('#data').val());
+		// console.log($('#data').val());
+		$('#applydata').prop('disabled', false);
 	});
 
 	$('#applydata').on('click', function () {
 		var data = $('#data').val();
 		var schedule = JSON.parse(data);
 		var response = ipcRenderer.sendSync('addschedule', schedule);
+		$('#applydata').prop('disabled', true);
 		// console.log(response);
 	});
 });

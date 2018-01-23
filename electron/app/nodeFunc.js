@@ -50,6 +50,10 @@ const scheduleMaker = function (obj) {
 	var array = [];
 	var courseObj = JSON.parse(fs.readFileSync('course.json', 'utf8'));
 
+	// 時間を調整
+	obj.firstTime = {value: obj.firstHour.value + ':' + obj.firstMinutes.value};
+	obj.secondTime = {value: obj.secondHour.value + ':' + obj.secondMinutes.value};
+
 	// 初回
 	var startDate = datePrep(obj.start.value);
 	var startWDay = startDate.getDay();

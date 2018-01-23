@@ -94,7 +94,6 @@ ipcMain.on('addschedule', (event, obj) => {
 		}
 		// authorize(JSON.parse(content), listEvents);
 		authorize(JSON.parse(content), addEvents, obj);
-		event.returnValue = 'test';
 	});
 });
 
@@ -229,7 +228,7 @@ function addEvents (auth, option) {
 	var timezone = 'Asia/Tokyo';
 
 	for (var i in option.schedule) {
-		var event = {
+		var eventData = {
 			'summary': option.title,
 			'start': {
 				'dateTime': option.schedule[i].start,
@@ -240,10 +239,11 @@ function addEvents (auth, option) {
 				'timeZone': timezone
 			}
 		};
+
 		var apiObj = {
-			auth: auth,
-			calendarId: calID,
-			resource: event
+			'auth': auth,
+			'calendarId': calID,
+			'resource': eventData
 		};
 
 		calendar.events.insert(apiObj, function (err, event) {
@@ -251,7 +251,8 @@ function addEvents (auth, option) {
 				console.log('There was an error contacting the Calendar service: ' + err);
 				return;
 			}
-			console.log('Event created: %s', JSON.stringify(event));
+			console.log('Event created: ' + event.data.summary);
+			mainWindow.webContents.send('resultMessage', event.data);
 		});
 	}
 }

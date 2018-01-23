@@ -1,5 +1,5 @@
 {
-  "name": "TechAcademyメンタリングカレンダー登録",
+  "name": "MentorSchduler",
   "version": "0.2.0",
   "description": "TechAcademy用メンタリングカレンダーファイル出力アプリ",
   "main": "main.js",
@@ -11,7 +11,7 @@
     "url": "https://git.asiist.com/sasagawa/tacalexport.git"
   },
   "author": "SASAGAWA, Kiyoshi",
-  "license": "ISC",
+  "license": "GPL",
   "devDependencies": {
     "bootstrap": "^4.0.0",
     "electron": "^1.8.1",

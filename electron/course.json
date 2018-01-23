@@ -1,0 +1,32 @@
+{
+	"UI": {
+		"fullname": "UI/UXデザインコース",
+		"key": "UI",
+		"perWeek": 1,
+		"set": false
+	},
+	"WD": {
+		"fullname": "WEBデザインコース",
+		"key": "WD",
+		"perWeek": 2,
+		"set": false
+	},
+	"WP": {
+		"fullname": "WordPressコース",
+		"key": "WP",
+		"perWeek": 2,
+		"set": false
+	},
+	"ND": {
+		"fullname": "Node.jsコース",
+		"key": "ND",
+		"perWeek": 2,
+		"set": false
+	},
+	"WW": {
+		"fullname": "WEBデザインコース+WordPressコース",
+		"key": "WW",
+		"perWeek": 2,
+		"set": true
+	}
+}

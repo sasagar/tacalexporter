@@ -11,7 +11,7 @@
     "url": "https://git.asiist.com/sasagawa/tacalexport.git"
   },
   "author": "SASAGAWA, Kiyoshi",
-  "license": "ISC",
+  "license": "GPL",
   "devDependencies": {
     "bootstrap": "^4.0.0",
     "electron": "^1.8.1",

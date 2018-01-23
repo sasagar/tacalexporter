@@ -1,8 +1,21 @@
 'use strict';
 const {ipcRenderer} = require('electron');
+const fs = require('fs');
 
 // electron によりhtmlが描画されてから実行
 $(document).ready(function () {
+	// Default
+	$('.datepicker .date').datepicker({
+		format: 'yyyy年mm月dd日',
+		language: 'ja'
+	});
+
+	var course = JSON.parse(fs.readFileSync('course.json', 'utf8'));
+	$('#course').empty();
+	for (var i in course) {
+		$('#course').append('<option value="' + course[i].key + '" data-fullname="' + course[i].fullname + '">' + course[i].fullname + '</option>');
+	}
+
 	$('#dataapply').on('click', function () {
 		var form = $('#schedule');
 		var formArr = form.serializeArray();

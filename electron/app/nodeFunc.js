@@ -1,10 +1,11 @@
 'use strict';
+const fs = require('fs');
 
 function funcInterval (val1, val2) {
 	// 未来の曜日を手前に。（そこまでの日数）
 	var res;
 	val1 = val1 * 1;
-	val2 = val2 * 2;
+	val2 = val2 * 1;
 	if (val2 > val1) {
 		res = (val1 + 7) - val2;
 	} else {
@@ -14,17 +15,21 @@ function funcInterval (val1, val2) {
 }
 
 const findTimes = function (week, course, addon = false) {
+	var courseObj = JSON.parse(fs.readFileSync('course.json', 'utf8'));
 	// 回数の計算
-	// addonがtrueで来たら、週二回。
-	// addonがfalseで、courseが'WW'だったら2回削る
+	// addonがtrueで来たら必ずperWeekは2。
+	// addonがfalseで、perWeekが1だったら削らない
+	// addonがfalseで、perWeekが2だったら1削る
+	// セットの時の処理は、生成時のループで処理
 	var times = 0;
+
 	if (addon) {
 		times = week * 2;
 	} else {
-		if (course === 'WW') {
-			times = week * 2 - 2;
+		if (courseObj[course].perWeek === 1) {
+			times = week * courseObj[course].perWeek;
 		} else {
-			times = week * 2 - 1;
+			times = week * courseObj[course].perWeek - 1;
 		}
 	}
 	return times;
@@ -43,6 +48,7 @@ const datePrep = function (dateStr, timeStr = '00:00') {
 
 const scheduleMaker = function (obj) {
 	var array = [];
+	var courseObj = JSON.parse(fs.readFileSync('course.json', 'utf8'));
 
 	// 初回
 	var startDate = datePrep(obj.start.value);
@@ -110,6 +116,10 @@ const scheduleMaker = function (obj) {
 			end: dayEnd
 		};
 		array.push(day);
+	}
+	// セットだったら真ん中削る
+	if (courseObj[obj.course.value].set) {
+		array.splice((times - 1) / 2, 1);
 	}
 	return array;
 };

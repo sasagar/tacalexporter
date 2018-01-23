@@ -58,8 +58,21 @@ $(document).ready(function () {
 	$('#applydata').on('click', function () {
 		var data = $('#data').val();
 		var schedule = JSON.parse(data);
-		var response = ipcRenderer.sendSync('addschedule', schedule);
+		$('#modalMessage').empty();
+		ipcRenderer.send('addschedule', schedule);
 		$('#applydata').prop('disabled', true);
-		// console.log(response);
+		$('#modal').modal();
+	});
+
+	ipcRenderer.on('resultMessage', function (event, args) {
+		var title = args.summary;
+		var start = new Date(args.start.dateTime);
+		var startYear = start.getFullYear();
+		var startMonth = start.getMonth() + 1;
+		startMonth = ('00' + startMonth).slice(-2);
+		var startDate = ('00' + start.getDate()).slice(-2);
+		var startHours = ('00' + start.getHours()).slice(-2);
+		var startMinutes = ('00' + start.getMinutes()).slice(-2);
+		$('#modalMessage').append('<p>' + title + ' @ ' + startYear + '/' + startMonth + '/' + startDate + ' ' + startHours + ':' + startMinutes + '</p>');
 	});
 });

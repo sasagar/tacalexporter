@@ -25,7 +25,7 @@
   </style>
 </head>
 <body>
-	<div class="container-fluid">
+	<div class="container">
 		<h1>メンタリングスケジュール登録</h1>
 
 		<form id="schedule">
@@ -239,17 +239,18 @@
 	</div>
 
   <!-- modal -->
-  <div class="modal fade">
+  <div class="modal fade" id="modal">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
           <h4 class="modal-title">以下のスケジュールが登録されました</h4>
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
         </div>
         <div class="modal-body" id="modalMessage">
           <!-- ここにモーダルメッセージ -->
         </div>
         <div class="modal-footer">
+          <p>処理の都合上、正常に登録された物が欠落して表示される場合がありますので、GoogleCalendarでも確認して下さい。</p>
           <button type="button" class="btn btn-success" data-dismiss="modal">OK</button>
         </div>
       </div><!-- /.modal-content -->

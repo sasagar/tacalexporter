@@ -14,6 +14,15 @@
 	<script src="./bootstrap-datepicker-master/js/locales/bootstrap-datepicker.ja.js"></script>
 	<script src="./app/functions.js"></script>
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <style>
+  .rotate-anime {
+    animation: rotate-anime 1s linear infinite;
+  }
+  @keyframes rotate-anime {
+    0%  {transform: rotate(0);}
+    100%  {transform: rotate(360deg);}
+  }
+  </style>
 </head>
 <body>
 	<div class="container-fluid">
@@ -194,7 +203,7 @@
 
 			<div class="form-group row justify-content-end">
 				<div class="col-sm-3">
-					<button type="button" id="dataapply" class="btn btn-primary">スケジュール生成</button>
+					<button type="button" id="dataapply" class="btn btn-primary"><i class="fa fa-spinner rotate-anime" aria-hidden="true" style="display: none;"></i>スケジュール生成</button>
 				</div>
 			</div>
 		</form>

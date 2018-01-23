@@ -17,6 +17,8 @@ $(document).ready(function () {
 	}
 
 	$('#dataapply').on('click', function () {
+		$('#dataapply').prop('disabled', true);
+		$('#dataapply i').css('display', 'inline');
 		var form = $('#schedule');
 		var formArr = form.serializeArray();
 		var formObj = {};
@@ -48,6 +50,8 @@ $(document).ready(function () {
 
 		$('#data').val(JSON.stringify(response));
 		// console.log($('#data').val());
+		$('#dataapply i').css('display', 'none');
+		$('#dataapply').prop('disabled', false);
 		$('#applydata').prop('disabled', false);
 	});
 

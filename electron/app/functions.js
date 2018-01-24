@@ -21,6 +21,12 @@ $(document).ready(function () {
 	selectCalendar();
 	launchChecker();
 
+	var profile = ipcRenderer.sendSync('getProfileData');
+	$('#familyName').text(profile.family_name);
+	$('#givenName').text(profile.given_name);
+	$('#iconImg').append('<img src="' + profile.picture + '" style="max-width: 56px; border-radius: 50%;">');
+	// console.log(profile);
+
 	$('#dataapply').on('click', function () {
 		$('#dataapply').prop('disabled', true);
 		$('#dataapply i').css('display', 'inline');

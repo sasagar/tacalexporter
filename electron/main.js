@@ -46,7 +46,10 @@ const {OAuth2Client} = require('google-auth-library');
 
 // If modifying these scopes, delete your previously saved credentials
 // at ~/.credentials/calendar-nodejs-quickstart.json
-var SCOPES = ['https://www.googleapis.com/auth/calendar'];
+var SCOPES = [
+	'https://www.googleapis.com/auth/calendar',
+	'https://www.googleapis.com/auth/userinfo.profile'
+];
 var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
 		process.env.USERPROFILE) + '/.credentials/';
 var TOKEN_PATH = TOKEN_DIR + 'calendar-nodejs-quickstart.json';
@@ -113,6 +116,17 @@ ipcMain.on('getCalendarList', (event) => {
 	});
 });
 
+ipcMain.on('getProfileData', (event) => {
+	fs.readFile(path.join(__dirname, '/client_secret.json'), function processClientSecrets (err, content) {
+		if (err) {
+			console.log('Error loading client secret file: ' + err);
+			console.log(__dirname);
+			return;
+		}
+		authorize(JSON.parse(content), userInfo, event);
+	});
+});
+
 ipcMain.on('changeCalendar', (event, calval) => {
 	config.set('calendar.selected', calval);
 });
@@ -137,9 +151,6 @@ ipcMain.on('launchChecker', (event) => {
 		.then((res) => {
 			event.returnValue = res;
 		});
-		// var res = authorizeChecker(JSON.parse(content));
-		// console.log(res);
-		// event.returnValue = res;
 	});
 });
 
@@ -224,7 +235,7 @@ function authorize (credentials, callback, option) {
 	var oauth2Client = new OAuth2Client(clientId, clientSecret, redirectUrl);
 
 	// Check if we have previously stored a token.
-	fs.readFile(TOKEN_PATH, function (err, token) {
+	/* fs.readFile(TOKEN_PATH, function (err, token) {
 		if (err) {
 			getNewToken(oauth2Client, callback);
 		} else {
@@ -235,7 +246,21 @@ function authorize (credentials, callback, option) {
 				callback(oauth2Client);
 			}
 		}
-	});
+	}); */
+	if (TOKEN === '') {
+		var authUrl = oauth2Client.generateAuthUrl({
+			access_type: 'offline',
+			scope: SCOPES
+		});
+		shell.openExternal(authUrl);
+	} else {
+		oauth2Client.credentials = TOKEN;
+		if (option) {
+			callback(oauth2Client, option);
+		} else {
+			callback(oauth2Client);
+		}
+	}
 }
 
 /**
@@ -328,7 +353,6 @@ function listEvents (auth) {
  */
 function addEvents (auth, option) {
 	var calendar = google.calendar('v3');
-	var timezone = 'Asia/Tokyo';
 
 	var schedule = option.data.schedule;
 	var title = option.data.title;
@@ -338,12 +362,10 @@ function addEvents (auth, option) {
 		var eventData = {
 			'summary': title,
 			'start': {
-				'dateTime': schedule[i].start,
-				'timeZone': timezone
+				'dateTime': schedule[i].start
 			},
 			'end': {
-				'dateTime': schedule[i].end,
-				'timeZone': timezone
+				'dateTime': schedule[i].end
 			}
 		};
 
@@ -375,9 +397,27 @@ function listCalendar (auth, event) {
 
 	calendar.calendarList.list(apiObj, function (err, list) {
 		if (err) {
-			console.log('There was an error contacting the Calendar service: ' + err);
+			console.log('There was an error contacting the Calendar service at listCalendar: ' + err);
 			return;
 		}
 		event.returnValue = list.data.items;
+	});
+}
+
+/**
+ * Lists the next 10 events on the user's primary calendar.
+ *
+ * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
+ */
+function userInfo (auth, event) {
+	var profApi = google.oauth2('v2');
+	var apiObj = {'auth': auth};
+
+	profApi.userinfo.v2.me.get(apiObj, function (err, prof) {
+		if (err) {
+			console.log('There was an error contacting the Profile service: ' + err);
+			return;
+		}
+		event.returnValue = prof.data;
 	});
 }

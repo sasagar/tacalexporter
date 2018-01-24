@@ -1,6 +1,8 @@
 'use strict';
 const {ipcRenderer} = require('electron');
 const fs = require('fs');
+// pathモジュール
+const path = require('path');
 
 // electron によりhtmlが描画されてから実行
 $(document).ready(function () {
@@ -10,7 +12,7 @@ $(document).ready(function () {
 		language: 'ja'
 	});
 
-	var course = JSON.parse(fs.readFileSync('course.json', 'utf8'));
+	var course = JSON.parse(fs.readFileSync(path.join(__dirname, 'course.json'), 'utf8'));
 	$('#course').empty();
 	for (var i in course) {
 		$('#course').append('<option value="' + course[i].key + '" data-fullname="' + course[i].fullname + '" data-perweek="' + course[i].perWeek + '">' + course[i].fullname + '</option>');

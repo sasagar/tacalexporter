@@ -1,5 +1,7 @@
 'use strict';
 const fs = require('fs');
+// pathモジュール
+const path = require('path');
 
 function funcInterval (val1, val2) {
 	// 未来の曜日を手前に。（そこまでの日数）
@@ -15,7 +17,7 @@ function funcInterval (val1, val2) {
 }
 
 const findTimes = function (week, course, addon = false) {
-	var courseObj = JSON.parse(fs.readFileSync('course.json', 'utf8'));
+	var courseObj = JSON.parse(fs.readFileSync(path.join(__dirname, '../course.json'), 'utf8'));
 	// 回数の計算
 	// addonがtrueで来たら必ずperWeekは2。
 	// addonがfalseで、perWeekが1だったら削らない
@@ -48,7 +50,7 @@ const datePrep = function (dateStr, timeStr = '00:00') {
 
 const scheduleMaker = function (obj) {
 	var array = [];
-	var courseObj = JSON.parse(fs.readFileSync('course.json', 'utf8'));
+	var courseObj = JSON.parse(fs.readFileSync(path.join(__dirname, '../course.json'), 'utf8'));
 	var courseKey = obj.course.value;
 	var perWeek = parseInt(courseObj[courseKey].perWeek);
 	var interval1 = 0;

@@ -2,7 +2,7 @@
 
 // Electronのモジュール
 const electron = require('electron');
-const {shell} = require('electron');
+const {shell, Menu} = require('electron');
 
 // pathモジュール
 const path = require('path');
@@ -21,6 +21,9 @@ const nf = require('./app/nodeFunc.js');
 
 // configを使う。
 const Config = require('electron-config');
+
+// about window
+// const openAboutWindow = require('about-window').default;
 
 // ウィンドウサイズの基準
 const config = new Config({
@@ -41,7 +44,7 @@ const config = new Config({
 // GoogleCalendar
 var fs = require('fs');
 var readline = require('readline');
-var google = require('googleapis');
+const google = require('googleapis');
 const {OAuth2Client} = require('google-auth-library');
 
 // If modifying these scopes, delete your previously saved credentials
@@ -50,9 +53,9 @@ var SCOPES = [
 	'https://www.googleapis.com/auth/calendar',
 	'https://www.googleapis.com/auth/userinfo.profile'
 ];
-var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
-		process.env.USERPROFILE) + '/.credentials/';
-var TOKEN_PATH = TOKEN_DIR + 'calendar-nodejs-quickstart.json';
+// var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
+// 		process.env.USERPROFILE) + '/.credentials/';
+// var TOKEN_PATH = TOKEN_DIR + 'calendar-nodejs-quickstart.json';
 var TOKEN = config.get('credentials.token');
 
 // メインウィンドウはGCされないようにグローバル宣言
@@ -80,6 +83,94 @@ app.on('ready', function () {
 	mainWindow.on('closed', function () {
 		mainWindow = null;
 	});
+
+	const template = [
+		{
+			label: '編集',
+			submenu: [
+				{role: 'undo'},
+				{role: 'redo'},
+				{type: 'separator'},
+				{role: 'cut'},
+				{role: 'copy'},
+				{role: 'paste'},
+				{role: 'pasteandmatchstyle'},
+				{role: 'delete'},
+				{role: 'selectall'}
+			]
+		},
+		{
+			label: '表示',
+			submenu: [
+				{role: 'reload'},
+				{role: 'forcereload'},
+				{role: 'toggledevtools'},
+				{type: 'separator'},
+				{role: 'resetzoom'},
+				{role: 'zoomin'},
+				{role: 'zoomout'},
+				{type: 'separator'},
+				{role: 'togglefullscreen'}
+			]
+		},
+		{
+			role: 'ウィンドウ',
+			submenu: [
+				{role: 'minimize'},
+				{role: 'close'}
+			]
+		},
+		{
+			role: 'ヘルプ',
+			submenu: [
+				{
+					label: 'Electronについて',
+					click () { require('electron').shell.openExternal('https://electron.atom.io'); }
+				}
+			]
+		}
+	];
+
+	if (process.platform === 'darwin') {
+		template.unshift({
+			label: app.getName(),
+			submenu: [
+				{role: 'about'},
+				{type: 'separator'},
+				{role: 'services', submenu: []},
+				{type: 'separator'},
+				{role: 'hide'},
+				{role: 'hideothers'},
+				{role: 'unhide'},
+				{type: 'separator'},
+				{role: 'quit'}
+			]
+		});
+
+		// Edit menu
+		template[1].submenu.push(
+			{type: 'separator'},
+			{
+				label: 'Speech',
+				submenu: [
+					{role: 'startspeaking'},
+					{role: 'stopspeaking'}
+				]
+			}
+		);
+
+		// Window menu
+		template[3].submenu = [
+			{role: 'close'},
+			{role: 'minimize'},
+			{role: 'zoom'},
+			{type: 'separator'},
+			{role: 'front'}
+		];
+	}
+
+	const menu = Menu.buildFromTemplate(template);
+	Menu.setApplicationMenu(menu);
 });
 
 ipcMain.on('applySchedule', (event, obj) => {

@@ -1,6 +1,6 @@
 {
-  "name": "MentorSchduler",
-  "version": "0.4.0",
+  "name": "TAcalExporter",
+  "version": "0.6.2",
   "description": "TechAcademy用メンタリングカレンダーファイル出力アプリ",
   "standard": {
     "globals": [
@@ -16,8 +16,11 @@
     "url": "https://git.asiist.com/sasagawa/tacalexport.git"
   },
   "author": "SASAGAWA, Kiyoshi",
-  "license": "GPL",
-  "devDependencies": {
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "about-window": "^1.8.0",
+    "electron-config": "^1.0.0",
+    "electron-json-storage": "^4.0.2",
     "bootstrap": "^4.0.0",
     "electron": "^1.8.1",
     "font-awesome": "^4.7.0",
@@ -28,9 +31,5 @@
     "path": "^0.12.7",
     "popper": "^1.0.1",
     "popper.js": "^1.13.0"
-  },
-  "dependencies": {
-    "electron-config": "^1.0.0",
-    "electron-json-storage": "^4.0.2"
   }
 }

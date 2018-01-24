@@ -2,6 +2,11 @@
   "name": "MentorSchduler",
   "version": "0.3.0",
   "description": "TechAcademy用メンタリングカレンダーファイル出力アプリ",
+  "standard": {
+    "globals": [
+      "$"
+    ]
+  },
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

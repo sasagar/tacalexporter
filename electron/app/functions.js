@@ -41,7 +41,7 @@ $(document).ready(function () {
 			var tmpStart = new Date(schedule[i].start);
 			var tmpEnd = new Date(schedule[i].end);
 			var date = tmpStart.getFullYear() + '/' + ('00' + (tmpStart.getMonth() + 1)).slice(-2) + '/' + ('00' + tmpStart.getDate()).slice(-2);
-			var wDay = tmpStart.getDay()
+			var wDay = tmpStart.getDay();
 			var hour = ('00' + tmpStart.getHours()).slice(-2);
 			var minute = ('00' + tmpStart.getMinutes()).slice(-2);
 			var hourEnd = ('00' + tmpEnd.getHours()).slice(-2);
@@ -89,7 +89,7 @@ function selectChecker () {
 	}
 }
 
-function checkChecker() {
+function checkChecker () {
 	var check = $('#extra').prop('checked');
 
 	if (check) {

@@ -2,6 +2,7 @@
 
 // Electronのモジュール
 const electron = require('electron');
+const {shell} = require('electron');
 
 // pathモジュール
 const path = require('path');
@@ -30,12 +31,12 @@ const config = new Config({
 		},
 		calendar: {
 			selected: ''
+		},
+		credentials: {
+			token: ''
 		}
 	}
 });
-
-// calendarId
-// const calID = '9sm28disndol3mo1et2rer7p18@group.calendar.google.com';
 
 // GoogleCalendar
 var fs = require('fs');
@@ -49,6 +50,7 @@ var SCOPES = ['https://www.googleapis.com/auth/calendar'];
 var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
 		process.env.USERPROFILE) + '/.credentials/';
 var TOKEN_PATH = TOKEN_DIR + 'calendar-nodejs-quickstart.json';
+var TOKEN = config.get('credentials.token');
 
 // メインウィンドウはGCされないようにグローバル宣言
 let mainWindow;
@@ -120,6 +122,53 @@ ipcMain.on('getSelectedCalendar', (event) => {
 	event.returnValue = data;
 });
 
+ipcMain.on('launchChecker', (event) => {
+	fs.readFile(path.join(__dirname, '/client_secret.json'), function processClientSecrets (err, content) {
+		if (err) {
+			console.log('Error loading client secret file: ' + err);
+			console.log(__dirname);
+			return;
+		}
+		Promise.resolve()
+		.then(() => {
+			var test = authorizeChecker(JSON.parse(content));
+			return test;
+		})
+		.then((res) => {
+			event.returnValue = res;
+		});
+		// var res = authorizeChecker(JSON.parse(content));
+		// console.log(res);
+		// event.returnValue = res;
+	});
+});
+
+ipcMain.on('tokenSubmit', (event, code) => {
+	fs.readFile(path.join(__dirname, '/client_secret.json'), function processClientSecrets (err, content) {
+		if (err) {
+			console.log('Error loading client secret file: ' + err);
+			console.log(__dirname);
+			event.returnValue = false;
+		}
+		var credentials = JSON.parse(content);
+
+		var clientSecret = credentials.installed.client_secret;
+		var clientId = credentials.installed.client_id;
+		var redirectUrl = credentials.installed.redirect_uris[0];
+		var oauth2Client = new OAuth2Client(clientId, clientSecret, redirectUrl);
+
+		oauth2Client.getToken(code, function (err, token) {
+			if (err) {
+				console.log('Error while trying to retrieve access token', err);
+				event.returnValue = false;
+			}
+			oauth2Client.credentials = token;
+			storeToken(token);
+			event.returnValue = true;
+		});
+	});
+});
+
 // Load client secrets from a local file.
 // fs.readFile('client_secret.json', function processClientSecrets (err, content) {
 //	if (err) {
@@ -130,6 +179,36 @@ ipcMain.on('getSelectedCalendar', (event) => {
 	// Google Calendar API.
 	// authorize(JSON.parse(content), listEvents);
 // });
+
+/**
+ * Create an OAuth2 client with the given credentials, and then execute the
+ * given callback function.
+ *
+ * @param {Object} credentials The authorization client credentials.
+ * @param {function} callback The callback to call with the authorized client.
+ */
+function authorizeChecker (credentials) {
+	var res;
+	// Check if we have previously stored a token.
+	// fs.readFile(TOKEN_PATH, function (err, token) {
+	if (TOKEN === '') {
+		var clientSecret = credentials.installed.client_secret;
+		var clientId = credentials.installed.client_id;
+		var redirectUrl = credentials.installed.redirect_uris[0];
+
+		var oauth2Client = new OAuth2Client(clientId, clientSecret, redirectUrl);
+		var authUrl = oauth2Client.generateAuthUrl({
+			access_type: 'offline',
+			scope: SCOPES
+		});
+		shell.openExternal(authUrl);
+		res = authUrl;
+	} else {
+		res = 'OK';
+	}
+	// });
+	return res;
+}
 
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
@@ -197,15 +276,16 @@ function getNewToken (oauth2Client, callback) {
  * @param {Object} token The token to store to disk.
  */
 function storeToken (token) {
-	try {
+	/* try {
 		fs.mkdirSync(TOKEN_DIR);
 	} catch (err) {
 		if (err.code !== 'EEXIST') {
 			throw err;
 		}
-	}
-	fs.writeFile(TOKEN_PATH, JSON.stringify(token));
-	console.log('Token stored to ' + TOKEN_PATH);
+	} */
+	// fs.writeFile(TOKEN_PATH, JSON.stringify(token));
+	// console.log('Token stored to ' + TOKEN_PATH);
+	config.set('credentials.token', token);
 }
 
 /**

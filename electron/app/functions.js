@@ -19,6 +19,7 @@ $(document).ready(function () {
 	selectChecker();
 	listGetter();
 	selectCalendar();
+	launchChecker();
 
 	$('#dataapply').on('click', function () {
 		$('#dataapply').prop('disabled', true);
@@ -122,4 +123,24 @@ function calendarChange () {
 function selectCalendar () {
 	var val = ipcRenderer.sendSync('getSelectedCalendar');
 	$('#calendar').val(val);
+}
+function launchChecker () {
+	var res = ipcRenderer.sendSync('launchChecker');
+	if (res.substr(0, 4) === 'http') {
+		$('#tokenModal').modal();
+	}
+}
+
+function tokenSubmitter () {
+	var code = $('#code').val();
+	var res = ipcRenderer.sendSync('tokenSubmit', code);
+	if (res) {
+		modalClose('#tokenModal');
+	}
+}
+
+function modalClose(selector) {
+	$('body').removeClass('modal-open');
+	$('.modal-backdrop').remove();
+	$(selector).modal('hide');
 }

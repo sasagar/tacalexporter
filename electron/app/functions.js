@@ -74,6 +74,13 @@ $(document).ready(function () {
 		profileSetter();
 	}
 
+	$('#code').keypress(function (e) {
+		if (e.which === 13) {
+			// ここに処理を記述
+			tokenSubmitter();
+		}
+	});
+
 	ipcRenderer.on('resultMessage', function (event, args) {
 		var title = args.summary;
 		var start = new Date(args.start.dateTime);
@@ -146,7 +153,7 @@ function tokenSubmitter () {
 	}
 }
 
-function modalClose(selector) {
+function modalClose (selector) {
 	$('body').removeClass('modal-open');
 	$('.modal-backdrop').remove();
 	$(selector).modal('hide');

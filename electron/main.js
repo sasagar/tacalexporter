@@ -27,12 +27,15 @@ const config = new Config({
 		bounds: {
 			width: 800,
 			height: 600
+		},
+		calendar: {
+			selected: ''
 		}
 	}
 });
 
 // calendarId
-const calID = '9sm28disndol3mo1et2rer7p18@group.calendar.google.com';
+// const calID = '9sm28disndol3mo1et2rer7p18@group.calendar.google.com';
 
 // GoogleCalendar
 var fs = require('fs');
@@ -95,6 +98,26 @@ ipcMain.on('addschedule', (event, obj) => {
 		// authorize(JSON.parse(content), listEvents);
 		authorize(JSON.parse(content), addEvents, obj);
 	});
+});
+
+ipcMain.on('getCalendarList', (event) => {
+	fs.readFile(path.join(__dirname, '/client_secret.json'), function processClientSecrets (err, content) {
+		if (err) {
+			console.log('Error loading client secret file: ' + err);
+			console.log(__dirname);
+			return;
+		}
+		authorize(JSON.parse(content), listCalendar, event);
+	});
+});
+
+ipcMain.on('changeCalendar', (event, calval) => {
+	config.set('calendar.selected', calval);
+});
+
+ipcMain.on('getSelectedCalendar', (event) => {
+	var data = config.get('calendar.selected');
+	event.returnValue = data;
 });
 
 // Load client secrets from a local file.
@@ -227,15 +250,19 @@ function addEvents (auth, option) {
 	var calendar = google.calendar('v3');
 	var timezone = 'Asia/Tokyo';
 
-	for (var i in option.schedule) {
+	var schedule = option.data.schedule;
+	var title = option.data.title;
+	var calID = option.calID;
+
+	for (var i in schedule) {
 		var eventData = {
-			'summary': option.title,
+			'summary': title,
 			'start': {
-				'dateTime': option.schedule[i].start,
+				'dateTime': schedule[i].start,
 				'timeZone': timezone
 			},
 			'end': {
-				'dateTime': option.schedule[i].end,
+				'dateTime': schedule[i].end,
 				'timeZone': timezone
 			}
 		};
@@ -255,4 +282,22 @@ function addEvents (auth, option) {
 			mainWindow.webContents.send('resultMessage', event.data);
 		});
 	}
+}
+
+/**
+ * Lists the next 10 events on the user's primary calendar.
+ *
+ * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
+ */
+function listCalendar (auth, event) {
+	var calendar = google.calendar('v3');
+	var apiObj = {'auth': auth};
+
+	calendar.calendarList.list(apiObj, function (err, list) {
+		if (err) {
+			console.log('There was an error contacting the Calendar service: ' + err);
+			return;
+		}
+		event.returnValue = list.data.items;
+	});
 }

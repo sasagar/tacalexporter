@@ -17,6 +17,8 @@ $(document).ready(function () {
 	}
 
 	selectChecker();
+	listGetter();
+	selectCalendar();
 
 	$('#dataapply').on('click', function () {
 		$('#dataapply').prop('disabled', true);
@@ -59,9 +61,11 @@ $(document).ready(function () {
 
 	$('#applydata').on('click', function () {
 		var data = $('#data').val();
+		var calID = $('#calendar').val();
 		var schedule = JSON.parse(data);
+		var obj = {calID: calID, data: schedule};
 		$('#modalMessage').empty();
-		ipcRenderer.send('addschedule', schedule);
+		ipcRenderer.send('addschedule', obj);
 		$('#applydata').prop('disabled', true);
 		$('#modal').modal();
 	});
@@ -97,4 +101,25 @@ function checkChecker () {
 	} else {
 		$('#secondDiv').hide();
 	}
+}
+
+function listGetter () {
+	var list = ipcRenderer.sendSync('getCalendarList');
+
+	for (var i in list) {
+		var data = list[i];
+		if (data.accessRole === 'write' || data.accessRole === 'owner') {
+			$('#calendar').append('<option value="' + data.id + '">' + data.summary + '</option>');
+		}
+	}
+}
+
+function calendarChange () {
+	var data = $('#calendar').val();
+	ipcRenderer.send('changeCalendar', data);
+}
+
+function selectCalendar () {
+	var val = ipcRenderer.sendSync('getSelectedCalendar');
+	$('#calendar').val(val);
 }

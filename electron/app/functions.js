@@ -13,8 +13,10 @@ $(document).ready(function () {
 	var course = JSON.parse(fs.readFileSync('course.json', 'utf8'));
 	$('#course').empty();
 	for (var i in course) {
-		$('#course').append('<option value="' + course[i].key + '" data-fullname="' + course[i].fullname + '">' + course[i].fullname + '</option>');
+		$('#course').append('<option value="' + course[i].key + '" data-fullname="' + course[i].fullname + '" data-perweek="' + course[i].perWeek + '">' + course[i].fullname + '</option>');
 	}
+
+	selectChecker();
 
 	$('#dataapply').on('click', function () {
 		$('#dataapply').prop('disabled', true);
@@ -76,3 +78,13 @@ $(document).ready(function () {
 		$('#modalMessage').append('<p>' + title + ' @ ' + startYear + '/' + startMonth + '/' + startDate + ' ' + startHours + ':' + startMinutes + '</p>');
 	});
 });
+
+function selectChecker() {
+	var perWeek = parseInt($('#course option:selected').attr('data-perweek'));
+
+	if (perWeek === 1) {
+		$('#secondDiv').hide();
+	} else {
+		$('#secondDiv').show();
+	}
+}

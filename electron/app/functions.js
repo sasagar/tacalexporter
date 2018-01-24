@@ -1,4 +1,6 @@
 'use strict';
+
+const shell = require('electron').shell;
 const {ipcRenderer} = require('electron');
 const fs = require('fs');
 
@@ -19,6 +21,7 @@ $(document).ready(function () {
 	selectChecker();
 	listGetter();
 	selectCalendar();
+	launchChecker();
 
 	$('#dataapply').on('click', function () {
 		$('#dataapply').prop('disabled', true);
@@ -122,4 +125,11 @@ function calendarChange () {
 function selectCalendar () {
 	var val = ipcRenderer.sendSync('getSelectedCalendar');
 	$('#calendar').val(val);
+}
+function launchChecker () {
+	var res = ipcRenderer.sendSync('launchChecker');
+	console.log(res);
+	if (res.substr(0, 4) === 'http') {
+		$('#tokenModal').modal();
+	}
 }

@@ -135,7 +135,7 @@ app.on('ready', function () {
 			submenu: [
 				{role: 'about', label: 'このアプリについて'},
 				{type: 'separator'},
-				{role: 'services', label: 'このアプリについて', submenu: []},
+				{role: 'services', label: 'サービス', submenu: []},
 				{type: 'separator'},
 				{role: 'hide', label: 'このアプリを隠す'},
 				{role: 'hideothers', label: '他のアプリを隠す'},

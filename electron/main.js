@@ -145,8 +145,8 @@ ipcMain.on('launchChecker', (event) => {
 		}
 		Promise.resolve()
 		.then(() => {
-			var test = authorizeChecker(JSON.parse(content));
-			return test;
+			var res = authorizeChecker(JSON.parse(content));
+			return res;
 		})
 		.then((res) => {
 			event.returnValue = res;
@@ -199,6 +199,8 @@ ipcMain.on('tokenSubmit', (event, code) => {
  * @param {function} callback The callback to call with the authorized client.
  */
 function authorizeChecker (credentials) {
+	// リロードした時用に再読み込み
+	TOKEN = config.get('credentials.token');
 	var res;
 	// Check if we have previously stored a token.
 	// fs.readFile(TOKEN_PATH, function (err, token) {
@@ -311,39 +313,6 @@ function storeToken (token) {
 	// fs.writeFile(TOKEN_PATH, JSON.stringify(token));
 	// console.log('Token stored to ' + TOKEN_PATH);
 	config.set('credentials.token', token);
-}
-
-/**
- * Lists the next 10 events on the user's primary calendar.
- *
- * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
- */
-function listEvents (auth) {
-	var calendar = google.calendar('v3');
-	calendar.events.list({
-		auth: auth,
-		calendarId: '',
-		timeMin: (new Date()).toISOString(),
-		maxResults: 10,
-		singleEvents: true,
-		orderBy: 'startTime'
-	}, function (err, response) {
-		if (err) {
-			console.log('The API returned an error: ' + err);
-			return;
-		}
-		var events = response.items;
-		if (events.length === 0) {
-			console.log('No upcoming events found.');
-		} else {
-			console.log('Upcoming 10 events:');
-			for (var i = 0; i < events.length; i++) {
-				var event = events[i];
-				var start = event.start.dateTime || event.start.date;
-				console.log('%s - %s', start, event.summary);
-			}
-		}
-	});
 }
 
 /**

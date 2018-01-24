@@ -16,11 +16,6 @@ $(document).ready(function () {
 		$('#course').append('<option value="' + course[i].key + '" data-fullname="' + course[i].fullname + '" data-perweek="' + course[i].perWeek + '">' + course[i].fullname + '</option>');
 	}
 
-	selectChecker();
-	listGetter();
-	selectCalendar();
-	launchChecker();
-
 	$('#dataapply').on('click', function () {
 		$('#dataapply').prop('disabled', true);
 		$('#dataapply i').css('display', 'inline');
@@ -69,6 +64,21 @@ $(document).ready(function () {
 		ipcRenderer.send('addschedule', obj);
 		$('#applydata').prop('disabled', true);
 		$('#modal').modal();
+	});
+
+	var flag = launchChecker();
+	if (flag) {
+		selectChecker();
+		listGetter();
+		selectCalendar();
+		profileSetter();
+	}
+
+	$('#code').keypress(function (e) {
+		if (e.which === 13) {
+			// ここに処理を記述
+			tokenSubmitter();
+		}
 	});
 
 	ipcRenderer.on('resultMessage', function (event, args) {
@@ -124,11 +134,14 @@ function selectCalendar () {
 	var val = ipcRenderer.sendSync('getSelectedCalendar');
 	$('#calendar').val(val);
 }
+
 function launchChecker () {
 	var res = ipcRenderer.sendSync('launchChecker');
 	if (res.substr(0, 4) === 'http') {
 		$('#tokenModal').modal();
+		return false;
 	}
+	return true;
 }
 
 function tokenSubmitter () {
@@ -136,11 +149,19 @@ function tokenSubmitter () {
 	var res = ipcRenderer.sendSync('tokenSubmit', code);
 	if (res) {
 		modalClose('#tokenModal');
+		location.reload();
 	}
 }
 
-function modalClose(selector) {
+function modalClose (selector) {
 	$('body').removeClass('modal-open');
 	$('.modal-backdrop').remove();
 	$(selector).modal('hide');
+}
+
+function profileSetter () {
+	var profile = ipcRenderer.sendSync('getProfileData');
+	$('#familyName').text(profile.family_name);
+	$('#givenName').text(profile.given_name);
+	$('#iconImg').append('<img src="' + profile.picture + '" style="max-width: 56px; border-radius: 50%;">');
 }

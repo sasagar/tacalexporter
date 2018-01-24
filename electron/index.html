@@ -26,7 +26,17 @@
 </head>
 <body>
 	<div class="container">
-		<h1>メンタリングスケジュール登録</h1>
+		<div class="row">
+			<div class="col-sm-9">
+				<h1>メンタリングスケジュール登録</h1>
+			</div>
+			<div class="col-sm-3 text-right">
+				<span id="familyName"></span> <span id="givenName"></span>
+				<span id="iconImg"></span>
+			</div>
+		</div>
+
+		<hr>
 
 		<form id="schedule">
 			<div class="form-group row">
@@ -202,7 +212,7 @@
 			</div>
 
 			<div class="form-group row justify-content-end">
-				<div class="col-sm-3">
+				<div class="col-sm-3 text-right">
 					<button type="button" id="dataapply" class="btn btn-primary"><i class="fa fa-spinner rotate-anime" aria-hidden="true" style="display: none;"></i>スケジュール生成</button>
 				</div>
 			</div>
@@ -235,7 +245,7 @@
 					<select name="calendar" id="calendar" class="form-control" onchange="calendarChange();">
 					</select>
 				</div>
-				<div class="col-sm-3">
+				<div class="col-sm-3 text-right">
 					<button type="button" id="applydata" class="btn btn-primary" disabled>GoogleCalendar登録</button>
 				</div>
 			</div>

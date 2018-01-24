@@ -4,8 +4,8 @@ const fs = require('fs');
 function funcInterval (val1, val2) {
 	// 未来の曜日を手前に。（そこまでの日数）
 	var res;
-	val1 = val1 * 1;
-	val2 = val2 * 1;
+	val1 = parseInt(val1);
+	val2 = parseInt(val2);
 	if (val2 > val1) {
 		res = (val1 + 7) - val2;
 	} else {
@@ -49,6 +49,11 @@ const datePrep = function (dateStr, timeStr = '00:00') {
 const scheduleMaker = function (obj) {
 	var array = [];
 	var courseObj = JSON.parse(fs.readFileSync('course.json', 'utf8'));
+	var courseKey = obj.course.value;
+	var perWeek = parseInt(courseObj[courseKey].perWeek);
+	var interval1 = 0;
+	var interval2 = 0;
+	var interval3 = 0;
 
 	// 時間を調整
 	obj.firstTime = {value: obj.firstHour.value + ':' + obj.firstMinutes.value};
@@ -58,7 +63,7 @@ const scheduleMaker = function (obj) {
 	var startDate = datePrep(obj.start.value);
 	var startWDay = startDate.getDay();
 	// スタート日と初回の日数差を出す。
-	var interval1 = funcInterval(obj.first.value, startWDay);
+	interval1 = funcInterval(obj.first.value, startWDay);
 
 	var firstStart = new Date(startDate.getTime() + (interval1 * 24 * 60 * 60 * 1000));
 	firstStart.setHours(obj.firstTime.value.substr(0, 2));
@@ -70,31 +75,36 @@ const scheduleMaker = function (obj) {
 	};
 	array.push(first);
 
-	// 初回と二回目の日数差を出す。
-	var interval2 = funcInterval(obj.second.value, obj.first.value);
+	if (perWeek === 1) {
+		interval2 = 7;
+		interval3 = 7;
+	} else {
+		// 初回と二回目の日数差を出す。
+		interval2 = funcInterval(obj.second.value, obj.first.value);
 
-	var secondStart = new Date(firstStart.getTime() + (interval2 * 24 * 60 * 60 * 1000));
-	secondStart.setHours(obj.secondTime.value.substr(0, 2));
-	secondStart.setMinutes(obj.secondTime.value.substr(3, 2));
-	var secondEnd = new Date(secondStart.getTime() + (30 * 60 * 1000));
-	var second = {
-		start: secondStart,
-		end: secondEnd
-	};
-	array.push(second);
+		var secondStart = new Date(firstStart.getTime() + (interval2 * 24 * 60 * 60 * 1000));
+		secondStart.setHours(obj.secondTime.value.substr(0, 2));
+		secondStart.setMinutes(obj.secondTime.value.substr(3, 2));
+		var secondEnd = new Date(secondStart.getTime() + (30 * 60 * 1000));
+		var second = {
+			start: secondStart,
+			end: secondEnd
+		};
+		array.push(second);
 
-	// 残りはループで処理
-	// 二回目と一回目の間の日数をinterval3とする
-	var interval3 = funcInterval(obj.first.value, obj.second.value);
+		// 残りはループで処理
+		// 二回目と一回目の間の日数をinterval3とする
+		interval3 = funcInterval(obj.first.value, obj.second.value);
 
-	var addon = false;
-	if (obj.extra) {
-		addon = true;
+		var addon = false;
+		if (obj.extra) {
+			addon = true;
+		}
 	}
 
-	var times = findTimes(obj.week.value, obj.course.value, addon);
+	var times = findTimes(obj.week.value, courseKey, addon);
 
-	for (var i = 2; i < times; i++) {
+	for (var i = perWeek; i < times; i++) {
 		var interval = 0;
 		var hour = 0;
 		var min = 0;

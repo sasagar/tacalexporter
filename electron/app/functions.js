@@ -1,6 +1,4 @@
 'use strict';
-
-const shell = require('electron').shell;
 const {ipcRenderer} = require('electron');
 const fs = require('fs');
 
@@ -128,8 +126,21 @@ function selectCalendar () {
 }
 function launchChecker () {
 	var res = ipcRenderer.sendSync('launchChecker');
-	console.log(res);
 	if (res.substr(0, 4) === 'http') {
 		$('#tokenModal').modal();
 	}
+}
+
+function tokenSubmitter () {
+	var code = $('#code').val();
+	var res = ipcRenderer.sendSync('tokenSubmit', code);
+	if (res) {
+		modalClose('#tokenModal');
+	}
+}
+
+function modalClose(selector) {
+	$('body').removeClass('modal-open');
+	$('.modal-backdrop').remove();
+	$(selector).modal('hide');
 }

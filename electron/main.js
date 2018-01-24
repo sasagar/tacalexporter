@@ -33,7 +33,7 @@ const config = new Config({
 			selected: ''
 		},
 		credentials: {
-			value: ''
+			token: ''
 		}
 	}
 });
@@ -50,7 +50,7 @@ var SCOPES = ['https://www.googleapis.com/auth/calendar'];
 var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
 		process.env.USERPROFILE) + '/.credentials/';
 var TOKEN_PATH = TOKEN_DIR + 'calendar-nodejs-quickstart.json';
-var TOKEN = config.get('credentials.value');
+var TOKEN = config.get('credentials.token');
 
 // メインウィンドウはGCされないようにグローバル宣言
 let mainWindow;
@@ -136,11 +136,36 @@ ipcMain.on('launchChecker', (event) => {
 		})
 		.then((res) => {
 			event.returnValue = res;
-			console.log('res: ' + res);
 		});
 		// var res = authorizeChecker(JSON.parse(content));
 		// console.log(res);
 		// event.returnValue = res;
+	});
+});
+
+ipcMain.on('tokenSubmit', (event, code) => {
+	fs.readFile(path.join(__dirname, '/client_secret.json'), function processClientSecrets (err, content) {
+		if (err) {
+			console.log('Error loading client secret file: ' + err);
+			console.log(__dirname);
+			event.returnValue = false;
+		}
+		var credentials = JSON.parse(content);
+
+		var clientSecret = credentials.installed.client_secret;
+		var clientId = credentials.installed.client_id;
+		var redirectUrl = credentials.installed.redirect_uris[0];
+		var oauth2Client = new OAuth2Client(clientId, clientSecret, redirectUrl);
+
+		oauth2Client.getToken(code, function (err, token) {
+			if (err) {
+				console.log('Error while trying to retrieve access token', err);
+				event.returnValue = false;
+			}
+			oauth2Client.credentials = token;
+			storeToken(token);
+			event.returnValue = true;
+		});
 	});
 });
 
@@ -251,15 +276,16 @@ function getNewToken (oauth2Client, callback) {
  * @param {Object} token The token to store to disk.
  */
 function storeToken (token) {
-	try {
+	/* try {
 		fs.mkdirSync(TOKEN_DIR);
 	} catch (err) {
 		if (err.code !== 'EEXIST') {
 			throw err;
 		}
-	}
-	fs.writeFile(TOKEN_PATH, JSON.stringify(token));
-	console.log('Token stored to ' + TOKEN_PATH);
+	} */
+	// fs.writeFile(TOKEN_PATH, JSON.stringify(token));
+	// console.log('Token stored to ' + TOKEN_PATH);
+	config.set('credentials.token', token);
 }
 
 /**

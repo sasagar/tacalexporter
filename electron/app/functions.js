@@ -79,12 +79,22 @@ $(document).ready(function () {
 	});
 });
 
-function selectChecker() {
+function selectChecker () {
 	var perWeek = parseInt($('#course option:selected').attr('data-perweek'));
 
 	if (perWeek === 1) {
 		$('#secondDiv').hide();
 	} else {
 		$('#secondDiv').show();
+	}
+}
+
+function checkChecker() {
+	var check = $('#extra').prop('checked');
+
+	if (check) {
+		$('#secondDiv').show();
+	} else {
+		$('#secondDiv').hide();
 	}
 }

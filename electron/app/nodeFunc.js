@@ -75,7 +75,7 @@ const scheduleMaker = function (obj) {
 	};
 	array.push(first);
 
-	if (perWeek === 1) {
+	if (perWeek === 1 && !obj.extra) {
 		interval2 = 7;
 		interval3 = 7;
 	} else {

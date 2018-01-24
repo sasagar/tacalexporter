@@ -13,8 +13,10 @@ $(document).ready(function () {
 	var course = JSON.parse(fs.readFileSync('course.json', 'utf8'));
 	$('#course').empty();
 	for (var i in course) {
-		$('#course').append('<option value="' + course[i].key + '" data-fullname="' + course[i].fullname + '">' + course[i].fullname + '</option>');
+		$('#course').append('<option value="' + course[i].key + '" data-fullname="' + course[i].fullname + '" data-perweek="' + course[i].perWeek + '">' + course[i].fullname + '</option>');
 	}
+
+	selectChecker();
 
 	$('#dataapply').on('click', function () {
 		$('#dataapply').prop('disabled', true);
@@ -39,7 +41,7 @@ $(document).ready(function () {
 			var tmpStart = new Date(schedule[i].start);
 			var tmpEnd = new Date(schedule[i].end);
 			var date = tmpStart.getFullYear() + '/' + ('00' + (tmpStart.getMonth() + 1)).slice(-2) + '/' + ('00' + tmpStart.getDate()).slice(-2);
-			var wDay = tmpStart.getDay()
+			var wDay = tmpStart.getDay();
 			var hour = ('00' + tmpStart.getHours()).slice(-2);
 			var minute = ('00' + tmpStart.getMinutes()).slice(-2);
 			var hourEnd = ('00' + tmpEnd.getHours()).slice(-2);
@@ -76,3 +78,23 @@ $(document).ready(function () {
 		$('#modalMessage').append('<p>' + title + ' @ ' + startYear + '/' + startMonth + '/' + startDate + ' ' + startHours + ':' + startMinutes + '</p>');
 	});
 });
+
+function selectChecker () {
+	var perWeek = parseInt($('#course option:selected').attr('data-perweek'));
+
+	if (perWeek === 1) {
+		$('#secondDiv').hide();
+	} else {
+		$('#secondDiv').show();
+	}
+}
+
+function checkChecker () {
+	var check = $('#extra').prop('checked');
+
+	if (check) {
+		$('#secondDiv').show();
+	} else {
+		$('#secondDiv').hide();
+	}
+}

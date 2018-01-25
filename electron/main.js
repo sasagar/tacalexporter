@@ -1,5 +1,7 @@
 'use strict';
 
+/*eslint no-console: ["error", { allow: ["warn", "log", "dir", "error"] }] */
+
 // Electronのモジュール
 const electron = require('electron');
 const {shell, Menu} = require('electron');
@@ -233,13 +235,13 @@ ipcMain.on('launchChecker', (event) => {
 			return;
 		}
 		Promise.resolve()
-		.then(() => {
-			var res = authorizeChecker(JSON.parse(content));
-			return res;
-		})
-		.then((res) => {
-			event.returnValue = res;
-		});
+			.then(() => {
+				var res = authorizeChecker(JSON.parse(content));
+				return res;
+			})
+			.then((res) => {
+				event.returnValue = res;
+			});
 	});
 });
 
@@ -275,9 +277,9 @@ ipcMain.on('tokenSubmit', (event, code) => {
 //		console.log('Error loading client secret file: ' + err);
 //		return;
 //	}
-	// Authorize a client with the loaded credentials, then call the
-	// Google Calendar API.
-	// authorize(JSON.parse(content), listEvents);
+// Authorize a client with the loaded credentials, then call the
+// Google Calendar API.
+// authorize(JSON.parse(content), listEvents);
 // });
 
 /**

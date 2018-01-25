@@ -25,232 +25,244 @@
   </style>
 </head>
 <body>
-	<div class="container">
-		<div class="row">
-			<div class="col-sm-9">
-				<h1>メンタリングスケジュール登録</h1>
-			</div>
-			<div class="col-sm-3 text-right">
-				<span id="familyName"></span> <span id="givenName"></span>
-				<span id="iconImg"></span>
-			</div>
-		</div>
-
-		<hr>
-
-		<form id="schedule">
-			<div class="form-group row">
-				<div class="col-sm-2">
-					<label for="course" class="col-form-label">コース</label>
+	<ul class="nav nav-tabs nav-justified">
+		<li class="nav-item">
+			<a href="#mentoring" class="nav-link active" data-toggle="tab">メンタリング日程</a>
+		</li>
+		<li class="nav-item">
+			<a href="#shift" class="nav-link" data-toggle="tab">シフト登録</a>
+		</li>
+	</ul>
+	<div class="tab-content">
+		<div class="container tab-pane active" id="mentoring">
+			<div class="row">
+				<div class="col-sm-9">
+					<h1>メンタリングスケジュール登録</h1>
 				</div>
-				<div class="col-sm-10">
-					<select name="course" id="course" class="form-control" onchange="selectChecker();">
-					</select>
-				</div>
-			</div>
-
-			<div class="form-group row justify-content-end">
-				<div class="col-sm-10 form-check-inline">
-					<input type="checkbox" name="extra" id="extra" value="extra" class="form-check-input" onchange="checkChecker();">
-					<label for="extra" class="form-check-label">追加サポート</label>
-				</div>
-			</div>
-
-			<div class="form-group row">
-				<div class="col-sm-2">
-					<label for="week" class="col-form-label">プラン</label>
-				</div>
-				<div class="col-sm-10">
-					<div class="form-inline">
-						<div class="input-group">
-							<input type="number" name="week" id="week" class="form-control" min="4" value="4">
-							<div class="input-group-append">
-								<span class="input-group-text input-group-addon">
-									週間
-								</span>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="form-group row">
-				<div class="col-sm-2">
-					<label for="name" class="col-form-label">受講生名</label>
-				</div>
-				<div class="col-sm-10">
-					<input type="text" name="name" id="name" class="form-control">
+				<div class="col-sm-3 text-right">
+					<span id="familyName"></span> <span id="givenName"></span>
+					<span id="iconImg"></span>
 				</div>
 			</div>
 
 			<hr>
 
-			<div class="form-group row datepicker">
-				<div class="col-sm-2">
-					<label class="control-label">受講開始日</label>
+			<form id="schedule">
+				<div class="form-group row">
+					<div class="col-sm-2">
+						<label for="course" class="col-form-label">コース</label>
+					</div>
+					<div class="col-sm-10">
+						<select name="course" id="course" class="form-control" onchange="selectChecker();">
+						</select>
+					</div>
 				</div>
-				<div class="col-sm-10">
-					<div class="form-inline">
-						<div class="input-group date">
-							<input type="text" name="start" class="form-control" value="">
-							<div class="input-group-append">
-								<span class="input-group-text input-group-addon">
-									<i class="fa fa-calendar"></i>
-								</span>
+
+				<div class="form-group row justify-content-end">
+					<div class="col-sm-10 form-check-inline">
+						<input type="checkbox" name="extra" id="extra" value="extra" class="form-check-input" onchange="checkChecker();">
+						<label for="extra" class="form-check-label">追加サポート</label>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<div class="col-sm-2">
+						<label for="week" class="col-form-label">プラン</label>
+					</div>
+					<div class="col-sm-10">
+						<div class="form-inline">
+							<div class="input-group">
+								<input type="number" name="week" id="week" class="form-control" min="4" value="4">
+								<div class="input-group-append">
+									<span class="input-group-text input-group-addon">
+										週間
+									</span>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 
-			<div class="form-group row datepicker">
-				<div class="col-sm-2">
-					<label class="control-label">一回目</label>
+				<div class="form-group row">
+					<div class="col-sm-2">
+						<label for="name" class="col-form-label">受講生名</label>
+					</div>
+					<div class="col-sm-10">
+						<input type="text" name="name" id="name" class="form-control">
+					</div>
 				</div>
-				<div class="col-sm-3">
-					<select name="first" id="first" class="form-control form-control-sm">
-						<option value="1">月曜</option>
-						<option value="2">火曜</option>
-						<option value="3">水曜</option>
-						<option value="4">木曜</option>
-						<option value="5">金曜</option>
-						<option value="6">土曜</option>
-						<option value="0">日曜</option>
-					</select>
-				</div>
-				<div class="col-sm-5">
-					<div class="form-inline">
-						<div class="input-group">
-              <select name="firstHour" id="firstHour" class="form-control form-control-sm">
-    						<option value="00">00</option>
-    						<option value="01">01</option>
-    						<option value="02">02</option>
-    						<option value="03">03</option>
-    						<option value="04">04</option>
-    						<option value="05">05</option>
-    						<option value="06">06</option>
-                <option value="07">07</option>
-    						<option value="08">08</option>
-    						<option value="09">09</option>
-                <option value="10">10</option>
-    						<option value="11">11</option>
-    						<option value="12">12</option>
-    						<option value="13" selected>13</option>
-    						<option value="14">14</option>
-    						<option value="15">15</option>
-    						<option value="16">16</option>
-                <option value="17">17</option>
-    						<option value="18">18</option>
-    						<option value="19">19</option>
-                <option value="20">20</option>
-    						<option value="21">21</option>
-    						<option value="22">22</option>
-    						<option value="23">23</option>
-    					</select>
-              <span>&nbsp;:&nbsp;</span>
-              <select name="firstMinutes" id="firstMinutes" class="form-control form-control-sm">
-    						<option value="00" selected>00</option>
-    						<option value="30">30</option>
-    					</select>
+
+				<hr>
+
+				<div class="form-group row datepicker">
+					<div class="col-sm-2">
+						<label class="control-label">受講開始日</label>
+					</div>
+					<div class="col-sm-10">
+						<div class="form-inline">
+							<div class="input-group date">
+								<input type="text" name="start" class="form-control" value="">
+								<div class="input-group-append">
+									<span class="input-group-text input-group-addon">
+										<i class="fa fa-calendar"></i>
+									</span>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 
-			<div class="form-group row datepicker" id="secondDiv">
-				<div class="col-sm-2">
-					<label class="control-label">二回目</label>
-				</div>
-				<div class="col-sm-3">
-					<select name="second" id="second" class="form-control form-control-sm">
-						<option value="1">月曜</option>
-						<option value="2">火曜</option>
-						<option value="3">水曜</option>
-						<option value="4">木曜</option>
-						<option value="5">金曜</option>
-						<option value="6">土曜</option>
-						<option value="0">日曜</option>
-					</select>
-				</div>
-				<div class="col-sm-5">
-					<div class="form-inline">
-						<div class="input-group">
-              <select name="secondHour" id="secondHour" class="form-control form-control-sm">
-    						<option value="00">00</option>
-    						<option value="01">01</option>
-    						<option value="02">02</option>
-    						<option value="03">03</option>
-    						<option value="04">04</option>
-    						<option value="05">05</option>
-    						<option value="06">06</option>
-                <option value="07">07</option>
-    						<option value="08">08</option>
-    						<option value="09">09</option>
-                <option value="10">10</option>
-    						<option value="11">11</option>
-    						<option value="12">12</option>
-    						<option value="13" selected>13</option>
-    						<option value="14">14</option>
-    						<option value="15">15</option>
-    						<option value="16">16</option>
-                <option value="17">17</option>
-    						<option value="18">18</option>
-    						<option value="19">19</option>
-                <option value="20">20</option>
-    						<option value="21">21</option>
-    						<option value="22">22</option>
-    						<option value="23">23</option>
-    					</select>
-              <span>&nbsp;:&nbsp;</span>
-              <select name="secondMinutes" id="secondMinutes" class="form-control form-control-sm">
-    						<option value="00" selected>00</option>
-    						<option value="30">30</option>
-    					</select>
+				<div class="form-group row datepicker">
+					<div class="col-sm-2">
+						<label class="control-label">一回目</label>
+					</div>
+					<div class="col-sm-3">
+						<select name="first" id="first" class="form-control form-control-sm">
+							<option value="1">月曜</option>
+							<option value="2">火曜</option>
+							<option value="3">水曜</option>
+							<option value="4">木曜</option>
+							<option value="5">金曜</option>
+							<option value="6">土曜</option>
+							<option value="0">日曜</option>
+						</select>
+					</div>
+					<div class="col-sm-5">
+						<div class="form-inline">
+							<div class="input-group">
+	              <select name="firstHour" id="firstHour" class="form-control form-control-sm">
+	    						<option value="00">00</option>
+	    						<option value="01">01</option>
+	    						<option value="02">02</option>
+	    						<option value="03">03</option>
+	    						<option value="04">04</option>
+	    						<option value="05">05</option>
+	    						<option value="06">06</option>
+	                <option value="07">07</option>
+	    						<option value="08">08</option>
+	    						<option value="09">09</option>
+	                <option value="10">10</option>
+	    						<option value="11">11</option>
+	    						<option value="12">12</option>
+	    						<option value="13" selected>13</option>
+	    						<option value="14">14</option>
+	    						<option value="15">15</option>
+	    						<option value="16">16</option>
+	                <option value="17">17</option>
+	    						<option value="18">18</option>
+	    						<option value="19">19</option>
+	                <option value="20">20</option>
+	    						<option value="21">21</option>
+	    						<option value="22">22</option>
+	    						<option value="23">23</option>
+	    					</select>
+	              <span>&nbsp;:&nbsp;</span>
+	              <select name="firstMinutes" id="firstMinutes" class="form-control form-control-sm">
+	    						<option value="00" selected>00</option>
+	    						<option value="30">30</option>
+	    					</select>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 
-			<div class="form-group row justify-content-end">
-				<div class="col-sm-3 text-right">
-					<button type="button" id="dataapply" class="btn btn-primary"><i class="fa fa-spinner rotate-anime" aria-hidden="true" style="display: none;"></i>スケジュール生成</button>
+				<div class="form-group row datepicker" id="secondDiv">
+					<div class="col-sm-2">
+						<label class="control-label">二回目</label>
+					</div>
+					<div class="col-sm-3">
+						<select name="second" id="second" class="form-control form-control-sm">
+							<option value="1">月曜</option>
+							<option value="2">火曜</option>
+							<option value="3">水曜</option>
+							<option value="4">木曜</option>
+							<option value="5">金曜</option>
+							<option value="6">土曜</option>
+							<option value="0">日曜</option>
+						</select>
+					</div>
+					<div class="col-sm-5">
+						<div class="form-inline">
+							<div class="input-group">
+	              <select name="secondHour" id="secondHour" class="form-control form-control-sm">
+	    						<option value="00">00</option>
+	    						<option value="01">01</option>
+	    						<option value="02">02</option>
+	    						<option value="03">03</option>
+	    						<option value="04">04</option>
+	    						<option value="05">05</option>
+	    						<option value="06">06</option>
+	                <option value="07">07</option>
+	    						<option value="08">08</option>
+	    						<option value="09">09</option>
+	                <option value="10">10</option>
+	    						<option value="11">11</option>
+	    						<option value="12">12</option>
+	    						<option value="13" selected>13</option>
+	    						<option value="14">14</option>
+	    						<option value="15">15</option>
+	    						<option value="16">16</option>
+	                <option value="17">17</option>
+	    						<option value="18">18</option>
+	    						<option value="19">19</option>
+	                <option value="20">20</option>
+	    						<option value="21">21</option>
+	    						<option value="22">22</option>
+	    						<option value="23">23</option>
+	    					</select>
+	              <span>&nbsp;:&nbsp;</span>
+	              <select name="secondMinutes" id="secondMinutes" class="form-control form-control-sm">
+	    						<option value="00" selected>00</option>
+	    						<option value="30">30</option>
+	    					</select>
+							</div>
+						</div>
+					</div>
 				</div>
-			</div>
-		</form>
 
-		<hr>
-
-		<table class="table table-striped">
-			<thead class="thead-dark">
-				<tr>
-					<th scope="col">#</th>
-					<th scope="col">スケジュール名</th>
-					<th scope="col">日付</th>
-					<th scope="col">曜日</th>
-					<th scope="col">開始</th>
-					<th scope="col">終了</th>
-				</tr>
-			</thead>
-			<tbody id="tablebody">
-			</tbody>
-		</table>
-
-		<form id="submitData">
-			<div class="form-group row justify-content-end">
-					<input type="hidden" id="data" value="">
-				<div class="col-sm-3">
-					<label for="calendar" class="control-label">登録先カレンダー選択</label>
+				<div class="form-group row justify-content-end">
+					<div class="col-sm-3 text-right">
+						<button type="button" id="dataapply" class="btn btn-primary"><i class="fa fa-spinner rotate-anime" aria-hidden="true" style="display: none;"></i>スケジュール生成</button>
+					</div>
 				</div>
-				<div class="col-sm-6">
-					<select name="calendar" id="calendar" class="form-control" onchange="calendarChange();">
-					</select>
-				</div>
-				<div class="col-sm-3 text-right">
-					<button type="button" id="applydata" class="btn btn-primary" disabled>GoogleCalendar登録</button>
-				</div>
-			</div>
-		</form>
+			</form>
 
+			<hr>
+
+			<table class="table table-striped">
+				<thead class="thead-dark">
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">スケジュール名</th>
+						<th scope="col">日付</th>
+						<th scope="col">曜日</th>
+						<th scope="col">開始</th>
+						<th scope="col">終了</th>
+					</tr>
+				</thead>
+				<tbody id="tablebody">
+				</tbody>
+			</table>
+
+			<form id="submitData">
+				<div class="form-group row justify-content-end">
+						<input type="hidden" id="data" value="">
+					<div class="col-sm-3">
+						<label for="calendar" class="control-label">登録先カレンダー選択</label>
+					</div>
+					<div class="col-sm-6">
+						<select name="calendar" id="calendar" class="form-control" onchange="calendarChange();">
+						</select>
+					</div>
+					<div class="col-sm-3 text-right">
+						<button type="button" id="applydata" class="btn btn-primary" disabled>GoogleCalendar登録</button>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<div class="container tab-pane" id="shift">
+		</div>
 	</div>
 
   <!-- modal -->

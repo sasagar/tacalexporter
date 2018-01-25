@@ -165,5 +165,5 @@ function profileSetter () {
 	var profile = ipcRenderer.sendSync('getProfileData');
 	$('#familyName').text(profile.family_name);
 	$('#givenName').text(profile.given_name);
-	$('#iconImg').append('<img src="' + profile.picture + '" class="rounded-circle">');
+	$('#iconImg').append('<img src="' + profile.picture + '" class="rounded-circle" style="max-width: 56px;">');
 }

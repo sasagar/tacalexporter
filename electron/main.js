@@ -4,28 +4,19 @@
 
 // Electronのモジュール
 const electron = require('electron');
-const {shell, Menu} = require('electron');
+const {shell, Menu, app, ipcMain} = require('electron');
 
 // pathモジュール
 const path = require('path');
 
-// アプリケーションをコントロールするモジュール
-const app = electron.app;
-
 // ウィンドウを作成するモジュール
 const BrowserWindow = electron.BrowserWindow;
-
-// ipcRenderer
-const {ipcMain} = require('electron');
 
 // nodeFuncの読み込み
 const nf = require('./app/nodeFunc.js');
 
 // configを使う。
 const Config = require('electron-config');
-
-// about window
-// const openAboutWindow = require('about-window').default;
 
 // ウィンドウサイズの基準
 const config = new Config({
@@ -228,20 +219,15 @@ ipcMain.on('getSelectedCalendar', (event) => {
 });
 
 ipcMain.on('launchChecker', (event) => {
-	fs.readFile(path.join(__dirname, '/client_secret.json'), function processClientSecrets (err, content) {
+	fs.readFile(path.join(__dirname, '/client_secret.json'), async function processClientSecrets (err, content) {
 		if (err) {
 			console.log('Error loading client secret file: ' + err);
 			console.log(__dirname);
 			return;
 		}
-		Promise.resolve()
-			.then(() => {
-				var res = authorizeChecker(JSON.parse(content));
-				return res;
-			})
-			.then((res) => {
-				event.returnValue = res;
-			});
+		console.log('test');
+		var res = await authorizeChecker(JSON.parse(content));
+		event.returnValue = res;
 	});
 });
 

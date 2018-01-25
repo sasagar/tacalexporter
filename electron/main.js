@@ -1,5 +1,7 @@
 'use strict';
 
+/*eslint no-console: ["error", { allow: ["warn", "log", "dir", "error"] }] */
+
 // Electronのモジュール
 const electron = require('electron');
 const {shell, Menu} = require('electron');
@@ -88,36 +90,34 @@ app.on('ready', function () {
 		{
 			label: '編集',
 			submenu: [
-				{role: 'undo'},
-				{role: 'redo'},
+				{role: 'undo', label: '取り消し'},
+				{role: 'redo', label: 'やり直し'},
 				{type: 'separator'},
-				{role: 'cut'},
-				{role: 'copy'},
-				{role: 'paste'},
-				{role: 'pasteandmatchstyle'},
-				{role: 'delete'},
-				{role: 'selectall'}
+				{role: 'cut', label: '切り取り'},
+				{role: 'copy', label: 'コピー'},
+				{role: 'paste', label: '貼り付け'},
+				{role: 'delete', label: '削除'},
+				{role: 'selectall', label: '全てを選択'}
 			]
 		},
 		{
 			label: '表示',
 			submenu: [
-				{role: 'reload'},
-				{role: 'forcereload'},
-				{role: 'toggledevtools'},
+				{role: 'reload', label: '再読み込み'},
+				{role: 'forcereload', label: '強制再読み込み'},
 				{type: 'separator'},
-				{role: 'resetzoom'},
-				{role: 'zoomin'},
-				{role: 'zoomout'},
+				{role: 'resetzoom', label: '拡大率リセット'},
+				{role: 'zoomin', label: '拡大'},
+				{role: 'zoomout', label: '縮小'},
 				{type: 'separator'},
-				{role: 'togglefullscreen'}
+				{role: 'togglefullscreen', label: '全画面表示'}
 			]
 		},
 		{
 			role: 'ウィンドウ',
 			submenu: [
-				{role: 'minimize'},
-				{role: 'close'}
+				{role: 'minimize', label: '最小化'},
+				{role: 'close', label: '閉じる'}
 			]
 		},
 		{
@@ -135,15 +135,15 @@ app.on('ready', function () {
 		template.unshift({
 			label: app.getName(),
 			submenu: [
-				{role: 'about'},
+				{role: 'about', label: 'このアプリについて'},
 				{type: 'separator'},
-				{role: 'services', submenu: []},
+				{role: 'services', label: 'サービス', submenu: []},
 				{type: 'separator'},
-				{role: 'hide'},
-				{role: 'hideothers'},
-				{role: 'unhide'},
+				{role: 'hide', label: 'このアプリを隠す'},
+				{role: 'hideothers', label: '他のアプリを隠す'},
+				{role: 'unhide', label: '全てを表示'},
 				{type: 'separator'},
-				{role: 'quit'}
+				{role: 'quit', label: '終了'}
 			]
 		});
 
@@ -151,21 +151,21 @@ app.on('ready', function () {
 		template[1].submenu.push(
 			{type: 'separator'},
 			{
-				label: 'Speech',
+				label: '読み上げ',
 				submenu: [
-					{role: 'startspeaking'},
-					{role: 'stopspeaking'}
+					{role: 'startspeaking', label: '開始'},
+					{role: 'stopspeaking', label: '停止'}
 				]
 			}
 		);
 
 		// Window menu
 		template[3].submenu = [
-			{role: 'close'},
-			{role: 'minimize'},
-			{role: 'zoom'},
+			{role: 'close', label: '閉じる'},
+			{role: 'minimize', label: '最小化'},
+			{role: 'zoom', label: '拡大'},
 			{type: 'separator'},
-			{role: 'front'}
+			{role: 'front', label: '全面へ'}
 		];
 	}
 
@@ -235,13 +235,13 @@ ipcMain.on('launchChecker', (event) => {
 			return;
 		}
 		Promise.resolve()
-		.then(() => {
-			var res = authorizeChecker(JSON.parse(content));
-			return res;
-		})
-		.then((res) => {
-			event.returnValue = res;
-		});
+			.then(() => {
+				var res = authorizeChecker(JSON.parse(content));
+				return res;
+			})
+			.then((res) => {
+				event.returnValue = res;
+			});
 	});
 });
 
@@ -277,9 +277,9 @@ ipcMain.on('tokenSubmit', (event, code) => {
 //		console.log('Error loading client secret file: ' + err);
 //		return;
 //	}
-	// Authorize a client with the loaded credentials, then call the
-	// Google Calendar API.
-	// authorize(JSON.parse(content), listEvents);
+// Authorize a client with the loaded credentials, then call the
+// Google Calendar API.
+// authorize(JSON.parse(content), listEvents);
 // });
 
 /**

@@ -1,6 +1,6 @@
 {
   "name": "TAcalExporter",
-  "version": "0.7.0",
+  "version": "1.0.0",
   "description": "TechAcademy用メンタリングカレンダーファイル出力アプリ",
   "standard": {
     "globals": [

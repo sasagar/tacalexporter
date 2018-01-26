@@ -3,52 +3,14 @@ const fs = require('fs');
 // pathモジュール
 const path = require('path');
 
-function funcInterval (val1, val2) {
-	// 未来の曜日を手前に。（そこまでの日数）
-	var res;
-	val1 = parseInt(val1);
-	val2 = parseInt(val2);
-	if (val2 > val1) {
-		res = (val1 + 7) - val2;
-	} else {
-		res = val1 - val2;
-	}
-	return res;
-}
+const nc = require('./nodeCommon');
 
-const findTimes = function (week, course, addon = false) {
-	var courseObj = JSON.parse(fs.readFileSync(path.join(__dirname, '../course.json'), 'utf8'));
-	// 回数の計算
-	// addonがtrueで来たら必ずperWeekは2。
-	// addonがfalseで、perWeekが1だったら削らない
-	// addonがfalseで、perWeekが2だったら1削る
-	// セットの時の処理は、生成時のループで処理
-	var times = 0;
-
-	if (addon) {
-		times = week * 2;
-	} else {
-		if (courseObj[course].perWeek === 1) {
-			times = week * courseObj[course].perWeek;
-		} else {
-			times = week * courseObj[course].perWeek - 1;
-		}
-	}
-	return times;
-};
-
-const datePrep = function (dateStr, timeStr = '00:00') {
-	// yyyy年mm月dd日形式の物をdateに変換
-	var year = dateStr.substr(0, 4);
-	var month = dateStr.substr(5, 2);
-	var day = dateStr.substr(8, 2);
-
-	var date = new Date(year + '-' + month + '-' + day + 'T' + timeStr + ':00+09:00');
-
-	return date;
-};
-
-const scheduleMaker = function (obj) {
+/**
+ * 登録したいスケジュールの一覧を作る
+ * @param  {Object} obj フォームデータを取得したオブジェクト
+ * @return {Array}     日程の配列{start, end}形式
+ */
+exports.scheduleMaker = (obj) => {
 	var array = [];
 	var courseObj = JSON.parse(fs.readFileSync(path.join(__dirname, '../course.json'), 'utf8'));
 	var courseKey = obj.course.value;
@@ -62,49 +24,37 @@ const scheduleMaker = function (obj) {
 	obj.secondTime = {value: obj.secondHour.value + ':' + obj.secondMinutes.value};
 
 	// 初回
-	var startDate = datePrep(obj.start.value);
+	var startDate = nc.datePrep(obj.start.value);
 	var startWDay = startDate.getDay();
 	// スタート日と初回の日数差を出す。
-	interval1 = funcInterval(obj.first.value, startWDay);
-
-	var firstStart = new Date(startDate.getTime() + (interval1 * 24 * 60 * 60 * 1000));
-	firstStart.setHours(obj.firstTime.value.substr(0, 2));
-	firstStart.setMinutes(obj.firstTime.value.substr(3, 2));
-	var firstEnd = new Date(firstStart.getTime() + (30 * 60 * 1000));
-	var first = {
-		start: firstStart,
-		end: firstEnd
-	};
+	interval1 = nc.funcInterval(obj.first.value, startWDay);
+	// スタートとエンドを割り出す
+	var first = startEndMaker(startDate, obj.firstTime.value, interval1);
+	// 配列に突っ込む
 	array.push(first);
 
+	// 週一コースで追加サポートで無いならインターバルは無条件で7
+	// それ以外はインターバル計算する
 	if (perWeek === 1 && !obj.extra) {
 		interval2 = 7;
 		interval3 = 7;
 	} else {
 		// 初回と二回目の日数差を出す。
-		interval2 = funcInterval(obj.second.value, obj.first.value);
-
-		var secondStart = new Date(firstStart.getTime() + (interval2 * 24 * 60 * 60 * 1000));
-		secondStart.setHours(obj.secondTime.value.substr(0, 2));
-		secondStart.setMinutes(obj.secondTime.value.substr(3, 2));
-		var secondEnd = new Date(secondStart.getTime() + (30 * 60 * 1000));
-		var second = {
-			start: secondStart,
-			end: secondEnd
-		};
+		interval2 = nc.funcInterval(obj.second.value, obj.first.value);
+		// スタートとエンドを割り出す
+		var second = startEndMaker(first.start, obj.secondTime.value, interval2);
+		// 配列に突っ込む
 		array.push(second);
 
-		// 残りはループで処理
+		// 残りはループで処理するので、インターバルを計算
 		// 二回目と一回目の間の日数をinterval3とする
-		interval3 = funcInterval(obj.first.value, obj.second.value);
+		interval3 = nc.funcInterval(obj.first.value, obj.second.value);
 
 		var addon = false;
-		if (obj.extra) {
-			addon = true;
-		}
+		if (obj.extra) { addon = true;}
 	}
 
-	var times = findTimes(obj.week.value, courseKey, addon);
+	var times = nc.findTimes(obj.week.value, courseKey, addon);
 
 	for (var i = perWeek; i < times; i++) {
 		var interval = 0;
@@ -140,19 +90,33 @@ const scheduleMaker = function (obj) {
 	return array;
 };
 
-const eventTitleMaker = function (obj) {
+/**
+ * 予定のスタートとエンドを計算する
+ * @param  {String} estDate     基準となる日付の文字列（Date型では無い）
+ * @param  {String} targetDate  開始日の文字列
+ * @param  {Number} intervalDay 日数差
+ * @return {Object}             startとendのDateが入ったオブジェクト
+ */
+const startEndMaker = (estDate, targetDate, intervalDay) => {
+	var start = new Date(estDate.getTime() + (intervalDay * 24 * 60 * 60 * 1000));
+	start.setHours(targetDate.substr(0, 2));
+	start.setMinutes(targetDate.substr(3, 2));
+	var end = new Date(start.getTime() + (30 * 60 * 1000));
+	var res = {start, end};
+	return res;
+};
+
+/**
+ * [exports] 登録したいイベントのタイトルをつくる
+ * @param  {Object} obj name, course, weekの3つのvalue
+ * @return {String}     イベントタイトル
+ */
+exports.eventTitleMaker = (obj) => {
 	var name = obj.name.value;
 	var course = obj.course.value;
-	var week = ('00' + obj.week.value).slice(-2);
+	var week = obj.week.value.padStart(2, '0');
 
 	var title = 'メンタリング ' + name + ' ' + course + week;
 
 	return title;
-};
-
-module.exports = {
-	findTimes: findTimes,
-	datePrep: datePrep,
-	scheduleMaker: scheduleMaker,
-	eventTitleMaker: eventTitleMaker
 };

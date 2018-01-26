@@ -1,6 +1,6 @@
 {
   "name": "TAcalExporter",
-  "version": "0.6.7",
+  "version": "0.7.0",
   "description": "TechAcademy用メンタリングカレンダーファイル出力アプリ",
   "standard": {
     "globals": [
@@ -27,13 +27,14 @@
     "url": "https://git.asiist.com/sasagawa/tacalexport.git"
   },
   "author": "SASAGAWA, Kiyoshi",
-  "license": "GPL-3.0-or-later",
+  "license": "GPL",
   "dependencies": {
     "about-window": "^1.8.0",
+    "bootstrap": "^4.0.0",
     "electron-config": "^1.0.0",
     "electron-json-storage": "^4.0.2",
-    "bootstrap": "^4.0.0",
     "font-awesome": "^4.7.0",
+    "gasparesganga-jquery-loading-overlay": "^1.5.4",
     "google-auth-library": "^1.1.0",
     "googleapis": "^25.0.0",
     "jquery": "^3.3.1",

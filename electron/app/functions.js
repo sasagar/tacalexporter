@@ -1,24 +1,26 @@
 'use strict';
+
 const {ipcRenderer} = require('electron');
 const fs = require('fs');
 // pathモジュール
 const path = require('path');
 
 // electron によりhtmlが描画されてから実行
-$(document).ready(function () {
-	// Default
+$(document).ready(() => {
+	$.LoadingOverlay('show', {
+		image       : '',
+		fontawesome : 'fa fa-spinner fa-spin'
+	});
+
+	launchChecker();
+
+	// DatePicker
 	$('.datepicker .date').datepicker({
 		format: 'yyyy年mm月dd日',
 		language: 'ja'
 	});
 
-	var course = JSON.parse(fs.readFileSync(path.join(__dirname, 'course.json'), 'utf8'));
-	$('#course').empty();
-	for (var i in course) {
-		$('#course').append('<option value="' + course[i].key + '" data-fullname="' + course[i].fullname + '" data-perweek="' + course[i].perWeek + '">' + course[i].fullname + '</option>');
-	}
-
-	$('#dataapply').on('click', function () {
+	$('#dataapply').on('click', () => {
 		$('#dataapply').prop('disabled', true);
 		$('#dataapply i').css('display', 'inline');
 		var form = $('#schedule');
@@ -40,130 +42,250 @@ $(document).ready(function () {
 		for (var i in schedule) {
 			var tmpStart = new Date(schedule[i].start);
 			var tmpEnd = new Date(schedule[i].end);
-			var date = tmpStart.getFullYear() + '/' + ('00' + (tmpStart.getMonth() + 1)).slice(-2) + '/' + ('00' + tmpStart.getDate()).slice(-2);
+			var date = tmpStart.getFullYear() + '/' + paddingZero(tmpStart.getMonth() + 1) + '/' + paddingZero(tmpStart.getDate());
 			var wDay = tmpStart.getDay();
-			var hour = ('00' + tmpStart.getHours()).slice(-2);
-			var minute = ('00' + tmpStart.getMinutes()).slice(-2);
-			var hourEnd = ('00' + tmpEnd.getHours()).slice(-2);
-			var minuteEnd = ('00' + tmpEnd.getMinutes()).slice(-2);
+			var hour = paddingZero(tmpStart.getHours());
+			var minute = paddingZero(tmpStart.getMinutes());
+			var hourEnd = paddingZero(tmpEnd.getHours());
+			var minuteEnd = paddingZero(tmpEnd.getMinutes());
 			var num = i * 1 + 1;
-			$('#tablebody').append('<tr><th scope="row">' + num + '</th><td>' + title + '</td><td>' + date + '</td><td>' + weekday[wDay] + '</td><td>' + hour + ':' + minute + '</td><td>' + hourEnd + ':' + minuteEnd + '</td></tr>');
+			$('#tablebody').append(
+				`<tr>
+				<th scope="row">${num}</th>
+				<td>${title}</td>
+				<td>${date}</td>
+				<td>${weekday[wDay]}</td>
+				<td>${hour}:${minute}</td>
+				<td>${hourEnd}:${minuteEnd}</td>
+				</tr>`
+			);
 		}
 
 		$('#data').val(JSON.stringify(response));
-		// console.log($('#data').val());
 		$('#dataapply i').css('display', 'none');
 		$('#dataapply').prop('disabled', false);
 		$('#applydata').prop('disabled', false);
 	});
 
-	$('#applydata').on('click', function () {
-		var data = $('#data').val();
-		var calID = $('#calendar').val();
-		var schedule = JSON.parse(data);
-		var obj = {calID: calID, data: schedule};
-		$('#modalMessage').empty();
-		ipcRenderer.send('addschedule', obj);
-		$('#applydata').prop('disabled', true);
-		$('#modal').modal();
+	$('#applydata').on('click', () => applyData());
+
+	$('#tokenSubmit').on('click', () => {
+		tokenSubmitter();
 	});
 
-	var flag = launchChecker();
-	if (flag) {
+	$('#calendar').on('change', () => {
+		calendarChange();
+	});
+
+	$('#course').on('change', () => {
 		selectChecker();
-		listGetter();
-		selectCalendar();
-		profileSetter();
-	}
+	});
+
+	$('#extra').on('change', () => {
+		selectChecker();
+	});
 
 	$('#code').keypress(function (e) {
-		if (e.which === 13) {
-			// ここに処理を記述
-			tokenSubmitter();
-		}
+		// Enterで送信出来るように
+		if (e.which === 13) { tokenSubmitter(); }
 	});
 
-	ipcRenderer.on('resultMessage', function (event, args) {
-		var title = args.summary;
-		var start = new Date(args.start.dateTime);
-		var startYear = start.getFullYear();
-		var startMonth = start.getMonth() + 1;
-		startMonth = ('00' + startMonth).slice(-2);
-		var startDate = ('00' + start.getDate()).slice(-2);
-		var startHours = ('00' + start.getHours()).slice(-2);
-		var startMinutes = ('00' + start.getMinutes()).slice(-2);
-		$('#modalMessage').append('<p>' + title + ' @ ' + startYear + '/' + startMonth + '/' + startDate + ' ' + startHours + ':' + startMinutes + '</p>');
-	});
+	ipcRenderer.on('resultMessage', (event, args) => resultMessage(event, args));
 });
 
-function selectChecker () {
-	var perWeek = parseInt($('#course option:selected').attr('data-perweek'));
-
-	if (perWeek === 1) {
-		$('#secondDiv').hide();
-	} else {
-		$('#secondDiv').show();
+/**
+ * コースのJSONファイルを読み込み、選択ボックスに流し込む
+ */
+const courseGetter = () => {
+	var course = JSON.parse(fs.readFileSync(path.join(__dirname, 'course.json'), 'utf8'));
+	$('#course').empty();
+	for (var i in course) {
+		$('#course').append(
+			`<option value="${course[i].key}" data-fullname="${course[i].fullname}" data-perweek="${course[i].perWeek}">
+			${course[i].fullname}
+			</option>`
+		);
 	}
-}
+};
 
-function checkChecker () {
-	var check = $('#extra').prop('checked');
-
-	if (check) {
-		$('#secondDiv').show();
-	} else {
-		$('#secondDiv').hide();
-	}
-}
-
-function listGetter () {
-	var list = ipcRenderer.sendSync('getCalendarList');
-
-	for (var i in list) {
-		var data = list[i];
-		if (data.accessRole === 'write' || data.accessRole === 'owner') {
-			$('#calendar').append('<option value="' + data.id + '">' + data.summary + '</option>');
-		}
-	}
-}
-
-function calendarChange () {
-	var data = $('#calendar').val();
-	ipcRenderer.send('changeCalendar', data);
-}
-
-function selectCalendar () {
-	var val = ipcRenderer.sendSync('getSelectedCalendar');
-	$('#calendar').val(val);
-}
-
-function launchChecker () {
+/**
+ * [async] 起動時のチェックプロセス
+ * 全ての処理が終わったら画面を表示する
+ */
+const launchChecker = async () => {
+	var flag = true;
 	var res = ipcRenderer.sendSync('launchChecker');
 	if (res.substr(0, 4) === 'http') {
 		$('#tokenModal').modal();
-		return false;
+		flag = false;
 	}
-	return true;
-}
+	if (flag) {
+		await Promise.all([
+			profileSetter(),
+			courseGetter(),
+			listGetter(),
+		]);
+		await Promise.all([
+			selectChecker(),
+			selectCalendar(),
+		]);
+		$('main').show(500);
+		$.LoadingOverlay('hide');
+	}
+};
 
-function tokenSubmitter () {
+/**
+ * メインプロセスに切っ掛けを送り、ユーザー情報を取得、htmlに流し込み
+ * @return {Promise} await用のPromise
+ */
+const profileSetter = () => {
+	new Promise ((resolve, reject) => {
+		try {
+			var profile = ipcRenderer.sendSync('getProfileData');
+			$('#familyName').text(profile.family_name);
+			$('#givenName').text(profile.given_name);
+			$('#iconImg').append(`
+				<img src="${profile.picture}" class="rounded-circle" style="max-width: 56px;">`
+			);
+			resolve();
+		} catch (e) {
+			reject(e);
+		}
+	});
+};
+
+/**
+ * コースが変更される度に呼び出される
+ * data-perweekの数字が1で、#extraのチェックが無い時に二回目の欄を隠す
+ * それ以外の時に二回目の欄を表示する
+ * @return {Promise} await用のPromise
+ */
+const selectChecker = () => {
+	new Promise ((resolve, reject) => {
+		try {
+			var perWeek = parseInt($('#course option:selected').attr('data-perweek'));
+			var check = $('#extra').prop('checked');
+
+			if (perWeek === 1 && !check) {
+				$('#secondDiv').hide();
+			} else {
+				$('#secondDiv').show();
+			}
+			resolve();
+		} catch (e) {
+			reject(e);
+		}
+	});
+};
+
+/**
+ * メインプロセスで現在のユーザのカレンダーを取得し、#calendarのselect要素に追加する
+ * @return {Promise} await用のPromise
+ */
+const listGetter = () => {
+	new Promise ((resolve, reject) => {
+		try {
+			var list = ipcRenderer.sendSync('getCalendarList');
+
+			for (var i in list) {
+				var data = list[i];
+				if (data.accessRole === 'write' || data.accessRole === 'owner') {
+					$('#calendar').append(`<option value="${data.id}">${data.summary}</option>`);
+				}
+			}
+		} catch (e) {
+			reject(e);
+		}
+	});
+};
+
+/**
+ * メインプロセスから規定のカレンダーを取得し、選択状態にする
+ * @return {Promise} await用のPromise
+ */
+const selectCalendar = () => {
+	new Promise ((resolve, reject) => {
+		try {
+			var val = ipcRenderer.sendSync('getSelectedCalendar');
+			$('#calendar').val(val);
+		} catch (e) {
+			reject(e);
+		}
+	});
+};
+
+/**
+ * #data のフォーム内容を取得してJSON形式に変換
+ * カレンダーIDとスケジュールのオブジェクトにした上でスケジュールに登録し、
+ * モーダルを表示
+ */
+const applyData = () => {
+	var data = $('#data').val();
+	var calID = $('#calendar').val();
+	var schedule = JSON.parse(data);
+	var obj = {calID: calID, data: schedule};
+	$('#modalMessage').empty();
+	ipcRenderer.send('addschedule', obj);
+	$('#applydata').prop('disabled', true);
+	$('#modal').modal();
+};
+
+/**
+ * 入力されたtokenをメインプロセスに送り設定に記録する
+ * その後モーダルを閉じて再読み込みをする
+ */
+const tokenSubmitter = () => {
 	var code = $('#code').val();
 	var res = ipcRenderer.sendSync('tokenSubmit', code);
 	if (res) {
 		modalClose('#tokenModal');
 		location.reload();
+	} else {
+		// #tokenModalにアラート出したい
 	}
-}
+};
 
-function modalClose (selector) {
+/**
+ * カレンダー選択を変更したときに呼び出される
+ * 今選ばれているカレンダーをメインプロセスに送信して、メインプロセス側で設定に記録する
+ * このとき送信されたカレンダーが初期選択となる
+ */
+const calendarChange = () => {
+	var data = $('#calendar').val();
+	ipcRenderer.send('changeCalendar', data);
+};
+
+/**
+ * BootstrapのモーダルをJSからクローズしたいときに使う
+ * @param  {string} selector クローズしたいモーダルのID
+ */
+const modalClose = (selector) => {
 	$('body').removeClass('modal-open');
 	$('.modal-backdrop').remove();
 	$(selector).modal('hide');
-}
+};
 
-function profileSetter () {
-	var profile = ipcRenderer.sendSync('getProfileData');
-	$('#familyName').text(profile.family_name);
-	$('#givenName').text(profile.given_name);
-	$('#iconImg').append('<img src="' + profile.picture + '" class="rounded-circle" style="max-width: 56px;">');
-}
+/**
+ * モーダルに登録された結果を追加表示する
+ * @param  {Object} event ipcRendererのevent
+ * @param  {Object} args  メインプロセスから送られてくるデータ
+ */
+const resultMessage = (event, args) => {
+	var title = args.summary;
+	var start = new Date(args.start.dateTime);
+	var startYear = start.getFullYear();
+	var startMonth = paddingZero(start.getMonth() + 1);
+	var startDate = paddingZero(start.getDate());
+	var startHours = paddingZero(start.getHours());
+	var startMinutes = paddingZero(start.getMinutes());
+	$('#modalMessage').append(
+		`<p>${title} @ ${startYear}/${startMonth}/${startDate} ${startHours}:${startMinutes}</p>`
+	);
+};
+
+/**
+ * 2桁の0埋めをする
+ * @param  {number} int int型の数値
+ * @return {string}     0埋めされた二桁の数字を文字列にしたもの
+ */
+const paddingZero = (int) => String(int).padStart(2, '0');

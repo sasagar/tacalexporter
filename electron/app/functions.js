@@ -5,13 +5,11 @@ const fs = require('fs');
 // pathモジュール
 const path = require('path');
 
+var weekday = ['日曜', '月曜', '火曜', '水曜', '木曜', '金曜', '土曜'];
+
 // electron によりhtmlが描画されてから実行
 $(document).ready(() => {
-	$.LoadingOverlay('show', {
-		image       : '',
-		fontawesome : 'fa fa-spinner fa-spin'
-	});
-
+	showLoading();
 	launchChecker();
 
 	// DatePicker
@@ -37,7 +35,6 @@ $(document).ready(() => {
 		var schedule = response.schedule;
 
 		$('#tablebody').empty();
-		var weekday = ['日曜', '月曜', '火曜', '水曜', '木曜', '金曜', '土曜'];
 
 		for (var i in schedule) {
 			var tmpStart = new Date(schedule[i].start);
@@ -69,21 +66,17 @@ $(document).ready(() => {
 
 	$('#applydata').on('click', () => applyData());
 
-	$('#tokenSubmit').on('click', () => {
-		tokenSubmitter();
-	});
+	$('#tokenSubmit').on('click', () => tokenSubmitter());
 
-	$('#calendar').on('change', () => {
-		calendarChange();
-	});
+	$('#calendar').on('change', () => calendarChange());
 
-	$('#course').on('change', () => {
-		selectChecker();
-	});
+	$('#course').on('change', () => selectChecker());
 
-	$('#extra').on('change', () => {
-		selectChecker();
-	});
+	$('#extra').on('change', () => selectChecker());
+
+	$('.flagCheckbox').on('change', (eo) => shiftFlagChecker(eo));
+
+	$('#applyShiftData').on('click', () => applyShiftData());
 
 	$('#code').keypress(function (e) {
 		// Enterで送信出来るように
@@ -92,6 +85,13 @@ $(document).ready(() => {
 
 	ipcRenderer.on('resultMessage', (event, args) => resultMessage(event, args));
 });
+
+const showLoading = () => {
+	$.LoadingOverlay('show', {
+		image       : '',
+		fontawesome : 'fa fa-spinner fa-spin'
+	});
+};
 
 /**
  * コースのJSONファイルを読み込み、選択ボックスに流し込む
@@ -124,12 +124,14 @@ const launchChecker = async () => {
 			profileSetter(),
 			courseGetter(),
 			listGetter(),
+			calendarSetter(),
+			shiftSetter(),
 		]);
 		await Promise.all([
 			selectChecker(),
 			selectCalendar(),
 		]);
-		$('main').show(500);
+		$('.container').fadeIn(500);
 		$.LoadingOverlay('hide');
 	}
 };
@@ -142,9 +144,9 @@ const profileSetter = () => {
 	new Promise ((resolve, reject) => {
 		try {
 			var profile = ipcRenderer.sendSync('getProfileData');
-			$('#familyName').text(profile.family_name);
-			$('#givenName').text(profile.given_name);
-			$('#iconImg').append(`
+			$('.familyName').text(profile.family_name);
+			$('.givenName').text(profile.given_name);
+			$('.iconImg').append(`
 				<img src="${profile.picture}" class="rounded-circle" style="max-width: 56px;">`
 			);
 			resolve();
@@ -190,7 +192,7 @@ const listGetter = () => {
 			for (var i in list) {
 				var data = list[i];
 				if (data.accessRole === 'write' || data.accessRole === 'owner') {
-					$('#calendar').append(`<option value="${data.id}">${data.summary}</option>`);
+					$('[name=calendar]').append(`<option value="${data.id}">${data.summary}</option>`);
 				}
 			}
 		} catch (e) {
@@ -198,6 +200,49 @@ const listGetter = () => {
 		}
 	});
 };
+
+const shiftSetter = () => {
+	var shifts = $('.flagCheckbox');
+	for (var shift of shifts) {
+		var id = $(shift).attr('id');
+		var res = ipcRenderer.sendSync('getShiftConf', id);
+		if (res) {
+			$(shift).prop('checked', true);
+			$(shift).next('.flagText').html('シフト');
+			$(shift).parent().addClass('active');
+		}
+	}
+};
+
+/**
+ * 日付のリストをシフトのセレクトボックスに追加する
+ * @return {Promise} await用のPromise
+ */
+const calendarSetter = () => {
+	var now = new Date();
+	var thisMonthTmp = new Date(now.setDate(1));
+	var thisMonthFirstDay = new Date(thisMonthTmp);
+	var nextMonthFirstDay = new Date(thisMonthTmp.setMonth(thisMonthTmp.getMonth() + 1));
+	var thisMonth = thisMonthFirstDay.getMonth() + 1;
+	var nextMonth = nextMonthFirstDay.getMonth() + 1;
+	var thisYear = thisMonthFirstDay.getFullYear();
+	var nextYear = nextMonthFirstDay.getFullYear();
+	new Promise ((resolve, reject) => {
+		try {
+			if (thisYear !== nextYear) {
+				$('#shiftYear').append(`<option value="${thisYear}">${thisYear}</option>`);
+				$('#shiftYear').append(`<option value="${nextYear}" selected>${nextYear}</option>`);
+			} else {
+				$('#shiftYear').append(`<option value="${thisYear}">${thisYear}</option>`);
+			}
+			$('#shiftMonth').append(`<option value="${thisMonth}">${thisMonth}</option>`);
+			$('#shiftMonth').append(`<option value="${nextMonth}" selected>${nextMonth}</option>`);
+		} catch (e) {
+			reject(e);
+		}
+	});
+};
+
 
 /**
  * メインプロセスから規定のカレンダーを取得し、選択状態にする
@@ -207,7 +252,7 @@ const selectCalendar = () => {
 	new Promise ((resolve, reject) => {
 		try {
 			var val = ipcRenderer.sendSync('getSelectedCalendar');
-			$('#calendar').val(val);
+			$('[name=calendar]').val(val);
 		} catch (e) {
 			reject(e);
 		}
@@ -220,14 +265,17 @@ const selectCalendar = () => {
  * モーダルを表示
  */
 const applyData = () => {
+	$('#applydata i').css('display', 'inline');
+	$('#modal').modal();
+	$('#modalMessage').empty();
+	$('#applydata').prop('disabled', true);
 	var data = $('#data').val();
 	var calID = $('#calendar').val();
 	var schedule = JSON.parse(data);
 	var obj = {calID: calID, data: schedule};
-	$('#modalMessage').empty();
-	ipcRenderer.send('addschedule', obj);
-	$('#applydata').prop('disabled', true);
-	$('#modal').modal();
+	var res = ipcRenderer.sendSync('addschedule', obj);
+	resultMessage(res);
+	$('#applydata i').css('display', 'none');
 };
 
 /**
@@ -256,6 +304,45 @@ const calendarChange = () => {
 };
 
 /**
+ * シフトのチェックボックスの変化に合わせて中のテキストを変える
+ * @param  {Event} eo イベントオブジェクト
+ */
+const shiftFlagChecker = (eo) => {
+	var selector = $(eo.currentTarget).attr('id');
+	var value = $(eo.currentTarget).prop('checked');
+	ipcRenderer.sendSync('shiftRemember', {selector, value});
+
+	if (value) {
+		$(eo.currentTarget).next('.flagText').html('シフト');
+	} else {
+		$(eo.currentTarget).next('.flagText').html('休み');
+	}
+};
+
+const applyShiftData = () => {
+	$('#applyShiftData i').css('display', 'inline');
+	$('#modal').modal();
+	$('#modalMessage').empty();
+	$('#applyShiftData').prop('disabled', true);
+	var year = $('#shiftYear').val();
+	var month = $('#shiftMonth').val();
+	var calID = $('#shiftCalendar').val();
+	var checkedShift = $('input[name="shift"]:checked');
+	var allShiftWDays = [];
+
+	for (var i in checkedShift) {
+		if (checkedShift[i].value) {
+			allShiftWDays.push(checkedShift[i].value);
+		}
+	}
+
+	var obj = {year, month, calID, allShiftWDays};
+	var res = ipcRenderer.sendSync('applyShiftData', obj);
+	resultMessage(res);
+	$('#applyShiftData i').css('display', 'none');
+};
+
+/**
  * BootstrapのモーダルをJSからクローズしたいときに使う
  * @param  {string} selector クローズしたいモーダルのID
  */
@@ -267,20 +354,23 @@ const modalClose = (selector) => {
 
 /**
  * モーダルに登録された結果を追加表示する
- * @param  {Object} event ipcRendererのevent
- * @param  {Object} args  メインプロセスから送られてくるデータ
+ * @param  {Object} res   メインプロセスから送られてくるデータ
  */
-const resultMessage = (event, args) => {
-	var title = args.summary;
-	var start = new Date(args.start.dateTime);
-	var startYear = start.getFullYear();
-	var startMonth = paddingZero(start.getMonth() + 1);
-	var startDate = paddingZero(start.getDate());
-	var startHours = paddingZero(start.getHours());
-	var startMinutes = paddingZero(start.getMinutes());
-	$('#modalMessage').append(
-		`<p>${title} @ ${startYear}/${startMonth}/${startDate} ${startHours}:${startMinutes}</p>`
-	);
+const resultMessage = (res) => {
+	for (var i in res) {
+		var args = res[i];
+		var title = args.summary;
+		var start = new Date(args.start.dateTime);
+		var startYear = start.getFullYear();
+		var startMonth = paddingZero(start.getMonth() + 1);
+		var startDate = paddingZero(start.getDate());
+		var startWDay = start.getDay();
+		var startHours = paddingZero(start.getHours());
+		var startMinutes = paddingZero(start.getMinutes());
+		$('#modalMessage').append(
+			`<p>${title} @ ${startYear}/${startMonth}/${startDate} ${weekday[startWDay]} ${startHours}:${startMinutes}</p>`
+		);
+	}
 };
 
 /**

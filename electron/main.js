@@ -14,6 +14,7 @@ const BrowserWindow = electron.BrowserWindow;
 
 // 外部JSの読み込み
 const nf = require('./app/nodeFunc');
+const nc = require('./app/nodeCommon');
 const em = require('./app/electronMenu');
 const gg = require('./app/google');
 
@@ -32,6 +33,25 @@ const config = new Config({
 		},
 		credentials: {
 			token: ''
+		},
+		summary: {
+			shift: 'チャットシフト'
+		},
+		shift: {
+			'mon1-1': false,
+			'tue2-1': false,
+			'wed3-1': false,
+			'thu4-1': false,
+			'fri5-1': false,
+			'sat6-1': false,
+			'sun0-1': false,
+			'mon1-2': false,
+			'tue2-2': false,
+			'wed3-2': false,
+			'thu4-2': false,
+			'fri5-2': false,
+			'sat6-2': false,
+			'sun0-2': false,
 		}
 	}
 });
@@ -103,7 +123,14 @@ ipcMain.on('applySchedule', (event, obj) => {
 ipcMain.on('addschedule', async (event, option) => {
 	try {
 		var content = await gg.getClientSecret();
-		authorize(content, gg.addEvents, {option, mainWindow});
+		var tokenedAuth = await authorize(content);
+		var res = await gg.addEvents(tokenedAuth, option);
+		res.sort((now, next) => {
+			if (now.start.dateTime < next.start.dateTime) return -1;
+			if (now.start.dateTime > next.start.dateTime) return 1;
+			return 0;
+		});
+		event.returnValue = res;
 	} catch (e) {
 		console.error('Error loading client secret file: ' + e);
 		console.error('addschedule');
@@ -115,7 +142,10 @@ ipcMain.on('addschedule', async (event, option) => {
 ipcMain.on('getCalendarList', async (event) => {
 	try {
 		var content = await gg.getClientSecret();
-		authorize(content, gg.listCalendar, event);
+		// authorize(content, gg.listCalendar, event);
+		var tokenedAuth = await authorize(content);
+		var res = await gg.listCalendar(tokenedAuth);
+		event.returnValue = res;
 	} catch (e) {
 		console.error('Error loading client secret file: ' + e);
 		console.error('getCalendarList');
@@ -126,11 +156,13 @@ ipcMain.on('getCalendarList', async (event) => {
 
 ipcMain.on('getProfileData', async (event) => {
 	try {
-		var content = gg.getClientSecret();
-		authorize(content, gg.userInfo, event);
+		var content = await gg.getClientSecret();
+		// authorize(content, gg.userInfo, event);
+		var tokenedAuth = await authorize(content);
+		var res = await gg.userInfo(tokenedAuth, event);
+		event.returnValue = res;
 	} catch (e) {
-		console.error('Error loading client secret file: ' + e);
-		console.error('getProfileData');
+		console.error('Error at ipc: getProfileData: ' + e);
 		console.log(__dirname);
 		return;
 	}
@@ -182,6 +214,83 @@ ipcMain.on('tokenSubmit', async (event, code) => {
 	}
 });
 
+ipcMain.on('applyShiftData', async (event, obj) => {
+	var year = parseInt(obj.year);
+	var month = parseInt(obj.month);
+	var calID = obj.calID;
+	var title = config.get('summary.shift');
+	var allShiftWDays = obj.allShiftWDays;
+	var allShiftWDaysNum = [];
+	var schedule = [];
+
+	for (var i in allShiftWDays) {
+		allShiftWDaysNum.push({wday: allShiftWDays[i].substr(3, 1), shift: allShiftWDays[i].substr(5, 1)});
+	}
+
+	var nextmonth = nc.paddingZero(month + 1);
+	var nextdateStr = `${year}-${nextmonth}-01T00:00:00.000+09:00`;
+	var nextdate = new Date(nextdateStr);
+	var lastdate = new Date(nextdate.getTime() - (24 * 60 * 60 * 1000));
+	var lastday = lastdate.getDate();
+
+	for (var day = 1; day<=lastday; day++) {
+		var tmpday = new Date(lastdate.setDate(day));
+		var weekday = tmpday.getDay();
+		for (var num in allShiftWDaysNum) {
+			if (weekday == allShiftWDaysNum[num].wday) {
+				var start;
+				var end;
+				if (allShiftWDaysNum[num].shift == 1) {
+					start = new Date(tmpday.setHours(15));
+					end = new Date(tmpday.setHours(19));
+				} else {
+					start = new Date(tmpday.setHours(19));
+					end = new Date(tmpday.setHours(23));
+				}
+				schedule.push({start, end});
+			}
+		}
+	}
+	var option = {
+		calID: calID,
+		data: {
+			title: title,
+			schedule: schedule
+		}
+	};
+
+	try {
+		var content = await gg.getClientSecret();
+		var tokenedAuth = await authorize(content);
+		var res = await gg.addEvents(tokenedAuth, option);
+		res.sort((now, next) => {
+			if (now.start.dateTime < next.start.dateTime) return -1;
+			if (now.start.dateTime > next.start.dateTime) return 1;
+			return 0;
+		});
+		console.log(res);
+		event.returnValue = res;
+	} catch (e) {
+		console.error('Error loading client secret file: ' + e);
+		console.error('addschedule');
+		console.log(__dirname);
+		return;
+	}
+});
+
+ipcMain.on('getShiftConf', (event, id) => {
+	console.log(id);
+	var data = config.get(`shift.${id}`);
+	if (!data) {
+		data = false;
+	}
+	event.returnValue = data;
+});
+
+ipcMain.on('shiftRemember', (event, {selector, value}) => {
+	config.set(`shift.${selector}`, value);
+	event.returnValue = 0;
+});
 /**
  * TOKENがあるかどうかをチェック
  *
@@ -214,7 +323,7 @@ function authorizeChecker (credentials) {
  * @param {function} callback The callback to call with the authorized client.
  * @param {Object} option callbackに渡したいオプション。第2引数になる。
  */
-function authorize (credentials, callback, option) {
+function authorize (credentials) {
 	var oauth2Client = gg.OAuth2(credentials);
 
 	if (TOKEN === '') {
@@ -225,10 +334,13 @@ function authorize (credentials, callback, option) {
 		shell.openExternal(authUrl);
 	} else {
 		oauth2Client.credentials = TOKEN;
+		/*
 		if (option) {
 			callback(oauth2Client, option);
 		} else {
 			callback(oauth2Client);
 		}
+		*/
+		return oauth2Client;
 	}
 }

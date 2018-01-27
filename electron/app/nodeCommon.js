@@ -63,3 +63,10 @@ exports.datePrep = (dateStr, timeStr = '00:00') => {
 
 	return date;
 };
+
+/**
+ * 2桁の0埋めをする
+ * @param  {number} int int型の数値
+ * @return {string}     0埋めされた二桁の数字を文字列にしたもの
+ */
+exports.paddingZero = (int) => String(int).padStart(2, '0');

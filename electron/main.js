@@ -69,6 +69,8 @@ var TOKEN = config.get('credentials.token');
 // メインウィンドウはGCされないようにグローバル宣言
 let mainWindow;
 let splashWindow;
+let loadingWindow;
+let settingWindow;
 
 // 全てのウィンドウが閉じたら終了
 app.on('window-all-closed', () => {
@@ -95,12 +97,35 @@ app.on('ready', () => {
 	});
 	splashWindow.setAlwaysOnTop(true);
 
+	loadingWindow = new BrowserWindow({
+		width: 320,
+		height: 320,
+		frame: false,
+		transparent: true,
+		parent: mainWindow,
+		show: false,
+	});
+	loadingWindow.setAlwaysOnTop(true);
+
+	settingWindow = new BrowserWindow({
+		modal: true,
+		parent: mainWindow,
+		show: false,
+	});
+	loadingWindow.setAlwaysOnTop(true);
+
 	mainWindow.loadURL(path.join('file://', __dirname, '/index.html'));
 	splashWindow.loadURL(path.join('file://', __dirname, '/splash.html'));
+	loadingWindow.loadURL(path.join('file://', __dirname, '/loading.html'));
+	settingWindow.loadURL(path.join('file://', __dirname, '/settings.html'));
 
 	mainWindow.webContents.on('did-finish-load', async ()=>{
 		await mainWindow.show();
-		setTimeout(() => splashWindow.close(), 2000);
+		setTimeout(() => {
+			if (splashWindow) {
+				splashWindow.close();
+			}
+		}, 2000);
 	});
 
 	splashWindow.on('closed', () => splashWindow = null);
@@ -113,6 +138,9 @@ app.on('ready', () => {
 
 	// ウィンドウが閉じられたらアプリも終了
 	mainWindow.on('closed', () => {
+		splashWindow = null;
+		loadingWindow = null;
+		settingWindow = null;
 		mainWindow = null;
 	});
 
@@ -146,6 +174,7 @@ ipcMain.on('applySchedule', (event, obj) => {
 
 ipcMain.on('addschedule', async (event, option) => {
 	try {
+		await loadingWindow.show();
 		var content = await gg.getClientSecret();
 		var tokenedAuth = await authorize(content);
 		var res = await gg.addEvents(tokenedAuth, option);
@@ -155,6 +184,7 @@ ipcMain.on('addschedule', async (event, option) => {
 			return 0;
 		});
 		event.returnValue = res;
+		loadingWindow.hide();
 	} catch (e) {
 		console.error('Error loading client secret file: ' + e);
 		console.error('addschedule');
@@ -314,6 +344,76 @@ ipcMain.on('shiftRemember', (event, {selector, value}) => {
 	config.set(`shift.${selector}`, value);
 	event.returnValue = 0;
 });
+
+ipcMain.on('courseGetter', (event) => {
+	var promise = [];
+	var course = nc.courseReader();
+	var res = {};
+
+	for (var key in course) {
+		promise.push(
+			new Promise ((resolve, reject) => {
+				try {
+					var flag = config.get(`course.${key}`);
+					if (typeof flag === 'undefined') {
+						config.set(`course.${key}`, true);
+						flag = true;
+					}
+					if (flag) {
+						res[key] = course[key];
+					}
+					resolve();
+				} catch (e) {
+					reject(e);
+				}
+			})
+		);
+	}
+	Promise.all(promise)
+		.then(() => {
+			event.returnValue = res;
+		});
+});
+
+ipcMain.on('courseList', (event) => {
+	var course = nc.courseReader();
+	event.returnValue = course;
+});
+
+ipcMain.on('courseRemember', (event, {selector, value}) => {
+	config.set(`course.${selector}`, value);
+	event.returnValue = 0;
+});
+
+ipcMain.on('getCourseConf', (event, id) => {
+	var data = config.get(`course.${id}`);
+	if (!data) {
+		data = false;
+	}
+	event.returnValue = data;
+});
+
+ipcMain.on('applyChatSummary', (event, summary) => {
+	try {
+		config.set('summary.shift', summary);
+		event.returnValue = true;
+	} catch (e) {
+		console.log('Error at applyChatSummary: ' + e);
+		event.returnValue = false;
+	}
+});
+
+ipcMain.on('openSettings', (event) => {
+	settingWindow.show();
+	event.returnValue = true;
+});
+
+ipcMain.on('closeSettings', (event) => {
+	settingWindow.hide();
+	mainWindow.reload();
+	event.returnValue = true;
+});
+
 /**
  * TOKENがあるかどうかをチェック
  *

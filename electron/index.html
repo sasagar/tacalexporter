@@ -23,6 +23,14 @@
     0%  {transform: rotate(0);}
     100%  {transform: rotate(360deg);}
   }
+	.settingicon {
+		font-size: 2rem;
+		color: #666;
+	}
+	.settingicon:hover {
+		color: #0f7378;
+		cursor: pointer;
+	}
   </style>
 </head>
 <body class="p-3" style="height: 100%;">
@@ -40,12 +48,15 @@
 			<div class="tab-content" id="mainContent">
 				<div class="tab-pane fade show active" id="mentoring" role="tabpanel" aria-labelledby="mentoring-tab">
 					<div class="row p-3">
-						<div class="col-sm-9">
+						<div class="col-sm-8">
 							<h1>メンタリングスケジュール登録</h1>
 						</div>
 						<div class="col-sm-3 text-right">
 							<span class="familyName"></span> <span class="givenName"></span>
 							<span class="iconImg"></span>
+						</div>
+						<div class="col-sm-1 text-right">
+							<i class="fa fa-cog settingicon" aria-hidden="true"></i>
 						</div>
 					</div>
 
@@ -267,12 +278,15 @@
 
 				<div class="tab-pane fade" id="shift" role="tabpanel" aria-labelledby="shift-tab">
 					<div class="row p-3">
-						<div class="col-sm-9">
+						<div class="col-sm-8">
 							<h1>シフトスケジュール登録</h1>
 						</div>
 						<div class="col-sm-3 text-right">
 							<span class="familyName"></span> <span class="givenName"></span>
 							<span class="iconImg"></span>
+						</div>
+						<div class="col-sm-1 text-right">
+							<i class="fa fa-cog settingicon" aria-hidden="true"></i>
 						</div>
 					</div>
 					<hr>
@@ -301,19 +315,19 @@
 						<table class="table table-bordered table-light">
 						  <thead>
 						    <tr>
-						      <th scope="col">時間帯</th>
-						      <th scope="col">月曜</th>
-						      <th scope="col">火曜</th>
-						      <th scope="col">水曜</th>
-									<th scope="col">木曜</th>
-						      <th scope="col">金曜</th>
-						      <th scope="col">土曜</th>
-									<th scope="col">日曜</th>
+						      <th scope="col" class="text-center">時間帯</th>
+						      <th scope="col" class="text-center">月曜</th>
+						      <th scope="col" class="text-center">火曜</th>
+						      <th scope="col" class="text-center">水曜</th>
+									<th scope="col" class="text-center">木曜</th>
+						      <th scope="col" class="text-center">金曜</th>
+						      <th scope="col" class="text-center">土曜</th>
+									<th scope="col" class="text-center">日曜</th>
 						    </tr>
 						  </thead>
 						  <tbody>
 						    <tr>
-						      <th scope="row">前半</th>
+						      <th scope="row" class="text-center">前半</th>
 						      <td>
 										<div class="btn-group-toggle" data-toggle="buttons">
 										  <label class="btn btn-info">
@@ -365,7 +379,7 @@
 									</td>
 						    </tr>
 						    <tr>
-									<th scope="row">後半</th>
+									<th scope="row" class="text-center">後半</th>
 						      <td>
 										<div class="btn-group-toggle" data-toggle="buttons">
 										  <label class="btn btn-info">
@@ -448,7 +462,7 @@
 
   <!-- modal -->
   <div class="modal fade" id="modal">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title">以下のスケジュールが登録されました</h4>
@@ -469,7 +483,7 @@
 
 	<!-- modal -->
   <div class="modal fade" id="tokenModal">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title">認証コード入力</h4>

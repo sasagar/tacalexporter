@@ -1,13 +1,19 @@
 {
-	"UI": {
-		"fullname": "UI/UXデザインコース",
-		"key": "UI",
-		"perWeek": 1,
+	"RB": {
+		"fullname": "WEBアプリケーションコース",
+		"key": "RB",
+		"perWeek": 2,
 		"set": false
 	},
-	"WD": {
-		"fullname": "WEBデザインコース",
-		"key": "WD",
+	"PL": {
+		"fullname": "PHP/Laravelコース",
+		"key": "PL",
+		"perWeek": 2,
+		"set": false
+	},
+	"FE": {
+		"fullname": "フロントエンドコース",
+		"key": "FE",
 		"perWeek": 2,
 		"set": false
 	},
@@ -17,15 +23,141 @@
 		"perWeek": 2,
 		"set": false
 	},
+	"IA": {
+		"fullname": "iPhoneアプリコース",
+		"key": "IA",
+		"perWeek": 2,
+		"set": false
+	},
+	"AA": {
+		"fullname": "Androidアプリコース",
+		"key": "AA",
+		"perWeek": 2,
+		"set": false
+	},
+	"UN": {
+		"fullname": "Unityコース",
+		"key": "UN",
+		"perWeek": 2,
+		"set": false
+	},
+	"FP": {
+		"fullname": "はじめてのプログラミングコース",
+		"key": "FP",
+		"perWeek": 1,
+		"set": false
+	},
+	"WD": {
+		"fullname": "WEBデザインコース",
+		"key": "WD",
+		"perWeek": 2,
+		"set": false
+	},
+	"UI": {
+		"fullname": "UI/UXデザインコース",
+		"key": "UI",
+		"perWeek": 1,
+		"set": false
+	},
+	"DR": {
+		"fullname": "WEBディレクションコース",
+		"key": "DR",
+		"perWeek": 2,
+		"set": false
+	},
+	"WM": {
+		"fullname": "WEBマーケティングコース",
+		"key": "WM",
+		"perWeek": 2,
+		"set": false
+	},
+	"JV": {
+		"fullname": "Javaエンジニアコース",
+		"key": "JV",
+		"perWeek": 2,
+		"set": false
+	},
+	"PY": {
+		"fullname": "Pythonコース",
+		"key": "PY",
+		"perWeek": 2,
+		"set": false
+	},
 	"ND": {
 		"fullname": "Node.jsコース",
 		"key": "ND",
 		"perWeek": 2,
 		"set": false
 	},
-	"WW": {
-		"fullname": "WEBデザインコース+WordPressコース",
-		"key": "WW",
+	"RBFE": {
+		"fullname": "WEBアプリケーション+フロントエンドセット",
+		"key": "RBFE",
+		"perWeek": 2,
+		"set": true
+	},
+	"PLFE": {
+		"fullname": "PHP/Laravel+フロントエンドセット",
+		"key": "PLFE",
+		"perWeek": 2,
+		"set": true
+	},
+	"WDWP": {
+		"fullname": "WEBデザイン+WordPressセット",
+		"key": "WDWP",
+		"perWeek": 2,
+		"set": true
+	},
+	"WDWM": {
+		"fullname": "WEBデザイン+WEBマーケティングセット",
+		"key": "WDWM",
+		"perWeek": 2,
+		"set": true
+	},
+	"WPWM": {
+		"fullname": "WoprdPress+WEBマーケティングセット",
+		"key": "WPWM",
+		"perWeek": 2,
+		"set": true
+	},
+	"IAAA": {
+		"fullname": "iPhoneアプリ+Androidアプリ",
+		"key": "IAAA",
+		"perWeek": 2,
+		"set": true
+	},
+	"UNIA": {
+		"fullname": "Unity+iPhoneアプリ",
+		"key": "UNIA",
+		"perWeek": 2,
+		"set": true
+	},
+	"UNAA": {
+		"fullname": "Unity+Androidアプリ",
+		"key": "UNAA",
+		"perWeek": 2,
+		"set": true
+	},
+	"UIIA": {
+		"fullname": "UI/UXデザイン+iPhoneアプリ",
+		"key": "UIIA",
+		"perWeek": 2,
+		"set": true
+	},
+	"UIAA": {
+		"fullname": "UI/UXデザイン+Androidアプリ",
+		"key": "UIAA",
+		"perWeek": 2,
+		"set": true
+	},
+	"DRWD": {
+		"fullname": "WEBディレクション+WEBデザイン",
+		"key": "DRWD",
+		"perWeek": 2,
+		"set": true
+	},
+	"WDWM": {
+		"fullname": "WEBディレクション+WEBマーケティング",
+		"key": "WDWM",
 		"perWeek": 2,
 		"set": true
 	}

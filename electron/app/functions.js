@@ -1,9 +1,6 @@
 'use strict';
 
 const {ipcRenderer} = require('electron');
-const fs = require('fs');
-// pathモジュール
-const path = require('path');
 
 var weekday = ['日曜', '月曜', '火曜', '水曜', '木曜', '金曜', '土曜'];
 
@@ -75,7 +72,16 @@ $(document).ready(() => {
 
 	$('.flagCheckbox').on('change', (eo) => shiftFlagChecker(eo));
 
+	// どうやらモーダルで表示する物はそのページで拾った方が良いみたい。
+	// $('.courseFlag').on('change', () => console.log('test'));
+
+	$('#chatSummarySubmit').on('click', () => applyChatSummary());
+
 	$('#applyShiftData').on('click', () => applyShiftData());
+
+	$('.settingicon').on('click', () => openSettings());
+
+	$('.settingclose').on('click', () => closeSettings());
 
 	$('#code').keypress(function (e) {
 		// Enterで送信出来るように
@@ -83,13 +89,10 @@ $(document).ready(() => {
 	});
 });
 
-const showLoading = () => {
-	return new Promise((resolve, reject) => {
-		$.LoadingOverlay('show', {
-			image       : '',
-			fontawesome : 'fa fa-spinner fa-spin'
-		});
-		resolve();
+const showLoading = async () => {
+	await $.LoadingOverlay('show', {
+		image       : '',
+		fontawesome : 'fa fa-spinner fa-spin'
 	});
 };
 
@@ -97,7 +100,7 @@ const showLoading = () => {
  * コースのJSONファイルを読み込み、選択ボックスに流し込む
  */
 const courseGetter = () => {
-	var course = JSON.parse(fs.readFileSync(path.join(__dirname, 'course.json'), 'utf8'));
+	var course = ipcRenderer.sendSync('courseGetter');
 	$('#course').empty();
 	for (var i in course) {
 		$('#course').append(
@@ -106,6 +109,34 @@ const courseGetter = () => {
 			</option>`
 		);
 	}
+};
+
+const courseSettingListing = () => {
+	new Promise ((resolve, reject) => {
+		try {
+			$('#settingTableBody').empty();
+			var courses = ipcRenderer.sendSync('courseList');
+			for (var key in courses) {
+				$('#settingTableBody').append(
+					`<tr>
+						<td>
+							<div class="btn-group-toggle" data-toggle="buttons">
+								<label class="btn btn-info">
+									<input type="checkbox" class="courseFlag" name="${key}" id="${key}">
+									<span class="flagText"></span>
+								</label>
+							</div>
+						</td>
+						<td>
+							${courses[key].fullname}
+						</td>
+					</tr>`
+				);
+			}
+		} catch (e) {
+			reject(e);
+		}
+	});
 };
 
 /**
@@ -126,11 +157,13 @@ const launchChecker = async () => {
 			courseGetter(),
 			listGetter(),
 			calendarSetter(),
-			shiftSetter(),
+			courseSettingListing(),
 		]);
 		await Promise.all([
 			selectChecker(),
 			selectCalendar(),
+			shiftSetter(),
+			settingsSetter(),
 		]);
 		$('.container').fadeIn(200);
 		$.LoadingOverlay('hide');
@@ -244,7 +277,6 @@ const calendarSetter = () => {
 	});
 };
 
-
 /**
  * メインプロセスから規定のカレンダーを取得し、選択状態にする
  * @return {Promise} await用のPromise
@@ -259,6 +291,22 @@ const selectCalendar = () => {
 		}
 	});
 };
+
+const settingsSetter = () => {
+	var courses = $('.courseFlag');
+	for (var course of courses) {
+		var id = $(course).attr('id');
+		var res = ipcRenderer.sendSync('getCourseConf', id);
+		if (res) {
+			$(course).prop('checked', true);
+			$(course).next('.flagText').html('オン');
+			$(course).parent().addClass('active');
+		} else {
+			$(course).next('.flagText').html('オフ');
+		}
+	}
+};
+
 
 /**
  * #data のフォーム内容を取得してJSON形式に変換
@@ -372,6 +420,31 @@ const resultMessage = (res) => {
 			`<p>${title} @ ${startYear}/${startMonth}/${startDate} ${weekday[startWDay]} ${startHours}:${startMinutes}</p>`
 		);
 	}
+};
+
+const toggleCourse = (eo) => {
+	var selector = $(eo.currentTarget).attr('id');
+	var value = $(eo.currentTarget).prop('checked');
+	ipcRenderer.sendSync('courseRemember', {selector, value});
+
+	if (value) {
+		$(eo.currentTarget).next('.flagText').html('オン');
+	} else {
+		$(eo.currentTarget).next('.flagText').html('オフ');
+	}
+};
+
+const applyChatSummary = () => {
+	var summary = $('#chatSummary').val();
+	ipcRenderer.sendSync('applyChatSummary', summary);
+};
+
+const openSettings = () => {
+	ipcRenderer.sendSync('openSettings');
+};
+
+const closeSettings = async () => {
+	ipcRenderer.sendSync('closeSettings');
 };
 
 /**

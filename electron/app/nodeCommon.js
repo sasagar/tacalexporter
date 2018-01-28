@@ -29,7 +29,7 @@ exports.funcInterval = (val1, val2) => {
  * @return {Number}                メンタリングの回数
  */
 exports.findTimes = (week, course, addon = false) => {
-	var courseObj = JSON.parse(fs.readFileSync(path.join(__dirname, '../course.json'), 'utf8'));
+	var courseObj = this.courseReader();
 	// 回数の計算
 	// addonがtrueで来たら必ずperWeekは2。
 	// addonがfalseで、perWeekが1だったら削らない
@@ -62,4 +62,16 @@ exports.datePrep = (dateStr, timeStr = '00:00') => {
 	var date = new Date(year + '-' + month + '-' + day + 'T' + timeStr + ':00+09:00');
 
 	return date;
+};
+
+/**
+ * 2桁の0埋めをする
+ * @param  {number} int int型の数値
+ * @return {string}     0埋めされた二桁の数字を文字列にしたもの
+ */
+exports.paddingZero = (int) => String(int).padStart(2, '0');
+
+exports.courseReader = () => {
+	var res = JSON.parse(fs.readFileSync(path.join(__dirname, '../course.json'), 'utf8'));
+	return res;
 };

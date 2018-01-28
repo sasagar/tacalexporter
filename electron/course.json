@@ -160,5 +160,17 @@
 		"key": "WDWM",
 		"perWeek": 2,
 		"set": true
+	},
+	"RBFEWD": {
+		"fullname": "WEBアプリケーション+フロントエンド+WEBデザイン",
+		"key": "RBFEWD",
+		"perWeek": 2,
+		"set": true
+	},
+	"PLFEWD": {
+		"fullname": "PHP/Laravel+フロントエンド+WEBデザイン",
+		"key": "PLFEWD",
+		"perWeek": 2,
+		"set": true
 	}
 }

@@ -1,5 +1,5 @@
 'use strict';
-/*eslint no-console: ["error", { allow: ["warn", "log", "dir", "error"] }] */
+/*eslint no-console: ["error", { allow: ["warn", "log", "dir", "error", "trace"] }] */
 
 const fs = require('fs');
 // pathモジュール
@@ -73,6 +73,9 @@ exports.addEvents = (auth, option) => {
 	var result = Promise.all(promise)
 		.then((res) => {
 			return res;
+		})
+		.catch((err) => {
+			console.trace(err);
 		});
 	return result;
 };

@@ -403,6 +403,16 @@ ipcMain.on('applyChatSummary', (event, summary) => {
 	}
 });
 
+ipcMain.on('getChatSummary', (event) => {
+	try {
+		var summary = config.get('summary.shift');
+		event.returnValue = summary;
+	} catch (e) {
+		console.log('Error at applyChatSummary: ' + e);
+		event.returnValue = false;
+	}
+});
+
 ipcMain.on('openSettings', (event) => {
 	settingWindow.show();
 	event.returnValue = true;

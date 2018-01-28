@@ -164,6 +164,7 @@ const launchChecker = async () => {
 			selectCalendar(),
 			shiftSetter(),
 			settingsSetter(),
+			setChatSummary(),
 		]);
 		$('.container').fadeIn(200);
 		$.LoadingOverlay('hide');
@@ -437,6 +438,22 @@ const toggleCourse = (eo) => {
 const applyChatSummary = () => {
 	var summary = $('#chatSummary').val();
 	ipcRenderer.sendSync('applyChatSummary', summary);
+};
+
+const setChatSummary = () => {
+	new Promise ((resolve, reject) => {
+		try {
+			var summary = ipcRenderer.sendSync('getChatSummary');
+			if (summary) {
+				$('#chatSummary').val(summary);
+			} else {
+				console.error(summary);
+			}
+			resolve();
+		} catch (e) {
+			reject(e);
+		}
+	});
 };
 
 const openSettings = () => {

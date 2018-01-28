@@ -84,8 +84,13 @@ exports.scheduleMaker = (obj) => {
 		array.push(day);
 	}
 	// セットだったら真ん中削る
-	if (courseObj[obj.course.value].set) {
+	// キーが2文字ずつなので、2で割ってセットの数を計算
+	if (courseObj[obj.course.value].set && (obj.course.value.length / 2) === 2) {
 		array.splice((times - 1) / 2, 1);
+	} else if (courseObj[obj.course.value].set && (obj.course.value.length / 2) === 3) {
+		var rmTimes = ((times + 1 ) / 3) - 1;
+		array.splice(rmTimes, 1);
+		array.splice(rmTimes * 2, 1);
 	}
 	return array;
 };

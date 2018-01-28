@@ -1,6 +1,6 @@
 {
   "name": "TAcalExporter",
-  "version": "2.0.1",
+  "version": "2.5.0",
   "description": "TechAcademy用メンタリングカレンダーファイル出力アプリ",
   "standard": {
     "globals": [
@@ -20,7 +20,8 @@
   "scripts": {
     "start": "node_modules/.bin/electron .",
     "build": "node build.js",
-    "pack:osx": "build --mac --x64"
+    "pack:osx": "build --mac --x64",
+    "make:win": "electron-packager . TAcalExporter --platform=win32 --arch=x64 --version=1.8.1 --icon=build/icon.ico"
   },
   "repository": {
     "type": "git",

@@ -68,6 +68,7 @@ var TOKEN = config.get('credentials.token');
 
 // メインウィンドウはGCされないようにグローバル宣言
 let mainWindow;
+let splashWindow;
 
 // 全てのウィンドウが閉じたら終了
 app.on('window-all-closed', () => {
@@ -78,8 +79,31 @@ app.on('window-all-closed', () => {
 app.on('ready', () => {
 	// メイン画面の表示。
 	const {width, height, x, y} = config.get('bounds');
-	mainWindow = new BrowserWindow({ title: 'TechAcademyメンタリングカレンダー登録', width, height, x, y, webPreferences: { nodeIntegration: true } });
+	mainWindow = new BrowserWindow({
+		title: 'TechAcademyメンタリングカレンダー登録',
+		width, height, x, y,
+		webPreferences: { nodeIntegration: true },
+		show: false,
+	});
+
+	splashWindow = new BrowserWindow({
+		width: 320,
+		height: 320,
+		frame: false,
+		transparent: true,
+		parent: mainWindow,
+	});
+	splashWindow.setAlwaysOnTop(true);
+
 	mainWindow.loadURL(path.join('file://', __dirname, '/index.html'));
+	splashWindow.loadURL(path.join('file://', __dirname, '/splash.html'));
+
+	mainWindow.webContents.on('did-finish-load', async ()=>{
+		await mainWindow.show();
+		setTimeout(() => splashWindow.close(), 2000);
+	});
+
+	splashWindow.on('closed', () => splashWindow = null);
 
 	['resize', 'move'].forEach(ev => {
 		mainWindow.on(ev, () => {
@@ -279,7 +303,6 @@ ipcMain.on('applyShiftData', async (event, obj) => {
 });
 
 ipcMain.on('getShiftConf', (event, id) => {
-	console.log(id);
 	var data = config.get(`shift.${id}`);
 	if (!data) {
 		data = false;
@@ -334,13 +357,6 @@ function authorize (credentials) {
 		shell.openExternal(authUrl);
 	} else {
 		oauth2Client.credentials = TOKEN;
-		/*
-		if (option) {
-			callback(oauth2Client, option);
-		} else {
-			callback(oauth2Client);
-		}
-		*/
 		return oauth2Client;
 	}
 }

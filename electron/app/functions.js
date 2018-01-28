@@ -9,7 +9,6 @@ var weekday = ['日曜', '月曜', '火曜', '水曜', '木曜', '金曜', '土�
 
 // electron によりhtmlが描画されてから実行
 $(document).ready(() => {
-	showLoading();
 	launchChecker();
 
 	// DatePicker
@@ -82,14 +81,15 @@ $(document).ready(() => {
 		// Enterで送信出来るように
 		if (e.which === 13) { tokenSubmitter(); }
 	});
-
-	ipcRenderer.on('resultMessage', (event, args) => resultMessage(event, args));
 });
 
 const showLoading = () => {
-	$.LoadingOverlay('show', {
-		image       : '',
-		fontawesome : 'fa fa-spinner fa-spin'
+	return new Promise((resolve, reject) => {
+		$.LoadingOverlay('show', {
+			image       : '',
+			fontawesome : 'fa fa-spinner fa-spin'
+		});
+		resolve();
 	});
 };
 
@@ -113,6 +113,7 @@ const courseGetter = () => {
  * 全ての処理が終わったら画面を表示する
  */
 const launchChecker = async () => {
+	await showLoading();
 	var flag = true;
 	var res = ipcRenderer.sendSync('launchChecker');
 	if (res.substr(0, 4) === 'http') {
@@ -131,7 +132,7 @@ const launchChecker = async () => {
 			selectChecker(),
 			selectCalendar(),
 		]);
-		$('.container').fadeIn(500);
+		$('.container').fadeIn(200);
 		$.LoadingOverlay('hide');
 	}
 };

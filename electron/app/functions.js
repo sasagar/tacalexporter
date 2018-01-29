@@ -90,6 +90,10 @@ $(document).ready(() => {
 		// Enterで送信出来るように
 		if (e.which === 13) { tokenSubmitter(); }
 	});
+
+	$('#logoutBtn').on('click', () => {
+		ipcRenderer.send('logout');
+	});
 });
 
 const showLoading = async () => {
@@ -152,6 +156,7 @@ const launchChecker = async () => {
 	var res = ipcRenderer.sendSync('launchChecker');
 	if (res.substr(0, 4) === 'http') {
 		$('#tokenModal').modal();
+		$.LoadingOverlay('hide');
 		flag = false;
 	}
 	if (flag) {

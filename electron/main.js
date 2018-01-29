@@ -4,7 +4,7 @@
 
 // Electronのモジュール
 const electron = require('electron');
-const {shell, Menu, app, ipcMain} = require('electron');
+const {shell, Menu, app, ipcMain, dialog} = require('electron');
 
 // pathモジュール
 const path = require('path');
@@ -160,6 +160,26 @@ app.on('ready', () => {
 
 	const menu = Menu.buildFromTemplate(template);
 	Menu.setApplicationMenu(menu);
+});
+
+ipcMain.on('logout', () => {
+	dialog.showMessageBox(settingWindow, {
+		type: 'warning',
+		buttons: ['キャンセル', 'ログアウト'],
+		defaltId: 0,
+		title: 'Googleカレンダーからログアウト',
+		message: 'Googleカレンダーからログアウトします。よろしいですか？',
+		detail: 'ログアウトすると、ウィンドウがリロードされ、認証画面が表示されます。',
+		cancelId: 0,
+	}, (response) => {
+		if (response) {
+			config.set('calendar.selected', '');
+			config.set('credentials.token', '');
+			TOKEN = '';
+			settingWindow.hide();
+			mainWindow.reload();
+		}
+	});
 });
 
 ipcMain.on('applySchedule', (event, obj) => {

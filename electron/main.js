@@ -21,7 +21,7 @@ const gg = require('./app/google');
 // configを使う。
 const Config = require('electron-config');
 
-// ウィンドウサイズの基準
+// 設定のデフォルトを指定
 const config = new Config({
 	defaults: {
 		bounds: {
@@ -35,6 +35,7 @@ const config = new Config({
 			token: ''
 		},
 		summary: {
+			mentoring: 'メンタリング %name %courseid%week',
 			shift: 'チャットシフト'
 		},
 		shift: {
@@ -162,8 +163,12 @@ app.on('ready', () => {
 });
 
 ipcMain.on('applySchedule', (event, obj) => {
+	var summary = config.get('summary.mentoring');
+	if (!summary) {
+		config.set('summary.mentoring', 'メンタリング %name %courseid%week');
+	}
 	var test = nf.scheduleMaker(obj);
-	var title = nf.eventTitleMaker(obj);
+	var title = nf.eventTitleMaker(obj, summary);
 
 	var resObj = {
 		title: title,
@@ -408,7 +413,27 @@ ipcMain.on('getChatSummary', (event) => {
 		var summary = config.get('summary.shift');
 		event.returnValue = summary;
 	} catch (e) {
-		console.log('Error at applyChatSummary: ' + e);
+		console.log('Error at getChatSummary: ' + e);
+		event.returnValue = false;
+	}
+});
+
+ipcMain.on('applyMentoringSummary', (event, summary) => {
+	try {
+		config.set('summary.mentoring', summary);
+		event.returnValue = true;
+	} catch (e) {
+		console.log('Error at applyMentoringSummary: ' + e);
+		event.returnValue = false;
+	}
+});
+
+ipcMain.on('getMentoringSummary', (event) => {
+	try {
+		var summary = config.get('summary.mentoring');
+		event.returnValue = summary;
+	} catch (e) {
+		console.log('Error at getMentoringSummary: ' + e);
 		event.returnValue = false;
 	}
 });

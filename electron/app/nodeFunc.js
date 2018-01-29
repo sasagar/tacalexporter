@@ -113,15 +113,21 @@ const startEndMaker = (estDate, targetDate, intervalDay) => {
 
 /**
  * [exports] 登録したいイベントのタイトルをつくる
- * @param  {Object} obj name, course, weekの3つのvalue
+ * @param  {Object} obj     name, course, weekの3つのvalue
+ * @param  {String} summary 設定のテンプレート文字列
  * @return {String}     イベントタイトル
  */
-exports.eventTitleMaker = (obj) => {
+exports.eventTitleMaker = (obj, summary) => {
+	var courses = nc.courseReader();
 	var name = obj.name.value;
 	var course = obj.course.value;
+	var courseFullName = courses[course].fullname;
 	var week = obj.week.value.padStart(2, '0');
 
-	var title = 'メンタリング ' + name + ' ' + course + week;
+	var title = summary.replace(/%name/g, name)
+		.replace(/%courseid/g, course)
+		.replace(/%course/g, courseFullName)
+		.replace(/%week/g, week);
 
 	return title;
 };

@@ -17,6 +17,7 @@ const nf = require('./app/nodeFunc');
 const nc = require('./app/nodeCommon');
 const em = require('./app/electronMenu');
 const gg = require('./app/google');
+const au = require('./app/updater');
 
 // configを使う。
 const Config = require('electron-config');
@@ -122,6 +123,7 @@ app.on('ready', () => {
 
 	mainWindow.webContents.on('did-finish-load', async ()=>{
 		await mainWindow.show();
+		// au.checkUpdate();
 		setTimeout(() => {
 			if (splashWindow) {
 				splashWindow.close();

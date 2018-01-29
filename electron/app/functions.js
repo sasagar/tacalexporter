@@ -1,4 +1,5 @@
 'use strict';
+/*eslint no-console: ["error", { allow: ["warn", "error"] }] */
 
 const {ipcRenderer} = require('electron');
 
@@ -76,6 +77,8 @@ $(document).ready(() => {
 	// $('.courseFlag').on('change', () => console.log('test'));
 
 	$('#chatSummarySubmit').on('click', () => applyChatSummary());
+
+	$('#mentoringSummarySubmit').on('click', () => applyMentoringSummary());
 
 	$('#applyShiftData').on('click', () => applyShiftData());
 
@@ -165,6 +168,7 @@ const launchChecker = async () => {
 			shiftSetter(),
 			settingsSetter(),
 			setChatSummary(),
+			setMentoringSummary(),
 		]);
 		$('.container').fadeIn(200);
 		$.LoadingOverlay('hide');
@@ -455,6 +459,28 @@ const setChatSummary = () => {
 		}
 	});
 };
+
+const applyMentoringSummary = () => {
+	var summary = $('#mentoringSummary').val();
+	ipcRenderer.sendSync('applyMentoringSummary', summary);
+};
+
+const setMentoringSummary = () => {
+	new Promise ((resolve, reject) => {
+		try {
+			var summary = ipcRenderer.sendSync('getMentoringSummary');
+			if (summary) {
+				$('#mentoringSummary').val(summary);
+			} else {
+				console.error(summary);
+			}
+			resolve();
+		} catch (e) {
+			reject(e);
+		}
+	});
+};
+
 
 const openSettings = () => {
 	ipcRenderer.sendSync('openSettings');

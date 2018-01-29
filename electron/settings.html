@@ -33,10 +33,41 @@
 				<button type="button" class="btn btn-success settingclose">閉じる</button>
 			</div>
 		</div>
+		<div class="row">
+			<div class="alert alert-info" role="alert">
+				設定画面を閉じると、更新するために画面がリロードされます。
+			</div>
+		</div>
+
 		<hr>
 		<div class="row">
 			<div class="col-sm-12">
 				<h2>­スケジュールタイトル</h2>
+			</div>
+		</div>
+		<div class="row">
+			<div class="alert alert-warning" role="alert">
+				メンタリングのタイトルで自動で置換されるキーワードは以下の通りです。
+				<hr>
+				<dl>
+					<dt>%name</dt><dd>受講生氏名。</dd>
+					<dt>%courseid</dt><dd>1コースあたり2文字に省略されたコースID。セットはセットの分が連結された4文字か6文字。<br>ex) RB: WEBアプリケーションコース</dd>
+					<dt>%course</dt><dd>コースフルネーム</dd>
+					<dt>%week</dt><dd>プラン（期間）。0埋めされた2桁数字。</dd>
+				</dl>
+			</div>
+		</div>
+		<div class="form-group row p-3">
+			<div class="col-sm-3">
+				<p>­メンタリング</p>
+			</div>
+			<div class="col-sm-9">
+				<div class="input-group mb-3">
+					<input type="text" name="mentoringSummary" id="mentoringSummary" class="form-control">
+					<div class="input-group-append">
+						<button class="btn btn-primary" type="button" id="mentoringSummarySubmit">保存</button>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="form-group row p-3">
@@ -60,11 +91,9 @@
 		</div>
 		<div class="row">
 			<div class="col-sm-12">
-				<div class="alert alert-info" role="alert">
+				<div class="alert alert-warning" role="alert">
 					適用の欄にあるボタンを押すことで、切り替えが可能です。<br>
 					都度保存されますので、保存ボタンはありません。
-					<hr>
-					閉じると、更新するために画面がリロードされます。
 				</div>
 			</div>
 		</div>

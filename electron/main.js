@@ -163,8 +163,12 @@ app.on('ready', () => {
 });
 
 ipcMain.on('applySchedule', (event, obj) => {
+	var summary = config.get('summary.mentoring');
+	if (!summary) {
+		config.set('summary.mentoring', 'メンタリング %name %courseid%week');
+	}
 	var test = nf.scheduleMaker(obj);
-	var title = nf.eventTitleMaker(obj);
+	var title = nf.eventTitleMaker(obj, summary);
 
 	var resObj = {
 		title: title,

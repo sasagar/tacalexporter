@@ -1,0 +1,2 @@
+# tacalexporter
+かなりニッチなプログラム（AutoUpdater用）

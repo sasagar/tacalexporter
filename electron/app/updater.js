@@ -11,7 +11,23 @@ exports.checkUpdate = () => {
 	});
 
 	updater.check((err, status) => {
-		if (!err && status) updater.download();
+		if (!err && status) {
+			const userAction = dialog.showMessageBox({
+				type: 'info',
+				buttons: ['今はしない', 'ダウンロードする'],
+				message: '新しいバージョンがあります。今すぐダウンロードしますか？',
+				cancelId: 0
+			});
+			if (userAction !== 0) {
+				updater.download();
+			}
+		} else {
+			dialog.showMessageBox({
+				type: 'none',
+				buttons: ['OK'],
+				message: '新しいバージョンは見つかりませんでした。'
+			});
+		}
 	});
 
 	updater.on('update-downloaded', (data) => {

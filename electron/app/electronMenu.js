@@ -53,7 +53,7 @@ exports.darwinTemplate = {
 		label: app.getName(),
 		submenu: [
 			{role: 'about', label: 'このアプリについて'},
-			//{label: 'アップデートを確認する...', click () {au.checkUpdate();}},
+			{label: 'アップデートを確認する...', click () {au.checkUpdate();}},
 			{type: 'separator'},
 			{role: 'services', label: 'サービス', submenu: []},
 			{type: 'separator'},

@@ -123,7 +123,7 @@ app.on('ready', () => {
 
 	mainWindow.webContents.on('did-finish-load', async ()=>{
 		await mainWindow.show();
-		// au.checkUpdate();
+		au.checkUpdate();
 		setTimeout(() => {
 			if (splashWindow) {
 				splashWindow.close();

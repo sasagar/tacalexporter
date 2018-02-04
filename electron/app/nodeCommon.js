@@ -1,6 +1,6 @@
 'use strict';
-import fs from 'fs';
-import path from 'path';
+const fs = require('fs');
+const path = require('path');
 
 /**
  * 2つの曜日の間隔を日数で返す

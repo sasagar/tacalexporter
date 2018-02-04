@@ -1,9 +1,9 @@
 'use strict';
-import fs from 'fs';
+const fs = require('fs');
 // pathモジュール
-import path from 'path';
+const path = require('path');
 
-import nc from './nodeCommon';
+const nc = require('./nodeCommon');
 
 /**
  * 登録したいスケジュールの一覧を作る

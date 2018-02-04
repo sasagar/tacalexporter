@@ -1,8 +1,8 @@
 'use strict';
 // Electronのモジュール
-import { app, dialog } from 'electron';
+const { app, dialog } = require('electron');
 
-import GhReleases from 'electron-gh-releases';
+const GhReleases = require('electron-gh-releases');
 
 export const checkUpdate = () => {
 	const updater = new GhReleases({

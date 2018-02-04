@@ -1,5 +1,4 @@
 'use strict';
-const { app } = require('electron');
 const au = require('./updater');
 
 exports.template = [
@@ -52,7 +51,7 @@ exports.template = [
 
 exports.darwinTemplate = {
 	main: {
-		label: app.getName(),
+		label: 'TAMentorConsole',
 		submenu: [
 			{ role: 'about', label: 'このアプリについて' },
 			{

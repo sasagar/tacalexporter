@@ -1,13 +1,13 @@
 'use strict';
 /*eslint no-console: ["error", { allow: ["warn", "log", "dir", "error", "trace"] }] */
 
-import fs from 'fs';
+const fs = require('fs');
 // pathモジュール
-import path from 'path';
+const path = require('path');
 // google OAuth2ライブラリ
-import { OAuth2Client } from 'google-auth-library';
+const { OAuth2Client } = require('google-auth-library');
 // GoogleCalendar
-import google from 'googleapis';
+const google = require('googleapis');
 
 // clent_secret.jsonを読み込んで返す
 export const getClientSecret = () =>

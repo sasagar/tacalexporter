@@ -1,7 +1,7 @@
 'use strict';
 /*eslint no-console: ["error", { allow: ["warn", "error"] }] */
 
-import { ipcRenderer } from 'electron';
+const { ipcRenderer } = require('electron');
 
 var weekday = ['日曜', '月曜', '火曜', '水曜', '木曜', '金曜', '土曜'];
 
@@ -200,7 +200,9 @@ const profileSetter = () => {
 			$('.familyName').text(profile.family_name);
 			$('.givenName').text(profile.given_name);
 			$('.iconImg').append(`
-				<img src="${profile.picture}" class="rounded-circle" style="max-width: 56px;">`);
+				<img src="${
+	profile.picture
+}" class="rounded-circle" style="max-width: 56px;">`);
 			resolve();
 		} catch (e) {
 			reject(e);

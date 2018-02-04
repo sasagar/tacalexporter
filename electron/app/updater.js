@@ -1,13 +1,13 @@
 'use strict';
 // Electronのモジュール
-const {app, dialog} = require('electron');
+import { app, dialog } from 'electron';
 
-const GhReleases = require('electron-gh-releases');
+import GhReleases from 'electron-gh-releases';
 
-exports.checkUpdate = () => {
+export const checkUpdate = () => {
 	const updater = new GhReleases({
 		repo: 'sasagar/tacalexporter',
-		currentVersion: app.getVersion()
+		currentVersion: app.getVersion(),
 	});
 
 	updater.check((err, status) => {
@@ -16,7 +16,7 @@ exports.checkUpdate = () => {
 				type: 'info',
 				buttons: ['今はしない', 'ダウンロードする'],
 				message: '新しいバージョンがあります。今すぐダウンロードしますか？',
-				cancelId: 0
+				cancelId: 0,
 			});
 			if (userAction !== 0) {
 				updater.download();
@@ -25,17 +25,20 @@ exports.checkUpdate = () => {
 			dialog.showMessageBox({
 				type: 'none',
 				buttons: ['OK'],
-				message: '新しいバージョンは見つかりませんでした。'
+				message: '新しいバージョンは見つかりませんでした。',
 			});
 		}
 	});
 
-	updater.on('update-downloaded', (data) => {
+	updater.on('update-downloaded', data => {
 		const id = dialog.showMessageBox({
 			type: 'info',
 			buttons: ['あとで', '再起動して更新する'],
-			message: `新しいバージョンをダウンロードしました。今すぐ更新しますか？\n\n${data[2]}\n\n${data[1]}`,
-			cancelId: 0
+			message: `新しいバージョンをダウンロードしました。今すぐ更新しますか？\n\n
+				${data[2]}\n\n
+				${data[1]}
+			`,
+			cancelId: 0,
 		});
 
 		if (id === 0) return;

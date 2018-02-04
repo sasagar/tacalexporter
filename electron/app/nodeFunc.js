@@ -1,18 +1,20 @@
 'use strict';
-const fs = require('fs');
+import fs from 'fs';
 // pathモジュール
-const path = require('path');
+import path from 'path';
 
-const nc = require('./nodeCommon');
+import nc from './nodeCommon';
 
 /**
  * 登録したいスケジュールの一覧を作る
  * @param  {Object} obj フォームデータを取得したオブジェクト
  * @return {Array}     日程の配列{start, end}形式
  */
-exports.scheduleMaker = (obj) => {
+export const scheduleMaker = obj => {
 	var array = [];
-	var courseObj = JSON.parse(fs.readFileSync(path.join(__dirname, '../course.json'), 'utf8'));
+	var courseObj = JSON.parse(
+		fs.readFileSync(path.join(__dirname, '../course.json'), 'utf8')
+	);
 	var courseKey = obj.course.value;
 	var perWeek = parseInt(courseObj[courseKey].perWeek);
 	var interval1 = 0;
@@ -20,8 +22,10 @@ exports.scheduleMaker = (obj) => {
 	var interval3 = 0;
 
 	// 時間を調整
-	obj.firstTime = {value: obj.firstHour.value + ':' + obj.firstMinutes.value};
-	obj.secondTime = {value: obj.secondHour.value + ':' + obj.secondMinutes.value};
+	obj.firstTime = { value: obj.firstHour.value + ':' + obj.firstMinutes.value };
+	obj.secondTime = {
+		value: obj.secondHour.value + ':' + obj.secondMinutes.value,
+	};
 
 	// 初回
 	var startDate = nc.datePrep(obj.start.value);
@@ -51,7 +55,9 @@ exports.scheduleMaker = (obj) => {
 		interval3 = nc.funcInterval(obj.first.value, obj.second.value);
 
 		var addon = false;
-		if (obj.extra) { addon = true;}
+		if (obj.extra) {
+			addon = true;
+		}
 	}
 
 	var times = nc.findTimes(obj.week.value, courseKey, addon);
@@ -76,19 +82,22 @@ exports.scheduleMaker = (obj) => {
 		var dayStart = new Date(last.getTime() + msecInverval);
 		dayStart.setHours(hour);
 		dayStart.setMinutes(min);
-		var dayEnd = new Date(dayStart.getTime() + (30 * 60 * 1000));
+		var dayEnd = new Date(dayStart.getTime() + 30 * 60 * 1000);
 		var day = {
 			start: dayStart,
-			end: dayEnd
+			end: dayEnd,
 		};
 		array.push(day);
 	}
 	// セットだったら真ん中削る
 	// キーが2文字ずつなので、2で割ってセットの数を計算
-	if (courseObj[obj.course.value].set && (obj.course.value.length / 2) === 2) {
+	if (courseObj[obj.course.value].set && obj.course.value.length / 2 === 2) {
 		array.splice((times - 1) / 2, 1);
-	} else if (courseObj[obj.course.value].set && (obj.course.value.length / 2) === 3) {
-		var rmTimes = ((times + 1 ) / 3) - 1;
+	} else if (
+		courseObj[obj.course.value].set &&
+		obj.course.value.length / 2 === 3
+	) {
+		var rmTimes = (times + 1) / 3 - 1;
 		array.splice(rmTimes, 1);
 		array.splice(rmTimes * 2, 1);
 	}
@@ -103,11 +112,11 @@ exports.scheduleMaker = (obj) => {
  * @return {Object}             startとendのDateが入ったオブジェクト
  */
 const startEndMaker = (estDate, targetDate, intervalDay) => {
-	var start = new Date(estDate.getTime() + (intervalDay * 24 * 60 * 60 * 1000));
+	var start = new Date(estDate.getTime() + intervalDay * 24 * 60 * 60 * 1000);
 	start.setHours(targetDate.substr(0, 2));
 	start.setMinutes(targetDate.substr(3, 2));
-	var end = new Date(start.getTime() + (30 * 60 * 1000));
-	var res = {start, end};
+	var end = new Date(start.getTime() + 30 * 60 * 1000);
+	var res = { start, end };
 	return res;
 };
 
@@ -115,16 +124,17 @@ const startEndMaker = (estDate, targetDate, intervalDay) => {
  * [exports] 登録したいイベントのタイトルをつくる
  * @param  {Object} obj     name, course, weekの3つのvalue
  * @param  {String} summary 設定のテンプレート文字列
- * @return {String}     イベントタイトル
+ * @return {String}         イベントタイトル
  */
-exports.eventTitleMaker = (obj, summary) => {
+export const eventTitleMaker = (obj, summary) => {
 	var courses = nc.courseReader();
 	var name = obj.name.value;
 	var course = obj.course.value;
 	var courseFullName = courses[course].fullname;
 	var week = obj.week.value.padStart(2, '0');
 
-	var title = summary.replace(/%name/g, name)
+	var title = summary
+		.replace(/%name/g, name)
 		.replace(/%courseid/g, course)
 		.replace(/%course/g, courseFullName)
 		.replace(/%week/g, week);

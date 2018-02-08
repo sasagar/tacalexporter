@@ -3,60 +3,27 @@
 /*eslint no-console: ["error", { allow: ["warn", "log", "dir", "error"] }] */
 
 // Electronのモジュール
-import electron from 'electron';
-import { shell, Menu, app, ipcMain, dialog } from 'electron';
+const {
+	shell,
+	Menu,
+	app,
+	ipcMain,
+	dialog,
+	BrowserWindow,
+} = require('electron');
 
 // pathモジュール
-import path from 'path';
-
-// ウィンドウを作成するモジュール
-const BrowserWindow = electron.BrowserWindow;
+const path = require('path');
 
 // 外部JSの読み込み
-import nf from './app/nodeFunc';
-import nc from './app/nodeCommon';
-import em from './app/electronMenu';
-import gg from './app/google';
-import au from './app/updater';
-
-// configを使う。
-import Config from 'electron-config';
+const nf = require('./app/nodeFunc');
+const nc = require('./app/nodeCommon');
+const em = require('./app/electronMenu');
+const gg = require('./app/google');
+const au = require('./app/updater');
 
 // 設定のデフォルトを指定
-const config = new Config({
-	defaults: {
-		bounds: {
-			width: 800,
-			height: 600,
-		},
-		calendar: {
-			selected: '',
-		},
-		credentials: {
-			token: '',
-		},
-		summary: {
-			mentoring: 'メンタリング %name %courseid%week',
-			shift: 'チャットシフト',
-		},
-		shift: {
-			'mon1-1': false,
-			'tue2-1': false,
-			'wed3-1': false,
-			'thu4-1': false,
-			'fri5-1': false,
-			'sat6-1': false,
-			'sun0-1': false,
-			'mon1-2': false,
-			'tue2-2': false,
-			'wed3-2': false,
-			'thu4-2': false,
-			'fri5-2': false,
-			'sat6-2': false,
-			'sun0-2': false,
-		},
-	},
-});
+const { config } = require('./app/defaultConf.js');
 
 // スコープの設定
 // カレンダーAPIと個人情報用のAPIを許可するようにスコープ指定

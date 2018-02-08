@@ -10,10 +10,10 @@ const { OAuth2Client } = require('google-auth-library');
 const google = require('googleapis');
 
 // clent_secret.jsonを読み込んで返す
-export const getClientSecret = () =>
+exports.getClientSecret = () =>
 	JSON.parse(fs.readFileSync(path.join(__dirname, '../client_secret.json')));
 
-export const OAuth2 = credentials => {
+exports.OAuth2 = credentials => {
 	var clientSecret = credentials.installed.client_secret;
 	var clientId = credentials.installed.client_id;
 	var redirectUrl = credentials.installed.redirect_uris[0];
@@ -31,7 +31,7 @@ export const OAuth2 = credentials => {
  *									option.data.title : summary
  *									option.data.schedule[] : start / end
  */
-export const addEvents = (auth, option) => {
+exports.addEvents = (auth, option) => {
 	var calendar = google.calendar('v3');
 
 	var schedule = option.data.schedule;
@@ -90,7 +90,7 @@ export const addEvents = (auth, option) => {
  * @param {google.auth.OAuth2} auth : An authorized OAuth2 client.
  * @param {Event} event : リターンさせたいイベント
  */
-export const listCalendar = auth => {
+exports.listCalendar = auth => {
 	var calendar = google.calendar('v3');
 	var apiObj = { auth: auth };
 	return new Promise(async (resolve, reject) => {
@@ -112,7 +112,7 @@ export const listCalendar = auth => {
  *
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
-export const userInfo = auth => {
+exports.userInfo = auth => {
 	var profApi = google.oauth2('v2');
 	var apiObj = { auth: auth };
 	return new Promise(async (resolve, reject) => {

@@ -8,7 +8,7 @@ const path = require('path');
  * @param  {Number} val2 何曜日からかを数値で（日曜：0）
  * @return {Number}      日数
  */
-export const funcInterval = (val1, val2) => {
+exports.funcInterval = (val1, val2) => {
 	// 未来の曜日を手前に。（そこまでの日数）
 	var res;
 	val1 = parseInt(val1);
@@ -28,7 +28,7 @@ export const funcInterval = (val1, val2) => {
  * @param  {Boolean} [addon=false] 追加プランの有無
  * @return {Number}                メンタリングの回数
  */
-export const findTimes = (week, course, addon = false) => {
+exports.findTimes = (week, course, addon = false) => {
 	var courseObj = this.courseReader();
 	// 回数の計算
 	// addonがtrueで来たら必ずperWeekは2。
@@ -54,7 +54,7 @@ export const findTimes = (week, course, addon = false) => {
  * @param  {String} [timeStr='00:00'] 時間の文字列 HH:MM
  * @return {Date}                   Dateに変換された物
  */
-export const datePrep = (dateStr, timeStr = '00:00') => {
+exports.datePrep = (dateStr, timeStr = '00:00') => {
 	var year = dateStr.substr(0, 4);
 	var month = dateStr.substr(5, 2);
 	var day = dateStr.substr(8, 2);
@@ -71,9 +71,9 @@ export const datePrep = (dateStr, timeStr = '00:00') => {
  * @param  {number} int int型の数値
  * @return {string}     0埋めされた二桁の数字を文字列にしたもの
  */
-export const paddingZero = int => String(int).padStart(2, '0');
+exports.paddingZero = int => String(int).padStart(2, '0');
 
-export const courseReader = () => {
+exports.courseReader = () => {
 	var res = JSON.parse(
 		fs.readFileSync(path.join(__dirname, '../course.json'), 'utf8')
 	);

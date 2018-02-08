@@ -4,7 +4,7 @@ const { app, dialog } = require('electron');
 
 const GhReleases = require('electron-gh-releases');
 
-export const checkUpdate = () => {
+exports.checkUpdate = () => {
 	const updater = new GhReleases({
 		repo: 'sasagar/tacalexporter',
 		currentVersion: app.getVersion(),

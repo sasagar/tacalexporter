@@ -10,7 +10,7 @@ const nc = require('./nodeCommon');
  * @param  {Object} obj フォームデータを取得したオブジェクト
  * @return {Array}     日程の配列{start, end}形式
  */
-export const scheduleMaker = obj => {
+exports.scheduleMaker = obj => {
 	var array = [];
 	var courseObj = JSON.parse(
 		fs.readFileSync(path.join(__dirname, '../course.json'), 'utf8')
@@ -126,7 +126,7 @@ const startEndMaker = (estDate, targetDate, intervalDay) => {
  * @param  {String} summary 設定のテンプレート文字列
  * @return {String}         イベントタイトル
  */
-export const eventTitleMaker = (obj, summary) => {
+exports.eventTitleMaker = (obj, summary) => {
 	var courses = nc.courseReader();
 	var name = obj.name.value;
 	var course = obj.course.value;

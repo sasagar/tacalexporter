@@ -212,8 +212,9 @@ const profileSetter = () => {
 
 /**
  * コースが変更される度に呼び出される
- * data-perweekの数字が1で、#extraのチェックが無い時に二回目の欄を隠す
- * それ以外の時に二回目の欄を表示する
+ * # 3.1.0仕様変更
+ * data-perweekの数字が1で、#extraのチェックが無い時に
+ * 初回と2回目以降の設定にできる様表示を変更
  * @return {Promise} await用のPromise
  */
 const selectChecker = () => {
@@ -223,9 +224,11 @@ const selectChecker = () => {
 			var check = $('#extra').prop('checked');
 
 			if (perWeek === 1 && !check) {
-				$('#secondDiv').hide();
+				$('#firstLabel').text('初回のみ');
+				$('#secondLabel').text('2回目以降');
 			} else {
-				$('#secondDiv').show();
+				$('#firstLabel').text('1回目');
+				$('#secondLabel').text('2回目');
 			}
 			resolve();
 		} catch (e) {

@@ -8,7 +8,7 @@
 	<link rel="stylesheet" href="./bootstrap-datepicker-master/dist/css/bootstrap-datepicker.min.css">
 	<script>
 	window.$ = window.jQuery = require('./node_modules/jquery/dist/jquery.js');
-	</script>
+</script>
 	<script src="./node_modules/bootstrap/dist/js/bootstrap.js"></script>
 	<script src="./bootstrap-datepicker-master/js/bootstrap-datepicker.js"></script>
 	<script src="./bootstrap-datepicker-master/js/locales/bootstrap-datepicker.ja.js"></script>
@@ -127,9 +127,9 @@
 							</div>
 						</div>
 
-						<div class="form-group row datepicker">
+						<div class="form-group row datepicker" id="firstDiv">
 							<div class="col-sm-2">
-								<label class="control-label">一回目</label>
+								<label class="control-label" id="firstLabel">1回目</label>
 							</div>
 							<div class="col-sm-3">
 								<select name="first" id="first" class="form-control form-control-sm">
@@ -183,7 +183,7 @@
 
 						<div class="form-group row datepicker" id="secondDiv">
 							<div class="col-sm-2">
-								<label class="control-label">二回目</label>
+								<label class="control-label" id="secondLabel">2回目</label>
 							</div>
 							<div class="col-sm-3">
 								<select name="second" id="second" class="form-control form-control-sm">

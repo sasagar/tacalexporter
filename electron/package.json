@@ -19,7 +19,7 @@
 		"start": "node_modules/.bin/electron .",
 		"build": "node build.js",
 		"pack:osx": "build --mac --x64",
-		"make:win":
+		"make:mac":
 			"electron-packager . TAcalExporter --platform=darwin --arch=x64 --version=1.8.4 --icon=build/icon.icns",
 		"make:win":
 			"electron-packager . TAcalExporter --platform=win32 --arch=x64 --version=1.8.4 --icon=build/icon.ico"

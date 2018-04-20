@@ -1,5 +1,5 @@
 {
-	"notes": "週1コースに対応。初回と2回目以降で設定出来るようになりました。",
-	"name": "TAcalExporter v3.1.0",
-	"url": "https://github.com/sasagar/tacalexporter/releases/download/v3.1.0/TAcalExporter.zip"
+	"notes": "週1コースに対応。2回目が1週目と同週になってしまうことがある点を修正。",
+	"name": "TAcalExporter v3.1.1",
+	"url": "https://github.com/sasagar/tacalexporter/releases/download/v3.1.1/TAcalExporter.zip"
 }

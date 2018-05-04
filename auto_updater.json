@@ -1,5 +1,5 @@
 {
-	"notes": "週1コースに対応。2回目が1週目と同週になってしまうことがある点を修正。",
-	"name": "TAcalExporter v3.1.1",
-	"url": "https://github.com/sasagar/tacalexporter/releases/download/v3.1.1/TAcalExporter.zip"
+	"notes": "Node.js 10へのアップデートに伴い、全体的なライブラリ見直し修正。",
+	"name": "TAcalExporter v3.2.0",
+	"url": "https://github.com/sasagar/tacalexporter/releases/download/v.3.2.0/TAcalExporter.zip"
 }

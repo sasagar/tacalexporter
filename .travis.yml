@@ -11,6 +11,7 @@ before_install:
 - nvm install $NODE_VERSION
 - nvm use --delete-prefix $NODE_VERSION
 - node --version
+- pwd
 - cd electron
 install:
 - npm install
@@ -22,14 +23,16 @@ before_deploy:
 - wine --version
 - brew install makensis
 - npm run archive
+- cd ~
+- pwd
 deploy:
   provider: releases
   skip_cleanup: true
   api_key:
     secure: Z8wDuNtIKYsVfmxLmVpJfNV2unsfIaAxwZCo12m0BzQmL+GvT1ph/xMtnMNvRULX2AprdjuOXC7HFr6OL3hZXJ8lBHEkYk+Bziac8BqduF+NlRutff5r0m61gwXOsNejT5fM6/cV2KaI/+mCRvWDlUR+pBcAzzUynielBfvL9yl6jAFp5/CwtibFEKmxoR5NVLwI+mF//+bZM1F2BAl3XoyOfW3qrlfpkmDn1eDoAtAAgWuh74OuN24sfwBcK6Lp+I2mB5ZUhX20WAaGQeEC+fZu/CeNKpefIKXzh5h2MhtZm+390VCITMZntJAIS3mPckKGo10iV7ewUyKKCY4qJX1ygKs8qYGVzoNA/Mc7Bdknp4yws+rIsFVKzEKybtojrTESzQb+7X/e7I5MstHbR+i8NZ5H8PW1xryCD9C9+q9+0wphAiJFFAEgkE1cTgB7c5VDoMEegFK3CWKsYdzgwnUysi2ALshrFYptU6K3fXf6TUHEWvpJTI3rPy+2WU1qDROk1kCKL+7vs8n3o43gxg+cFxcVf72K4WZBPuwGthLP0ReBTLrAibI1I5oWGc0JCJMoKBep/0okZfOshrph6EdWDvIN/qD163YEY8wCkPl2dvGU5EZWGdp15H/O08mBuYJOSWhUNHEzfw1XgZHtBlU1j+YRBXNYRZyrX1g2Cxs=
   file:
-    - ~/dist/darwin/TAcalExporter-win.zip
-    - ~/dist/darwin/TAcalExporter-osx.zip
+    - "~/tacalexporter/dist/darwin/TAcalExporter-win.zip"
+    - "~/tacalexporter/dist/darwin/TAcalExporter-osx.zip"
   on:
     repo: sasagar/tacalexporter
     branch: master

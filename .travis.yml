@@ -20,7 +20,8 @@ before_deploy:
 - brew install wine
 - wine --version
 - brew install makensis
-- travis_wait 20 npm run archive
+- npm run archive:osx
+- npm run archive:win
 deploy:
   provider: releases
   api_key:

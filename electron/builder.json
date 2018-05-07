@@ -1,0 +1,12 @@
+{
+	"osx": {
+		"title": "TAcalExporter",
+		"background": "asset/icon.png",
+		"icon": "build/icon.icns",
+		"icon-size": 80
+	},
+	"win": {
+		"title": "TAcalExporter",
+		"icon": "build/icon.ico"
+	}
+}

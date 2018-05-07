@@ -81,7 +81,6 @@ exports.courseReader = () => {
 };
 
 exports.addAllDayEventDateFormatter = date => {
-	console.log(date);
 	let tmpDate = new Date(date);
 
 	let y = tmpDate.getFullYear();

@@ -30,3 +30,6 @@ deploy:
     - dist/win/TAcalExporter-osx.zip
   on:
     repo: sasagar/tacalexporter
+    branches:
+      only:
+        - master

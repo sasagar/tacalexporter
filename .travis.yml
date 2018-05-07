@@ -31,3 +31,4 @@ deploy:
     - ~/dist/darwin/TAcalExporter-osx.zip
   on:
     repo: sasagar/tacalexporter
+    branch: release

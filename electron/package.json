@@ -1,6 +1,6 @@
 {
 	"name": "TAcalExporter",
-	"version": "3.5.1",
+	"version": "3.6.0",
 	"description": "TechAcademy用メンタースケジュール登録アプリ",
 	"standard": {
 		"globals": ["$"]
@@ -20,26 +20,26 @@
 		"start": "node_modules/.bin/electron .",
 
 		"clean": "rm -rf ../dist",
-		"clean:osx": "rm -rf ../dist/mac",
-		"clean:win": "rm -rf ../dist/win",
+		"clean:osx": "rm -rf ../dist/darwin",
+		"clean:win": "rm -rf ../dist/darwin/unpacked",
 
 		"pack": "npm run pack:osx && npm run build:win",
 		"pack:osx":
-			"npm run clean:osx && electron-packager . TAcalExporter --out=../dist/osx --platform=darwin --arch=x64 --version=2.0.0 --icon=build/icon.icns",
+			"npm run clean:osx && electron-packager . TAcalExporter --out=../dist/mac --platform=darwin --arch=x64 --version=2.0.0 --icon=build/icon.icns",
 		"pack:win":
-			"npm run clean:win && electron-packager . TAcalExporter --out=../dist/win --platform=win32 --arch=ia32 --version=2.0.0 --icon=build/icon.ico",
+			"npm run clean:win && electron-packager . TAcalExporter --out=../dist/win --platform=win32 --arch=x64 --version=2.0.0 --icon=build/icon.ico",
 
 		"build": "npm run build:osx && npm run build:win",
 		"build:osx":
-			"npm run pack:osx && electron-builder \"../dist/osx/TAcalExporter-darwin-x64/TAcalExporter.app\" --platform=osx --out=\"../dist/osx\" --config=builder.json",
+			"npm run pack:osx && electron-builder '../dist/mac/TAcalExporter-darwin-x64/TAcalExporter.app' --platform=mac --config=builder.json",
 		"build:win":
-			"npm run pack:win && electron-builder \"../dist/win/TAcalExporter-win32-ia32\" --platform=win --out=\"../dist/win\" --config=builder.json",
+			"npm run pack:win && electron-builder '../dist/win/TAcalExporter-win32-ia32' --platform=win --config=builder.json",
 
 		"archive": "npm run archive:osx && npm run archive:win",
 		"archive:osx":
-			"npm run build:osx && zip -j \"../dist/osx/TAcalExporter-osx.zip\" \"../dist/osx/TAcalExporter.dmg\"",
+			"npm run build:osx && zip -j '../dist/darwin/mac/TAcalExporter-osx.zip' '../dist/darwin/TAcalExporter.dmg'",
 		"archive:win":
-			"npm run build:win && zip -j \"../dist/win/TAcalExporter-win.zip\" \"../dist/win/TAcalExporter Setup.exe\"",
+			"npm run build:win && zip -j '../dist/darwin/win/TAcalExporter-win.zip' '../dist/darwin/TAcalExporter.exe'",
 
 		"make:mac":
 			"electron-packager . TAcalExporter --platform=darwin --arch=x64 --electron-version=2.0.0 --icon=build/icon.icns --overwrite",
@@ -48,7 +48,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://git.asiist.com/sasagawa/tacalexport.git"
+		"url": "https://github.com/sasagar/tacalexporter.git"
 	},
 	"author": "SASAGAWA, Kiyoshi",
 	"license": "GPL-3.0",

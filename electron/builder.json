@@ -1,12 +1,12 @@
 {
-	"osx": {
-		"title": "TAcalExporter",
-		"background": "asset/icon.png",
-		"icon": "build/icon.icns",
-		"icon-size": 80
+	"mac": {
+		"icon": "build/icon.icns"
 	},
 	"win": {
-		"title": "TAcalExporter",
 		"icon": "build/icon.ico"
-	}
+	},
+	"directories": {
+		"output": "../dist/${platform}"
+	},
+	"artifactName": "${productName}.${ext}"
 }

@@ -2,6 +2,7 @@ language: objective-c
 cache:
   directories:
   - node_modules
+sudo: required
 env:
 - NODE_VERSION="10.0.0"
 before_install:

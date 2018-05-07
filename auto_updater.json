@@ -1,5 +1,5 @@
 {
-	"notes": "Node.js 10へのアップデートに伴い、全体的なライブラリ見直し修正。",
-	"name": "TAcalExporter v3.2.0",
-	"url": "https://github.com/sasagar/tacalexporter/releases/download/v.3.2.0/TAcalExporter.zip"
+	"notes": "専任コースについて、報酬計上日が終日イベントとして登録されるようになりました。",
+	"name": "TAcalExporter v3.5.0",
+	"url": "https://github.com/sasagar/tacalexporter/releases/download/v.3.5.0/TAcalExporter.zip"
 }

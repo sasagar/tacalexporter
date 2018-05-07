@@ -20,7 +20,7 @@ exports.template = [
 		submenu: [
 			{ role: 'reload', label: '再読み込み' },
 			{ role: 'forcereload', label: '強制再読み込み' },
-			//{ role: 'toggledevtools' },
+			{ role: 'toggledevtools' },
 			{ type: 'separator' },
 			{ role: 'resetzoom', label: '拡大率リセット' },
 			{ role: 'zoomin', label: '拡大' },

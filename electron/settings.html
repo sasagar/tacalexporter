@@ -5,23 +5,22 @@
 	<title>TechAcademy メンタリングスケジュール登録</title>
 	<link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.css">
 	<link rel="stylesheet" href="./node_modules/font-awesome/css/font-awesome.css">
-	<link rel="stylesheet" href="./bootstrap-datepicker-master/dist/css/bootstrap-datepicker.min.css">
 	<script>
 	window.$ = window.jQuery = require('./node_modules/jquery/dist/jquery.js');
-	</script>
+</script>
 	<script src="./node_modules/bootstrap/dist/js/bootstrap.js"></script>
 	<script src="./bootstrap-datepicker-master/js/bootstrap-datepicker.js"></script>
 	<script src="./bootstrap-datepicker-master/js/locales/bootstrap-datepicker.ja.js"></script>
-	<script src="./node_modules/gasparesganga-jquery-loading-overlay/src/loadingoverlay.min.js"></script>
+	<script src="./node_modules/gasparesganga-jquery-loading-overlay/src/loadingoverlay.js"></script>
 	<script src="./app/functions.js"></script>
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<style>
 	</style>
 	<script>
 	$(document).ready(() => {
-		$('.courseFlag').on('change', (eo) => toggleCourse(eo));
-	});
-	</script>
+	$('.courseFlag').on('change', eo => toggleCourse(eo));
+});
+</script>
 </head>
 <body>
 	<div class="container p-3">
@@ -123,7 +122,7 @@
 		</form>
 
 		<hr>
-		
+
 		<div class="row">
 			<div class="col-sm-12">
 				<button type="button" class="btn btn-success settingclose" style="cursor: pointer;">閉じる</button>

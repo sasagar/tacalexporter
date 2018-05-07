@@ -27,13 +27,13 @@ const { config } = require('./app/defaultConf.js');
 
 // スコープの設定
 // カレンダーAPIと個人情報用のAPIを許可するようにスコープ指定
-var SCOPES = [
+let SCOPES = [
 	'https://www.googleapis.com/auth/calendar',
 	'https://www.googleapis.com/auth/userinfo.profile',
 ];
 
 // TOKENは設定ファイルに保存
-var TOKEN = config.get('credentials.token');
+let TOKEN = config.get('credentials.token');
 
 // メインウィンドウはGCされないようにグローバル宣言
 let mainWindow;
@@ -160,16 +160,24 @@ ipcMain.on('logout', () => {
 });
 
 ipcMain.on('applySchedule', (event, obj) => {
-	var summary = config.get('summary.mentoring');
+	let summary = config.get('summary.mentoring');
 	if (!summary) {
 		config.set('summary.mentoring', 'メンタリング %name %courseid%week');
 	}
-	var test = nf.scheduleMaker(obj);
-	var title = nf.eventTitleMaker(obj, summary);
+	let test = nf.scheduleMaker(obj);
+	let title = nf.eventTitleMaker(obj, summary);
+	let courseKey = obj.course.value;
+	let name = obj.name.value;
+	let week = obj.week.value;
+	let startDate = nc.datePrep(obj.start.value);
 
-	var resObj = {
+	let resObj = {
 		title: title,
 		schedule: test,
+		courseKey: courseKey,
+		name: name,
+		startDate: startDate,
+		week: week,
 	};
 	event.returnValue = resObj;
 });
@@ -177,9 +185,15 @@ ipcMain.on('applySchedule', (event, obj) => {
 ipcMain.on('addschedule', async (event, option) => {
 	try {
 		await loadingWindow.show();
-		var content = await gg.getClientSecret();
-		var tokenedAuth = await authorize(content);
-		var res = await gg.addEvents(tokenedAuth, option);
+		let content = await gg.getClientSecret();
+		let tokenedAuth = await authorize(content);
+		let res = await gg.addEvents(tokenedAuth, option);
+
+		let courses = nc.courseReader();
+		if (courses[option.data.courseKey].fixed) {
+			await gg.addAllDayEvent(tokenedAuth, option);
+		}
+
 		res.sort((now, next) => {
 			if (now.start.dateTime < next.start.dateTime) return -1;
 			if (now.start.dateTime > next.start.dateTime) return 1;
@@ -197,10 +211,10 @@ ipcMain.on('addschedule', async (event, option) => {
 
 ipcMain.on('getCalendarList', async event => {
 	try {
-		var content = await gg.getClientSecret();
+		let content = await gg.getClientSecret();
 		// authorize(content, gg.listCalendar, event);
-		var tokenedAuth = await authorize(content);
-		var res = await gg.listCalendar(tokenedAuth);
+		let tokenedAuth = await authorize(content);
+		let res = await gg.listCalendar(tokenedAuth);
 		event.returnValue = res;
 	} catch (e) {
 		console.error('Error loading client secret file: ' + e);
@@ -212,10 +226,10 @@ ipcMain.on('getCalendarList', async event => {
 
 ipcMain.on('getProfileData', async event => {
 	try {
-		var content = await gg.getClientSecret();
+		let content = await gg.getClientSecret();
 		// authorize(content, gg.userInfo, event);
-		var tokenedAuth = await authorize(content);
-		var res = await gg.userInfo(tokenedAuth, event);
+		let tokenedAuth = await authorize(content);
+		let res = await gg.userInfo(tokenedAuth, event);
 		event.returnValue = res;
 	} catch (e) {
 		console.error('Error at ipc: getProfileData: ' + e);
@@ -229,14 +243,14 @@ ipcMain.on('changeCalendar', (event, calval) => {
 });
 
 ipcMain.on('getSelectedCalendar', event => {
-	var data = config.get('calendar.selected');
+	let data = config.get('calendar.selected');
 	event.returnValue = data;
 });
 
 ipcMain.on('launchChecker', async event => {
 	try {
-		var content = await gg.getClientSecret();
-		var res = await authorizeChecker(content);
+		let content = await gg.getClientSecret();
+		let res = await authorizeChecker(content);
 		event.returnValue = res;
 	} catch (e) {
 		console.error('Error loading client secret file: ' + e);
@@ -248,8 +262,8 @@ ipcMain.on('launchChecker', async event => {
 
 ipcMain.on('tokenSubmit', async (event, code) => {
 	try {
-		var credentials = await gg.getClientSecret();
-		var oauth2Client = gg.OAuth2(credentials);
+		let credentials = await gg.getClientSecret();
+		let oauth2Client = gg.OAuth2(credentials);
 
 		oauth2Client.getToken(code, (err, token) => {
 			if (err) {
@@ -271,34 +285,34 @@ ipcMain.on('tokenSubmit', async (event, code) => {
 });
 
 ipcMain.on('applyShiftData', async (event, obj) => {
-	var year = parseInt(obj.year);
-	var month = parseInt(obj.month);
-	var calID = obj.calID;
-	var title = config.get('summary.shift');
-	var allShiftWDays = obj.allShiftWDays;
-	var allShiftWDaysNum = [];
-	var schedule = [];
+	let year = parseInt(obj.year);
+	let month = parseInt(obj.month);
+	let calID = obj.calID;
+	let title = config.get('summary.shift');
+	let allShiftWDays = obj.allShiftWDays;
+	let allShiftWDaysNum = [];
+	let schedule = [];
 
-	for (var i in allShiftWDays) {
+	for (let i in allShiftWDays) {
 		allShiftWDaysNum.push({
 			wday: allShiftWDays[i].substr(3, 1),
 			shift: allShiftWDays[i].substr(5, 1),
 		});
 	}
 
-	var nextmonth = nc.paddingZero(month + 1);
-	var nextdateStr = `${year}-${nextmonth}-01T00:00:00.000+09:00`;
-	var nextdate = new Date(nextdateStr);
-	var lastdate = new Date(nextdate.getTime() - 24 * 60 * 60 * 1000);
-	var lastday = lastdate.getDate();
+	let nextmonth = nc.paddingZero(month + 1);
+	let nextdateStr = `${year}-${nextmonth}-01T00:00:00.000+09:00`;
+	let nextdate = new Date(nextdateStr);
+	let lastdate = new Date(nextdate.getTime() - 24 * 60 * 60 * 1000);
+	let lastday = lastdate.getDate();
 
-	for (var day = 1; day <= lastday; day++) {
-		var tmpday = new Date(lastdate.setDate(day));
-		var weekday = tmpday.getDay();
-		for (var num in allShiftWDaysNum) {
+	for (let day = 1; day <= lastday; day++) {
+		let tmpday = new Date(lastdate.setDate(day));
+		let weekday = tmpday.getDay();
+		for (let num in allShiftWDaysNum) {
 			if (weekday == allShiftWDaysNum[num].wday) {
-				var start;
-				var end;
+				let start;
+				let end;
 				if (allShiftWDaysNum[num].shift == 1) {
 					start = new Date(tmpday.setHours(15));
 					end = new Date(tmpday.setHours(19));
@@ -310,7 +324,7 @@ ipcMain.on('applyShiftData', async (event, obj) => {
 			}
 		}
 	}
-	var option = {
+	let option = {
 		calID: calID,
 		data: {
 			title: title,
@@ -319,9 +333,9 @@ ipcMain.on('applyShiftData', async (event, obj) => {
 	};
 
 	try {
-		var content = await gg.getClientSecret();
-		var tokenedAuth = await authorize(content);
-		var res = await gg.addEvents(tokenedAuth, option);
+		let content = await gg.getClientSecret();
+		let tokenedAuth = await authorize(content);
+		let res = await gg.addEvents(tokenedAuth, option);
 		res.sort((now, next) => {
 			if (now.start.dateTime < next.start.dateTime) return -1;
 			if (now.start.dateTime > next.start.dateTime) return 1;
@@ -338,7 +352,7 @@ ipcMain.on('applyShiftData', async (event, obj) => {
 });
 
 ipcMain.on('getShiftConf', (event, id) => {
-	var data = config.get(`shift.${id}`);
+	let data = config.get(`shift.${id}`);
 	if (!data) {
 		data = false;
 	}
@@ -351,15 +365,15 @@ ipcMain.on('shiftRemember', (event, { selector, value }) => {
 });
 
 ipcMain.on('courseGetter', event => {
-	var promise = [];
-	var course = nc.courseReader();
-	var res = {};
+	let promise = [];
+	let course = nc.courseReader();
+	let res = {};
 
-	for (var key in course) {
+	for (let key in course) {
 		promise.push(
 			new Promise((resolve, reject) => {
 				try {
-					var flag = config.get(`course.${key}`);
+					let flag = config.get(`course.${key}`);
 					if (typeof flag === 'undefined') {
 						config.set(`course.${key}`, true);
 						flag = true;
@@ -380,7 +394,7 @@ ipcMain.on('courseGetter', event => {
 });
 
 ipcMain.on('courseList', event => {
-	var course = nc.courseReader();
+	let course = nc.courseReader();
 	event.returnValue = course;
 });
 
@@ -390,7 +404,7 @@ ipcMain.on('courseRemember', (event, { selector, value }) => {
 });
 
 ipcMain.on('getCourseConf', (event, id) => {
-	var data = config.get(`course.${id}`);
+	let data = config.get(`course.${id}`);
 	if (!data) {
 		data = false;
 	}
@@ -409,7 +423,7 @@ ipcMain.on('applyChatSummary', (event, summary) => {
 
 ipcMain.on('getChatSummary', event => {
 	try {
-		var summary = config.get('summary.shift');
+		let summary = config.get('summary.shift');
 		event.returnValue = summary;
 	} catch (e) {
 		console.log('Error at getChatSummary: ' + e);
@@ -429,7 +443,7 @@ ipcMain.on('applyMentoringSummary', (event, summary) => {
 
 ipcMain.on('getMentoringSummary', event => {
 	try {
-		var summary = config.get('summary.mentoring');
+		let summary = config.get('summary.mentoring');
 		event.returnValue = summary;
 	} catch (e) {
 		console.log('Error at getMentoringSummary: ' + e);
@@ -455,11 +469,11 @@ ipcMain.on('closeSettings', event => {
  * @return {String}     OK / auth認証用のURL のいずれか
  */
 function authorizeChecker(credentials) {
-	var res;
+	let res;
 	// Check if we have previously stored a token.
 	if (TOKEN === '') {
-		var oauth2Client = gg.OAuth2(credentials);
-		var authUrl = oauth2Client.generateAuthUrl({
+		let oauth2Client = gg.OAuth2(credentials);
+		let authUrl = oauth2Client.generateAuthUrl({
 			access_type: 'offline',
 			scope: SCOPES,
 		});
@@ -481,10 +495,10 @@ function authorizeChecker(credentials) {
  * @param {Object} option callbackに渡したいオプション。第2引数になる。
  */
 function authorize(credentials) {
-	var oauth2Client = gg.OAuth2(credentials);
+	let oauth2Client = gg.OAuth2(credentials);
 
 	if (TOKEN === '') {
-		var authUrl = oauth2Client.generateAuthUrl({
+		let authUrl = oauth2Client.generateAuthUrl({
 			access_type: 'offline',
 			scope: SCOPES,
 		});

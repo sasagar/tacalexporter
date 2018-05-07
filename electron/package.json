@@ -18,8 +18,29 @@
 	"main": "main.js",
 	"scripts": {
 		"start": "node_modules/.bin/electron .",
-		"build": "node build.js",
-		"pack:osx": "build --mac --x64",
+
+		"clean": "rm -rf ./dist",
+		"clean:osx": "rm -rf ./dist/mac",
+		"clean:win": "rm -rf ./dist/win",
+
+		"pack": "npm run pack:osx && npm run build:win",
+		"pack:osx":
+			"npm run clean:osx && electron-packager . TAcalExporter --out=dist/osx --platform=darwin --arch=x64 --version=2.0.0 --icon=build/icon.icns --ignore=\"dist|assets\"",
+		"pack:win":
+			"npm run clean:win && electron-packager . TAcalExporter --out=dist/win --platform=win32 --arch=ia32 --version=2.0.0 --icon=build/icon.ico --ignore=\"dist|assets\"",
+
+		"build": "npm run build:osx && npm run build:win",
+		"build:osx":
+			"npm run pack:osx && electron-builder \"dist/osx/TAcalExporter-darwin-x64/Google Photos.app\" --platform=osx --out=\"dist/osx\" --config=builder.json",
+		"build:win":
+			"npm run pack:win && electron-builder \"dist/win/TAcalExporter-win32-ia32\" --platform=win --out=\"dist/win\" --config=builder.json",
+
+		"archive": "npm run archive:osx && npm run archive:win",
+		"archive:osx":
+			"npm run build:osx && zip -j \"dist/osx/TAcalExporter-osx.zip\" \"dist/osx/TAcalExporter.dmg\"",
+		"archive:win":
+			"npm run build:win && zip -j \"dist/win/TAcalExporter-win.zip\" \"dist/win/TAcalExporter Setup.exe\"",
+
 		"make:mac":
 			"electron-packager . TAcalExporter --platform=darwin --arch=x64 --electron-version=2.0.0 --icon=build/icon.icns --overwrite",
 		"make:win":

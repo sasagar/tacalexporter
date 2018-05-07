@@ -1,7 +1,7 @@
 'use strict';
 /*eslint no-console: ["error", { allow: ["warn", "error"] }] */
 
-const {ipcRenderer} = require('electron');
+const { ipcRenderer } = require('electron');
 
 var weekday = ['日曜', '月曜', '火曜', '水曜', '木曜', '金曜', '土曜'];
 
@@ -12,7 +12,7 @@ $(document).ready(() => {
 	// DatePicker
 	$('.datepicker .date').datepicker({
 		format: 'yyyy年mm月dd日',
-		language: 'ja'
+		language: 'ja',
 	});
 
 	$('#dataapply').on('click', () => {
@@ -36,7 +36,12 @@ $(document).ready(() => {
 		for (var i in schedule) {
 			var tmpStart = new Date(schedule[i].start);
 			var tmpEnd = new Date(schedule[i].end);
-			var date = tmpStart.getFullYear() + '/' + paddingZero(tmpStart.getMonth() + 1) + '/' + paddingZero(tmpStart.getDate());
+			var date =
+				tmpStart.getFullYear() +
+				'/' +
+				paddingZero(tmpStart.getMonth() + 1) +
+				'/' +
+				paddingZero(tmpStart.getDate());
 			var wDay = tmpStart.getDay();
 			var hour = paddingZero(tmpStart.getHours());
 			var minute = paddingZero(tmpStart.getMinutes());
@@ -71,7 +76,7 @@ $(document).ready(() => {
 
 	$('#extra').on('change', () => selectChecker());
 
-	$('.flagCheckbox').on('change', (eo) => shiftFlagChecker(eo));
+	$('.flagCheckbox').on('change', eo => shiftFlagChecker(eo));
 
 	// どうやらモーダルで表示する物はそのページで拾った方が良いみたい。
 	// $('.courseFlag').on('change', () => console.log('test'));
@@ -86,9 +91,11 @@ $(document).ready(() => {
 
 	$('.settingclose').on('click', () => closeSettings());
 
-	$('#code').keypress(function (e) {
+	$('#code').keypress(function(e) {
 		// Enterで送信出来るように
-		if (e.which === 13) { tokenSubmitter(); }
+		if (e.which === 13) {
+			tokenSubmitter();
+		}
 	});
 
 	$('#logoutBtn').on('click', () => {
@@ -98,8 +105,8 @@ $(document).ready(() => {
 
 const showLoading = async () => {
 	await $.LoadingOverlay('show', {
-		image       : '',
-		fontawesome : 'fa fa-spinner fa-spin'
+		image: '',
+		fontawesome: 'fa fa-spinner fa-spin',
 	});
 };
 
@@ -111,7 +118,9 @@ const courseGetter = () => {
 	$('#course').empty();
 	for (var i in course) {
 		$('#course').append(
-			`<option value="${course[i].key}" data-fullname="${course[i].fullname}" data-perweek="${course[i].perWeek}">
+			`<option value="${course[i].key}" data-fullname="${
+				course[i].fullname
+			}" data-perweek="${course[i].perWeek}">
 			${course[i].fullname}
 			</option>`
 		);
@@ -119,7 +128,7 @@ const courseGetter = () => {
 };
 
 const courseSettingListing = () => {
-	new Promise ((resolve, reject) => {
+	new Promise((resolve, reject) => {
 		try {
 			$('#settingTableBody').empty();
 			var courses = ipcRenderer.sendSync('courseList');
@@ -185,14 +194,15 @@ const launchChecker = async () => {
  * @return {Promise} await用のPromise
  */
 const profileSetter = () => {
-	new Promise ((resolve, reject) => {
+	new Promise((resolve, reject) => {
 		try {
 			var profile = ipcRenderer.sendSync('getProfileData');
 			$('.familyName').text(profile.family_name);
 			$('.givenName').text(profile.given_name);
 			$('.iconImg').append(`
-				<img src="${profile.picture}" class="rounded-circle" style="max-width: 56px;">`
-			);
+				<img src="${
+	profile.picture
+}" class="rounded-circle" style="max-width: 56px;">`);
 			resolve();
 		} catch (e) {
 			reject(e);
@@ -202,20 +212,23 @@ const profileSetter = () => {
 
 /**
  * コースが変更される度に呼び出される
- * data-perweekの数字が1で、#extraのチェックが無い時に二回目の欄を隠す
- * それ以外の時に二回目の欄を表示する
+ * # 3.1.0仕様変更
+ * data-perweekの数字が1で、#extraのチェックが無い時に
+ * 初回と2回目以降の設定にできる様表示を変更
  * @return {Promise} await用のPromise
  */
 const selectChecker = () => {
-	new Promise ((resolve, reject) => {
+	new Promise((resolve, reject) => {
 		try {
 			var perWeek = parseInt($('#course option:selected').attr('data-perweek'));
 			var check = $('#extra').prop('checked');
 
 			if (perWeek === 1 && !check) {
-				$('#secondDiv').hide();
+				$('#firstLabel').text('初回のみ');
+				$('#secondLabel').text('2回目以降');
 			} else {
-				$('#secondDiv').show();
+				$('#firstLabel').text('1回目');
+				$('#secondLabel').text('2回目');
 			}
 			resolve();
 		} catch (e) {
@@ -229,14 +242,16 @@ const selectChecker = () => {
  * @return {Promise} await用のPromise
  */
 const listGetter = () => {
-	new Promise ((resolve, reject) => {
+	new Promise((resolve, reject) => {
 		try {
 			var list = ipcRenderer.sendSync('getCalendarList');
 
 			for (var i in list) {
 				var data = list[i];
 				if (data.accessRole === 'write' || data.accessRole === 'owner') {
-					$('[name=calendar]').append(`<option value="${data.id}">${data.summary}</option>`);
+					$('[name=calendar]').append(
+						`<option value="${data.id}">${data.summary}</option>`
+					);
 				}
 			}
 		} catch (e) {
@@ -252,8 +267,12 @@ const shiftSetter = () => {
 		var res = ipcRenderer.sendSync('getShiftConf', id);
 		if (res) {
 			$(shift).prop('checked', true);
-			$(shift).next('.flagText').html('シフト');
-			$(shift).parent().addClass('active');
+			$(shift)
+				.next('.flagText')
+				.html('シフト');
+			$(shift)
+				.parent()
+				.addClass('active');
 		}
 	}
 };
@@ -266,21 +285,33 @@ const calendarSetter = () => {
 	var now = new Date();
 	var thisMonthTmp = new Date(now.setDate(1));
 	var thisMonthFirstDay = new Date(thisMonthTmp);
-	var nextMonthFirstDay = new Date(thisMonthTmp.setMonth(thisMonthTmp.getMonth() + 1));
+	var nextMonthFirstDay = new Date(
+		thisMonthTmp.setMonth(thisMonthTmp.getMonth() + 1)
+	);
 	var thisMonth = thisMonthFirstDay.getMonth() + 1;
 	var nextMonth = nextMonthFirstDay.getMonth() + 1;
 	var thisYear = thisMonthFirstDay.getFullYear();
 	var nextYear = nextMonthFirstDay.getFullYear();
-	new Promise ((resolve, reject) => {
+	new Promise((resolve, reject) => {
 		try {
 			if (thisYear !== nextYear) {
-				$('#shiftYear').append(`<option value="${thisYear}">${thisYear}</option>`);
-				$('#shiftYear').append(`<option value="${nextYear}" selected>${nextYear}</option>`);
+				$('#shiftYear').append(
+					`<option value="${thisYear}">${thisYear}</option>`
+				);
+				$('#shiftYear').append(
+					`<option value="${nextYear}" selected>${nextYear}</option>`
+				);
 			} else {
-				$('#shiftYear').append(`<option value="${thisYear}">${thisYear}</option>`);
+				$('#shiftYear').append(
+					`<option value="${thisYear}">${thisYear}</option>`
+				);
 			}
-			$('#shiftMonth').append(`<option value="${thisMonth}">${thisMonth}</option>`);
-			$('#shiftMonth').append(`<option value="${nextMonth}" selected>${nextMonth}</option>`);
+			$('#shiftMonth').append(
+				`<option value="${thisMonth}">${thisMonth}</option>`
+			);
+			$('#shiftMonth').append(
+				`<option value="${nextMonth}" selected>${nextMonth}</option>`
+			);
 		} catch (e) {
 			reject(e);
 		}
@@ -292,7 +323,7 @@ const calendarSetter = () => {
  * @return {Promise} await用のPromise
  */
 const selectCalendar = () => {
-	new Promise ((resolve, reject) => {
+	new Promise((resolve, reject) => {
 		try {
 			var val = ipcRenderer.sendSync('getSelectedCalendar');
 			$('[name=calendar]').val(val);
@@ -309,14 +340,19 @@ const settingsSetter = () => {
 		var res = ipcRenderer.sendSync('getCourseConf', id);
 		if (res) {
 			$(course).prop('checked', true);
-			$(course).next('.flagText').html('オン');
-			$(course).parent().addClass('active');
+			$(course)
+				.next('.flagText')
+				.html('オン');
+			$(course)
+				.parent()
+				.addClass('active');
 		} else {
-			$(course).next('.flagText').html('オフ');
+			$(course)
+				.next('.flagText')
+				.html('オフ');
 		}
 	}
 };
-
 
 /**
  * #data のフォーム内容を取得してJSON形式に変換
@@ -331,7 +367,7 @@ const applyData = () => {
 	var data = $('#data').val();
 	var calID = $('#calendar').val();
 	var schedule = JSON.parse(data);
-	var obj = {calID: calID, data: schedule};
+	var obj = { calID: calID, data: schedule };
 	var res = ipcRenderer.sendSync('addschedule', obj);
 	resultMessage(res);
 	$('#applydata i').css('display', 'none');
@@ -366,15 +402,19 @@ const calendarChange = () => {
  * シフトのチェックボックスの変化に合わせて中のテキストを変える
  * @param  {Event} eo イベントオブジェクト
  */
-const shiftFlagChecker = (eo) => {
+const shiftFlagChecker = eo => {
 	var selector = $(eo.currentTarget).attr('id');
 	var value = $(eo.currentTarget).prop('checked');
-	ipcRenderer.sendSync('shiftRemember', {selector, value});
+	ipcRenderer.sendSync('shiftRemember', { selector, value });
 
 	if (value) {
-		$(eo.currentTarget).next('.flagText').html('シフト');
+		$(eo.currentTarget)
+			.next('.flagText')
+			.html('シフト');
 	} else {
-		$(eo.currentTarget).next('.flagText').html('休み');
+		$(eo.currentTarget)
+			.next('.flagText')
+			.html('休み');
 	}
 };
 
@@ -395,7 +435,7 @@ const applyShiftData = () => {
 		}
 	}
 
-	var obj = {year, month, calID, allShiftWDays};
+	var obj = { year, month, calID, allShiftWDays };
 	var res = ipcRenderer.sendSync('applyShiftData', obj);
 	resultMessage(res);
 	$('#applyShiftData i').css('display', 'none');
@@ -405,7 +445,7 @@ const applyShiftData = () => {
  * BootstrapのモーダルをJSからクローズしたいときに使う
  * @param  {string} selector クローズしたいモーダルのID
  */
-const modalClose = (selector) => {
+const modalClose = selector => {
 	$('body').removeClass('modal-open');
 	$('.modal-backdrop').remove();
 	$(selector).modal('hide');
@@ -415,7 +455,7 @@ const modalClose = (selector) => {
  * モーダルに登録された結果を追加表示する
  * @param  {Object} res   メインプロセスから送られてくるデータ
  */
-const resultMessage = (res) => {
+const resultMessage = res => {
 	for (var i in res) {
 		var args = res[i];
 		var title = args.summary;
@@ -427,20 +467,27 @@ const resultMessage = (res) => {
 		var startHours = paddingZero(start.getHours());
 		var startMinutes = paddingZero(start.getMinutes());
 		$('#modalMessage').append(
-			`<p>${title} @ ${startYear}/${startMonth}/${startDate} ${weekday[startWDay]} ${startHours}:${startMinutes}</p>`
+			`<p>${title} @ ${startYear}/${startMonth}/${startDate} ${
+				weekday[startWDay]
+			} ${startHours}:${startMinutes}</p>`
 		);
 	}
 };
 
-const toggleCourse = (eo) => {
+// eslint-disable-next-line no-unused-vars
+const toggleCourse = eo => {
 	var selector = $(eo.currentTarget).attr('id');
 	var value = $(eo.currentTarget).prop('checked');
-	ipcRenderer.sendSync('courseRemember', {selector, value});
+	ipcRenderer.sendSync('courseRemember', { selector, value });
 
 	if (value) {
-		$(eo.currentTarget).next('.flagText').html('オン');
+		$(eo.currentTarget)
+			.next('.flagText')
+			.html('オン');
 	} else {
-		$(eo.currentTarget).next('.flagText').html('オフ');
+		$(eo.currentTarget)
+			.next('.flagText')
+			.html('オフ');
 	}
 };
 
@@ -450,7 +497,7 @@ const applyChatSummary = () => {
 };
 
 const setChatSummary = () => {
-	new Promise ((resolve, reject) => {
+	new Promise((resolve, reject) => {
 		try {
 			var summary = ipcRenderer.sendSync('getChatSummary');
 			if (summary) {
@@ -471,7 +518,7 @@ const applyMentoringSummary = () => {
 };
 
 const setMentoringSummary = () => {
-	new Promise ((resolve, reject) => {
+	new Promise((resolve, reject) => {
 		try {
 			var summary = ipcRenderer.sendSync('getMentoringSummary');
 			if (summary) {
@@ -486,7 +533,6 @@ const setMentoringSummary = () => {
 	});
 };
 
-
 const openSettings = () => {
 	ipcRenderer.sendSync('openSettings');
 };
@@ -500,4 +546,4 @@ const closeSettings = async () => {
  * @param  {number} int int型の数値
  * @return {string}     0埋めされた二桁の数字を文字列にしたもの
  */
-const paddingZero = (int) => String(int).padStart(2, '0');
+const paddingZero = int => String(int).padStart(2, '0');

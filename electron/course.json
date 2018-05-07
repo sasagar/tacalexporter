@@ -3,25 +3,29 @@
 		"fullname": "WEBアプリケーションコース",
 		"key": "RB",
 		"perWeek": 2,
-		"set": false
+		"set": false,
+		"fixed": false
 	},
 	"PL": {
 		"fullname": "PHP/Laravelコース",
 		"key": "PL",
 		"perWeek": 2,
-		"set": false
+		"set": false,
+		"fixed": false
 	},
 	"FE": {
 		"fullname": "フロントエンドコース",
 		"key": "FE",
 		"perWeek": 2,
-		"set": false
+		"set": false,
+		"fixed": false
 	},
 	"WP": {
 		"fullname": "WordPressコース",
 		"key": "WP",
 		"perWeek": 2,
-		"set": false
+		"set": false,
+		"fixed": false
 	},
 	"IA": {
 		"fullname": "iPhoneアプリコース",
@@ -33,144 +37,189 @@
 		"fullname": "Androidアプリコース",
 		"key": "AA",
 		"perWeek": 2,
-		"set": false
+		"set": false,
+		"fixed": false
 	},
 	"UN": {
 		"fullname": "Unityコース",
 		"key": "UN",
 		"perWeek": 2,
-		"set": false
+		"set": false,
+		"fixed": false
 	},
 	"FP": {
 		"fullname": "はじめてのプログラミングコース",
 		"key": "FP",
 		"perWeek": 1,
-		"set": false
+		"set": false,
+		"fixed": false
 	},
 	"WD": {
 		"fullname": "WEBデザインコース",
 		"key": "WD",
 		"perWeek": 2,
-		"set": false
+		"set": false,
+		"fixed": false
 	},
 	"UI": {
 		"fullname": "UI/UXデザインコース",
 		"key": "UI",
 		"perWeek": 1,
-		"set": false
+		"set": false,
+		"fixed": true
 	},
 	"DR": {
 		"fullname": "WEBディレクションコース",
 		"key": "DR",
 		"perWeek": 2,
-		"set": false
+		"set": false,
+		"fixed": false
 	},
 	"WM": {
 		"fullname": "WEBマーケティングコース",
 		"key": "WM",
 		"perWeek": 2,
-		"set": false
+		"set": false,
+		"fixed": false
 	},
 	"JV": {
-		"fullname": "Javaエンジニアコース",
+		"fullname": "Javaコース",
 		"key": "JV",
 		"perWeek": 2,
-		"set": false
+		"set": false,
+		"fixed": false
 	},
 	"PY": {
 		"fullname": "Pythonコース",
 		"key": "PY",
 		"perWeek": 2,
-		"set": false
+		"set": false,
+		"fixed": true
 	},
 	"ND": {
 		"fullname": "Node.jsコース",
 		"key": "ND",
 		"perWeek": 2,
-		"set": false
+		"set": false,
+		"fixed": true
+	},
+	"AI": {
+		"fullname": "AIコース",
+		"key": "AI",
+		"perWeek": 2,
+		"set": false,
+		"fixed": true
+	},
+	"BC": {
+		"fullname": "ブロックチェーンコース",
+		"key": "BC",
+		"perWeek": 2,
+		"set": false,
+		"fixed": true
+	},
+	"SC": {
+		"fullname": "Scalaコース",
+		"key": "SC",
+		"perWeek": 2,
+		"set": false,
+		"fixed": true
 	},
 	"RBFE": {
 		"fullname": "WEBアプリケーション+フロントエンドセット",
 		"key": "RBFE",
 		"perWeek": 2,
-		"set": true
+		"set": true,
+		"fixed": false
 	},
 	"PLFE": {
 		"fullname": "PHP/Laravel+フロントエンドセット",
 		"key": "PLFE",
 		"perWeek": 2,
-		"set": true
+		"set": true,
+		"fixed": false
 	},
 	"WDWP": {
 		"fullname": "WEBデザイン+WordPressセット",
 		"key": "WDWP",
 		"perWeek": 2,
-		"set": true
+		"set": true,
+		"fixed": false
 	},
 	"WDWM": {
 		"fullname": "WEBデザイン+WEBマーケティングセット",
 		"key": "WDWM",
 		"perWeek": 2,
-		"set": true
+		"set": true,
+		"fixed": false
 	},
 	"WPWM": {
 		"fullname": "WoprdPress+WEBマーケティングセット",
 		"key": "WPWM",
 		"perWeek": 2,
-		"set": true
+		"set": true,
+		"fixed": false
 	},
 	"IAAA": {
 		"fullname": "iPhoneアプリ+Androidアプリ",
 		"key": "IAAA",
 		"perWeek": 2,
-		"set": true
+		"set": true,
+		"fixed": false
 	},
 	"UNIA": {
 		"fullname": "Unity+iPhoneアプリ",
 		"key": "UNIA",
 		"perWeek": 2,
-		"set": true
+		"set": true,
+		"fixed": false
 	},
 	"UNAA": {
 		"fullname": "Unity+Androidアプリ",
 		"key": "UNAA",
 		"perWeek": 2,
-		"set": true
+		"set": true,
+		"fixed": false
 	},
 	"UIIA": {
 		"fullname": "UI/UXデザイン+iPhoneアプリ",
 		"key": "UIIA",
 		"perWeek": 2,
-		"set": true
+		"set": true,
+		"fixed": false
 	},
 	"UIAA": {
 		"fullname": "UI/UXデザイン+Androidアプリ",
 		"key": "UIAA",
 		"perWeek": 2,
-		"set": true
+		"set": true,
+		"fixed": false
 	},
 	"DRWD": {
 		"fullname": "WEBディレクション+WEBデザイン",
 		"key": "DRWD",
 		"perWeek": 2,
-		"set": true
+		"set": true,
+		"fixed": false
 	},
 	"WDWM": {
 		"fullname": "WEBディレクション+WEBマーケティング",
 		"key": "WDWM",
 		"perWeek": 2,
-		"set": true
+		"set": true,
+		"fixed": false
 	},
 	"RBFEWD": {
 		"fullname": "WEBアプリケーション+フロントエンド+WEBデザイン",
 		"key": "RBFEWD",
 		"perWeek": 2,
-		"set": true
+		"set": true,
+		"fixed": false
 	},
 	"PLFEWD": {
 		"fullname": "PHP/Laravel+フロントエンド+WEBデザイン",
 		"key": "PLFEWD",
 		"perWeek": 2,
-		"set": true
+		"set": true,
+		"fixed": false
 	}
 }

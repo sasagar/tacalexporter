@@ -10,11 +10,11 @@ const path = require('path');
  */
 exports.funcInterval = (val1, val2) => {
 	// 未来の曜日を手前に。（そこまでの日数）
-	var res;
+	let res;
 	val1 = parseInt(val1);
 	val2 = parseInt(val2);
 	if (val2 > val1) {
-		res = (val1 + 7) - val2;
+		res = val1 + 7 - val2;
 	} else {
 		res = val1 - val2;
 	}
@@ -29,13 +29,13 @@ exports.funcInterval = (val1, val2) => {
  * @return {Number}                メンタリングの回数
  */
 exports.findTimes = (week, course, addon = false) => {
-	var courseObj = this.courseReader();
+	let courseObj = this.courseReader();
 	// 回数の計算
 	// addonがtrueで来たら必ずperWeekは2。
 	// addonがfalseで、perWeekが1だったら削らない
 	// addonがfalseで、perWeekが2だったら1削る
 	// セットの時の処理は、生成時のループで処理
-	var times = 0;
+	let times = 0;
 
 	if (addon) {
 		times = week * 2;
@@ -55,11 +55,13 @@ exports.findTimes = (week, course, addon = false) => {
  * @return {Date}                   Dateに変換された物
  */
 exports.datePrep = (dateStr, timeStr = '00:00') => {
-	var year = dateStr.substr(0, 4);
-	var month = dateStr.substr(5, 2);
-	var day = dateStr.substr(8, 2);
+	let year = dateStr.substr(0, 4);
+	let month = dateStr.substr(5, 2);
+	let day = dateStr.substr(8, 2);
 
-	var date = new Date(year + '-' + month + '-' + day + 'T' + timeStr + ':00+09:00');
+	let date = new Date(
+		year + '-' + month + '-' + day + 'T' + timeStr + ':00+09:00'
+	);
 
 	return date;
 };
@@ -69,9 +71,22 @@ exports.datePrep = (dateStr, timeStr = '00:00') => {
  * @param  {number} int int型の数値
  * @return {string}     0埋めされた二桁の数字を文字列にしたもの
  */
-exports.paddingZero = (int) => String(int).padStart(2, '0');
+exports.paddingZero = int => String(int).padStart(2, '0');
 
 exports.courseReader = () => {
-	var res = JSON.parse(fs.readFileSync(path.join(__dirname, '../course.json'), 'utf8'));
+	let res = JSON.parse(
+		fs.readFileSync(path.join(__dirname, '../course.json'), 'utf8')
+	);
 	return res;
+};
+
+exports.addAllDayEventDateFormatter = date => {
+	console.log(date);
+	let tmpDate = new Date(date);
+
+	let y = tmpDate.getFullYear();
+	let m = tmpDate.getMonth() + 1;
+	let d = tmpDate.getDate();
+
+	return y + '-' + m + '-' + d;
 };

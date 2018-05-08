@@ -95,21 +95,15 @@ exports.addEvents = (auth, option) => {
  * @param {google.auth.OAuth2} auth : An authorized OAuth2 client.
  * @param {Object} option : スケジュール登録する内容
  *									option.calID : カレンダーID
- *									option.data.name : 受講生氏名
+ *									option.data.salaryTitle : 予定のタイトル
  *									option.data.week : 受講期間
  *									option.data.startDate : 初日
- *									option.data.courseKey : コースのキー
  */
 exports.addAllDayEvent = (auth, option) => {
 	let calendar = google.calendar('v3');
 	let startDate = new Date(option.data.startDate);
 	let tmpDate = startDate - 24 * 60 * 60 * 1000;
-	let title =
-		option.data.courseKey +
-		option.data.week.padStart(2, '0') +
-		' ' +
-		option.data.name +
-		' 計上日';
+	let title = option.data.salaryTitle;
 	let calID = option.calID;
 	let count = option.data.week / 4;
 	let promise = [];

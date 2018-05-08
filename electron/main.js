@@ -66,7 +66,6 @@ app.on('ready', () => {
 		width: 320,
 		height: 320,
 		frame: false,
-		transparent: true,
 		parent: mainWindow,
 	});
 	splashWindow.setAlwaysOnTop(true);
@@ -75,7 +74,6 @@ app.on('ready', () => {
 		width: 320,
 		height: 320,
 		frame: false,
-		transparent: true,
 		parent: mainWindow,
 		show: false,
 	});
@@ -163,23 +161,27 @@ ipcMain.on('logout', () => {
 
 ipcMain.on('applySchedule', (event, obj) => {
 	let summary = config.get('summary.mentoring');
+	let salarySummary = config.get('summary.salary');
 	if (!summary) {
 		config.set('summary.mentoring', 'メンタリング %name %courseid%week');
 	}
+	if (!salarySummary) {
+		config.set('summary.salary', '%courseid%week %name 計上日');
+	}
 	let test = nf.scheduleMaker(obj);
 	let title = nf.eventTitleMaker(obj, summary);
-	let courseKey = obj.course.value;
-	let name = obj.name.value;
+	let salaryTitle = nf.eventTitleMaker(obj, salarySummary);
 	let week = obj.week.value;
+	let courseKey = obj.course.value;
 	let startDate = nc.datePrep(obj.start.value);
 
 	let resObj = {
 		title: title,
 		schedule: test,
-		courseKey: courseKey,
-		name: name,
-		startDate: startDate,
 		week: week,
+		salaryTitle: salaryTitle,
+		startDate: startDate,
+		courseKey: courseKey,
 	};
 	event.returnValue = resObj;
 });
@@ -411,6 +413,30 @@ ipcMain.on('getCourseConf', (event, id) => {
 		data = false;
 	}
 	event.returnValue = data;
+});
+
+ipcMain.on('applySalarySummary', (event, summary) => {
+	try {
+		config.set('summary.salary', summary);
+		event.returnValue = true;
+	} catch (e) {
+		console.log('Error at applySalarySummary: ' + e);
+		event.returnValue = false;
+	}
+});
+
+ipcMain.on('getSalarySummary', event => {
+	try {
+		let summary = config.get('summary.salary');
+		if (!summary) {
+			config.set('summary.salary', '%courseid%week %name 計上日');
+			summary = config.get('summary.salary');
+		}
+		event.returnValue = summary;
+	} catch (e) {
+		console.log('Error at getSalarySummary: ' + e);
+		event.returnValue = false;
+	}
 });
 
 ipcMain.on('applyChatSummary', (event, summary) => {

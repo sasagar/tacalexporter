@@ -17,6 +17,7 @@ exports.config = new Config({
 		summary: {
 			mentoring: 'メンタリング %name %courseid%week',
 			shift: 'チャットシフト',
+			salary: '%courseid%week %name 計上日',
 		},
 		shift: {
 			'mon1-1': false,

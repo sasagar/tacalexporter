@@ -81,6 +81,8 @@ $(document).ready(() => {
 	// どうやらモーダルで表示する物はそのページで拾った方が良いみたい。
 	// $('.courseFlag').on('change', () => console.log('test'));
 
+	$('#salarySummarySubmit').on('click', () => applySalarySummary());
+
 	$('#chatSummarySubmit').on('click', () => applyChatSummary());
 
 	$('#mentoringSummarySubmit').on('click', () => applyMentoringSummary());
@@ -181,6 +183,7 @@ const launchChecker = async () => {
 			selectCalendar(),
 			shiftSetter(),
 			settingsSetter(),
+			setSalarySummary(),
 			setChatSummary(),
 			setMentoringSummary(),
 		]);
@@ -489,6 +492,27 @@ const toggleCourse = eo => {
 			.next('.flagText')
 			.html('オフ');
 	}
+};
+
+const applySalarySummary = () => {
+	var summary = $('#salarySummary').val();
+	ipcRenderer.sendSync('applySalarySummary', summary);
+};
+
+const setSalarySummary = () => {
+	new Promise((resolve, reject) => {
+		try {
+			var summary = ipcRenderer.sendSync('getSalarySummary');
+			if (summary) {
+				$('#salarySummary').val(summary);
+			} else {
+				console.error(summary);
+			}
+			resolve();
+		} catch (e) {
+			reject(e);
+		}
+	});
 };
 
 const applyChatSummary = () => {

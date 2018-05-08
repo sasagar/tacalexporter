@@ -20,10 +20,12 @@ const nf = require('./app/nodeFunc');
 const nc = require('./app/nodeCommon');
 const em = require('./app/electronMenu');
 const gg = require('./app/google');
-const au = require('./app/updater');
+//const au = require('./app/updater');
 
 // 設定のデフォルトを指定
 const { config } = require('./app/defaultConf.js');
+
+require('update-electron-app')();
 
 // スコープの設定
 // カレンダーAPIと個人情報用のAPIを許可するようにスコープ指定
@@ -93,7 +95,7 @@ app.on('ready', () => {
 
 	mainWindow.webContents.on('did-finish-load', async () => {
 		await mainWindow.show();
-		au.checkUpdate();
+		//		au.checkUpdate();
 		setTimeout(() => {
 			if (splashWindow) {
 				splashWindow.close();

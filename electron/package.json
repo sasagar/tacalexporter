@@ -1,6 +1,6 @@
 {
 	"name": "TAcalExporter",
-	"version": "3.7.2",
+	"version": "3.7.5",
 	"description": "TechAcademy用メンタースケジュール登録アプリ",
 	"standard": {
 		"globals": ["$"]
@@ -8,39 +8,48 @@
 	"build": {
 		"appId": "com.kent-and-co.tacalexporter",
 		"mac": {
-			"target": "dmg"
+			"target": "default",
+			"icon": "build/icon.icns"
+		},
+		"win": {
+			"target": "nsis",
+			"icon": "build/icon.ico"
 		},
 		"directories": {
 			"output": "../dist"
 		},
-		"files": ["!dist"]
+		"files": ["!dist"],
+		"publish": [
+			{
+				"provider": "github",
+				"releaseType": "draft",
+				"token": "182264e31def9f40c8262d54e640f3292378ff3f"
+			}
+		],
+		"electronVersion": "2.0.0"
 	},
 	"main": "main.js",
 	"scripts": {
 		"start": "node_modules/.bin/electron .",
-
+		"release": "build --mac --win",
 		"clean": "rm -rf ../dist",
 		"clean:osx": "rm -rf ../dist/darwin",
 		"clean:win": "rm -rf ../dist/darwin/win-unpacked",
-
 		"pack": "npm run pack:osx && npm run build:win",
 		"pack:osx":
 			"npm run clean:osx && electron-packager . TAcalExporter --out=../dist/darwin --platform=darwin --arch=x64 --version=2.0.0 --icon=build/icon.icns",
 		"pack:win":
 			"npm run clean:win && electron-packager . TAcalExporter --out=../dist/darwin --platform=win32 --arch=ia32 --version=2.0.0 --icon=build/icon.ico",
-
 		"build": "npm run build:osx && npm run build:win",
 		"build:osx":
-			"npm run clean:osx && electron-builder '../dist/darwin/TAcalExporter-darwin-x64/TAcalExporter.app' --platform=mac --config=builder.json --publish=always",
+			"npm run clean:osx && electron-builder '../dist/darwin/TAcalExporter-darwin-x64/TAcalExporter.app' --platform=mac --config=builder.json",
 		"build:win":
-			"npm run clean:win && electron-builder '../dist/darwin/TAcalExporter-win32-x64' --platform=win --config=builder.json --publish=always",
-
+			"npm run clean:win && electron-builder '../dist/darwin/TAcalExporter-win32-x64' --platform=win --config=builder.json",
 		"archive": "npm run archive:osx && npm run archive:win",
 		"archive:osx":
 			"npm run build:osx && zip -j '../dist/darwin/TAcalExporter-osx.zip' '../dist/darwin/TAcalExporter.dmg'",
 		"archive:win":
 			"npm run build:win && zip -j '../dist/darwin/TAcalExporter-win.zip' '../dist/darwin/TAcalExporter.exe'",
-
 		"make:mac":
 			"electron-packager . TAcalExporter --platform=darwin --arch=x64 --electron-version=2.0.0 --icon=build/icon.icns --overwrite",
 		"make:win":
@@ -66,7 +75,8 @@
 		"jquery-ui": "^1.12.1",
 		"npm-lifecycle": "^2.0.1",
 		"path": "^0.12.7",
-		"popper.js": "^1.14.3"
+		"popper.js": "^1.14.3",
+		"update-electron-app": "^1.1.2"
 	},
 	"devDependencies": {
 		"electron": "^2.0.0",

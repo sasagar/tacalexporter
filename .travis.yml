@@ -1,4 +1,7 @@
 language: objective-c
+branches:
+  only:
+    - master
 cache:
   directories:
   - node_modules

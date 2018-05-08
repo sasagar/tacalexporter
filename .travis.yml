@@ -13,12 +13,13 @@ before_install:
 - node --version
 - cd electron
 - APP_VERSION=`npm run version`
+- echo $APP_VERSION
 install:
 - npm install
 script:
 - npm test
-before_deploy:
 - git tag $APP_VERSION
+before_deploy:
 - brew update
 - brew install wine
 - wine --version

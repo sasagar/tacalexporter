@@ -18,7 +18,6 @@
 	"main": "main.js",
 	"scripts": {
 		"start": "node_modules/.bin/electron .",
-		"version": "echo `node -pe 'require(\"./package.json\").version'`",
 
 		"clean": "rm -rf ../dist",
 		"clean:osx": "rm -rf ../dist/darwin",

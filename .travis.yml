@@ -12,6 +12,7 @@ before_install:
 - nvm use --delete-prefix $NODE_VERSION
 - node --version
 - cd electron
+- echo $TRAVIS_BUILD_DIR
 install:
 - npm install
 script:
@@ -22,6 +23,7 @@ before_deploy:
 - wine --version
 - brew install makensis
 - npm run archive
+- ls ../dist/darwin/
 - mv ../dist/darwin/TacalExporter-win.zip $TRAVIS_BUILD_DIR
 - mv ../dist/darwin/TacalExporter-osx.zip $TRAVIS_BUILD_DIR
 deploy:

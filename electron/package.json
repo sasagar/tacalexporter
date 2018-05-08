@@ -8,7 +8,7 @@
 	"build": {
 		"appId": "com.kent-and-co.tacalexporter",
 		"mac": {
-			"target": "dmg",
+			"target": "zip",
 			"icon": "build/icon.icns",
 			"publish": [
 				{

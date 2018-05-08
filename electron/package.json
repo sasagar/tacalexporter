@@ -1,6 +1,6 @@
 {
 	"name": "TAcalExporter",
-	"version": "3.6.6",
+	"version": "3.6.7",
 	"description": "TechAcademy用メンタースケジュール登録アプリ",
 	"standard": {
 		"globals": ["$"]

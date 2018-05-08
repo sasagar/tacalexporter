@@ -25,6 +25,8 @@ before_deploy:
 - wine --version
 - brew install makensis
 - npm run archive
+- cd ../
+- ls dist/darwin/
 deploy:
   provider: releases
   skip_cleanup: true

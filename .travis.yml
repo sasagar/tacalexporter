@@ -17,8 +17,8 @@ before_install:
 install:
 - npm install
 script:
-- npm test
-- git tag $APP_VERSION
+- npm run build
+- git tag v$APP_VERSION
 before_deploy:
 - brew update
 - brew install wine

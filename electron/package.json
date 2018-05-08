@@ -54,10 +54,7 @@
 		"make:win":
 			"electron-packager . TAcalExporter --platform=win32 --arch=x64 --electron-version=2.0.0 --icon=build/icon.ico --overwrite"
 	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/sasagar/tacalexporter.git"
-	},
+	"repository": "github:sasagar/tacalexporter",
 	"author": "SASAGAWA, Kiyoshi",
 	"license": "GPL-3.0",
 	"dependencies": {

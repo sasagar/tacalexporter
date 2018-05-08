@@ -22,8 +22,7 @@
 		"publish": [
 			{
 				"provider": "github",
-				"releaseType": "draft",
-				"token": "182264e31def9f40c8262d54e640f3292378ff3f"
+				"releaseType": "draft"
 			}
 		],
 		"electronVersion": "2.0.0"

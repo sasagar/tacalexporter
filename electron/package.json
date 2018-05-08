@@ -9,22 +9,28 @@
 		"appId": "com.kent-and-co.tacalexporter",
 		"mac": {
 			"target": "zip",
-			"icon": "build/icon.icns"
+			"icon": "build/icon.icns",
+			"publish": [
+				{
+					"provider": "github",
+					"releaseType": "prerelease"
+				}
+			]
 		},
 		"win": {
 			"target": "nsis",
-			"icon": "build/icon.ico"
+			"icon": "build/icon.ico",
+			"publish": [
+				{
+					"provider": "github",
+					"releaseType": "prerelease"
+				}
+			]
 		},
 		"directories": {
 			"output": "../dist"
 		},
 		"files": ["!dist"],
-		"publish": [
-			{
-				"provider": "github",
-				"releaseType": "release"
-			}
-		],
 		"electronVersion": "2.0.0"
 	},
 	"main": "main.js",

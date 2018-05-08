@@ -8,7 +8,7 @@
 	"build": {
 		"appId": "com.kent-and-co.tacalexporter",
 		"mac": {
-			"target": "default",
+			"target": "zip",
 			"icon": "build/icon.icns"
 		},
 		"win": {
@@ -22,7 +22,7 @@
 		"publish": [
 			{
 				"provider": "github",
-				"releaseType": "draft"
+				"releaseType": "release"
 			}
 		],
 		"electronVersion": "2.0.0"

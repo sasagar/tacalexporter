@@ -1,13 +1,7 @@
 {
-<<<<<<< HEAD
 	"notes":
 		"専任コースについて、報酬計上日が終日イベントとして登録されるようになりました。",
 	"name": "TAcalExporter v3.5.1",
 	"url":
 		"https://github.com/sasagar/tacalexporter/releases/download/v3.5.1/TAcalExporter.zip"
-=======
-	"notes": "専任コースについて、報酬計上日が終日イベントとして登録されるようになりました。",
-	"name": "TAcalExporter v3.5.1",
-	"url": "https://github.com/sasagar/tacalexporter/releases/download/v3.5.1/TAcalExporter.zip"
->>>>>>> github/master
 }

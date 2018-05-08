@@ -1,6 +1,6 @@
 {
 	"name": "TAcalExporter",
-	"version": "3.6.8",
+	"version": "3.7.0",
 	"description": "TechAcademy用メンタースケジュール登録アプリ",
 	"standard": {
 		"globals": ["$"]
@@ -37,7 +37,7 @@
 
 		"archive": "npm run archive:osx && npm run archive:win",
 		"archive:osx":
-			"npm run build:osx && zip -j '../dist/darwin/TAcalExporter-osx.zip' '../dist/darwin/mac/TAcalExporter.app'",
+			"npm run build:osx && zip -j '../dist/darwin/TAcalExporter-osx.zip' '../dist/darwin/TAcalExporter.dmg'",
 		"archive:win":
 			"npm run build:win && zip -j '../dist/darwin/TAcalExporter-win.zip' '../dist/darwin/TAcalExporter.exe'",
 

@@ -13,7 +13,7 @@
 			"publish": [
 				{
 					"provider": "github",
-					"releaseType": "prerelease"
+					"releaseType": "draft"
 				}
 			]
 		},
@@ -23,7 +23,7 @@
 			"publish": [
 				{
 					"provider": "github",
-					"releaseType": "prerelease"
+					"releaseType": "draft"
 				}
 			]
 		},

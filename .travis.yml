@@ -18,8 +18,8 @@ install:
 - npm install
 script:
 - npm run build
-- git tag v$APP_VERSION
 before_deploy:
+- git tag v${APP_VERSION}
 - brew update
 - brew install wine
 - wine --version
@@ -36,4 +36,3 @@ deploy:
   on:
     repo: sasagar/tacalexporter
     branch: master
-    tags: true

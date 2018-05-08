@@ -1,21 +1,13 @@
 {
 	"mac": {
-		"icon": "build/icon.icns",
-		"publish": [
-			{
-				"provider": "github",
-				"releaseType": "release"
-			}
-		]
+		"icon": "build/icon.icns"
 	},
 	"win": {
-		"icon": "build/icon.ico",
-		"publish": [
-			{
-				"provider": "github",
-				"releaseType": "release"
-			}
-		]
+		"icon": "build/icon.ico"
+	},
+	"publish": {
+		"provider": "github",
+		"releaseType": "release"
 	},
 	"directories": {
 		"output": "../dist/${platform}"

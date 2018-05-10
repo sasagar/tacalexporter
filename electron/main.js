@@ -82,6 +82,7 @@ app.on('ready', () => {
 	settingWindow = new BrowserWindow({
 		modal: true,
 		parent: mainWindow,
+		frame: false,
 		show: false,
 	});
 	loadingWindow.setAlwaysOnTop(true);
@@ -107,11 +108,6 @@ app.on('ready', () => {
 		mainWindow.on(ev, () => {
 			config.set('bounds', mainWindow.getBounds());
 		});
-	});
-
-	settingWindow.on('closed', () => {
-		splashWindow.loadURL(path.join('file://', __dirname, '/splash.html'));
-		mainWindow.reload();
 	});
 
 	// ウィンドウが閉じられたらアプリも終了

@@ -1,5 +1,4 @@
 'use strict';
-//const au = require('./updater');
 
 exports.template = [
 	{
@@ -30,15 +29,16 @@ exports.template = [
 		],
 	},
 	{
-		role: 'ウィンドウ',
+		label: 'ウィンドウ',
 		submenu: [
 			{ role: 'minimize', label: '最小化' },
 			{ role: 'close', label: '閉じる' },
 		],
 	},
 	{
-		role: 'ヘルプ',
+		label: 'ヘルプ',
 		submenu: [
+			{ role: 'about', label: 'このアプリについて' },
 			{
 				label: 'Electronについて',
 				click() {
@@ -54,12 +54,6 @@ exports.darwinTemplate = {
 		label: 'TAMentorConsole',
 		submenu: [
 			{ role: 'about', label: 'このアプリについて' },
-			/*{
-				label: 'アップデートを確認する...',
-				click() {
-					au.checkUpdate();
-				},
-			},*/
 			{ type: 'separator' },
 			{ role: 'services', label: 'サービス', submenu: [] },
 			{ type: 'separator' },

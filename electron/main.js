@@ -109,6 +109,11 @@ app.on('ready', () => {
 		});
 	});
 
+	settingWindow.on('closed', () => {
+		splashWindow.loadURL(path.join('file://', __dirname, '/splash.html'));
+		mainWindow.reload();
+	});
+
 	// ウィンドウが閉じられたらアプリも終了
 	mainWindow.on('closed', () => {
 		splashWindow = null;

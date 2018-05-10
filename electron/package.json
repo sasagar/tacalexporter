@@ -12,9 +12,11 @@
 			"icon": "build/icon.icns"
 		},
 		"win": {
-			"target": "nsis",
-			"icon": "build/icon.ico",
-			"arch": ["x64", "ia32"]
+			"target": {
+				"target": "nsis",
+				"arch": ["x64", "ia32"]
+			},
+			"icon": "build/icon.ico"
 		},
 		"publish": [
 			{

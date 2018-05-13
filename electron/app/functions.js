@@ -459,20 +459,26 @@ const modalClose = selector => {
  * @param  {Object} res   メインプロセスから送られてくるデータ
  */
 const resultMessage = res => {
-	for (var i in res) {
-		var args = res[i];
-		var title = args.summary;
-		var start = new Date(args.start.dateTime);
-		var startYear = start.getFullYear();
-		var startMonth = paddingZero(start.getMonth() + 1);
-		var startDate = paddingZero(start.getDate());
-		var startWDay = start.getDay();
-		var startHours = paddingZero(start.getHours());
-		var startMinutes = paddingZero(start.getMinutes());
+	if (res.result) {
+		for (var i in res.res) {
+			var args = res.res[i];
+			var title = args.summary;
+			var start = new Date(args.start.dateTime);
+			var startYear = start.getFullYear();
+			var startMonth = paddingZero(start.getMonth() + 1);
+			var startDate = paddingZero(start.getDate());
+			var startWDay = start.getDay();
+			var startHours = paddingZero(start.getHours());
+			var startMinutes = paddingZero(start.getMinutes());
+			$('#modalMessage').append(
+				`<p>${title} @ ${startYear}/${startMonth}/${startDate} ${
+					weekday[startWDay]
+				} ${startHours}:${startMinutes}</p>`
+			);
+		}
+	} else {
 		$('#modalMessage').append(
-			`<p>${title} @ ${startYear}/${startMonth}/${startDate} ${
-				weekday[startWDay]
-			} ${startHours}:${startMinutes}</p>`
+			'<div class="alert alert-danger" role="alert">' + res.res + '</div>'
 		);
 	}
 };

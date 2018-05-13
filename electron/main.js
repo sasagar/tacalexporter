@@ -204,12 +204,17 @@ ipcMain.on('addschedule', async (event, option) => {
 			if (now.start.dateTime > next.start.dateTime) return 1;
 			return 0;
 		});
-		event.returnValue = res;
+		event.returnValue = { result: true, res: res };
 		loadingWindow.hide();
 	} catch (e) {
 		console.error('Error loading client secret file: ' + e);
 		console.error('addschedule');
 		console.log(__dirname);
+		event.returnValue = {
+			result: true,
+			res: 'Error loading client secret file: ' + e,
+		};
+		loadingWindow.hide();
 		return;
 	}
 });

@@ -56,6 +56,11 @@ const onceScheduleMaker = (obj, courseObj, courseKey, perWeek) => {
 	interval2 = nc.funcInterval(obj.second.value, startWDay) + 7 - interval1;
 	// スタートとエンドを割り出す
 	let second = startEndMaker(first.start, obj.secondTime.value, interval2);
+	// 年末年始かチェックして、期間内なら一週間すっ飛ばし
+	if (checkHolidays(second)) {
+		second.start.setDate(second.start.getDate() + 7);
+		second.end.setDate(second.end.getDate() + 7);
+	}
 	// 配列に突っ込む
 	array.push(second);
 
@@ -95,6 +100,11 @@ const onceScheduleMaker = (obj, courseObj, courseKey, perWeek) => {
 			start: dayStart,
 			end: dayEnd,
 		};
+		// 年末年始かチェックして、期間内なら一週間すっ飛ばし
+		if (checkHolidays(day)) {
+			day.start.setDate(day.start.getDate() + 7);
+			day.end.setDate(day.end.getDate() + 7);
+		}
 		array.push(day);
 	}
 	// セットだったら真ん中削る
@@ -139,6 +149,11 @@ const twiceScheduleMaker = (obj, courseObj, courseKey, perWeek) => {
 	interval2 = nc.funcInterval(obj.second.value, obj.first.value);
 	// スタートとエンドを割り出す
 	let second = startEndMaker(first.start, obj.secondTime.value, interval2);
+	// 年末年始かチェックして、期間内なら一週間すっ飛ばし
+	if (checkHolidays(second)) {
+		second.start.setDate(second.start.getDate() + 7);
+		second.end.setDate(second.end.getDate() + 7);
+	}
 	// 配列に突っ込む
 	array.push(second);
 
@@ -178,6 +193,11 @@ const twiceScheduleMaker = (obj, courseObj, courseKey, perWeek) => {
 			start: dayStart,
 			end: dayEnd,
 		};
+		// 年末年始かチェックして、期間内なら一週間すっ飛ばし
+		if (checkHolidays(day)) {
+			day.start.setDate(day.start.getDate() + 7);
+			day.end.setDate(day.end.getDate() + 7);
+		}
 		array.push(day);
 	}
 	// セットだったら真ん中削る
@@ -208,6 +228,24 @@ const startEndMaker = (estDate, targetDate, intervalDay) => {
 	start.setMinutes(targetDate.substr(3, 2));
 	let end = new Date(start.getTime() + 30 * 60 * 1000);
 	let res = { start, end };
+	return res;
+};
+
+/**
+ * 予定が年末年始か判断する
+ * @param  {Date} estDate       基準となる日付のオブジェクト（start, endの形式）startEndMakerの結果を利用（Date型）
+ * @return {Boolean}            年末年始ならtrue/それ以外はfalse
+ */
+const checkHolidays = estDate => {
+	let res = false;
+	const month = estDate.start.getMonth() + 1;
+	const date = estDate.start.getDate();
+	console.log('month:' + month);
+	console.log('date:' + date);
+	if ((month == 12 && date >= 28) || (month == 1 && date <= 3)) {
+		res = true;
+		console.log('test');
+	}
 	return res;
 };
 

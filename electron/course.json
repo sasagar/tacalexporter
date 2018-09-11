@@ -124,6 +124,27 @@
 		"set": false,
 		"fixed": true
 	},
+	"ST": {
+		"fullname": "Scratchコース",
+		"key": "ST",
+		"perWeek": 2,
+		"set": false,
+		"fixed": true
+	},
+	"SM": {
+		"fullname": "スマートコントラクトコース",
+		"key": "SM",
+		"perWeek": 2,
+		"set": false,
+		"fixed": true
+	},
+	"PR": {
+		"fullname": "動画編集コース",
+		"key": "PR",
+		"perWeek": 2,
+		"set": false,
+		"fixed": true
+	},
 	"RBFE": {
 		"fullname": "WEBアプリケーション+フロントエンドセット",
 		"key": "RBFE",

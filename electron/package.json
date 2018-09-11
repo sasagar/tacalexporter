@@ -1,6 +1,6 @@
 {
 	"name": "TAcalExporter",
-	"version": "4.0.9",
+	"version": "4.5.0",
 	"description": "TechAcademy用メンタースケジュール登録アプリ",
 	"standard": {
 		"globals": [
@@ -63,8 +63,8 @@
 		"ajv": "^6.5.3",
 		"bootstrap": "^4.1.3",
 		"electron-config": "^1.0.0",
-		"electron-json-storage": "^4.1.1",
-		"electron-updater": "^3.1.1",
+		"electron-json-storage": "^4.1.2",
+		"electron-updater": "^3.1.2",
 		"font-awesome": "^4.7.0",
 		"gasparesganga-jquery-loading-overlay": "^2.1.5",
 		"googleapis": "^33.0.0",
@@ -77,8 +77,8 @@
 		"update-electron-app": "^1.3.0"
 	},
 	"devDependencies": {
-		"electron": "^2.0.8",
-		"electron-builder": "^20.28.2",
+		"electron": "^2.0.9",
+		"electron-builder": "^20.28.4",
 		"electron-packager": "^12.1.1"
 	}
 }

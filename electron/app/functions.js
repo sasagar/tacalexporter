@@ -12,7 +12,7 @@ $(document).ready(() => {
 	// DatePicker
 	$('.datepicker .date').datepicker({
 		format: 'yyyy年mm月dd日',
-		language: 'ja',
+		language: 'ja'
 	});
 
 	$('#dataapply').on('click', () => {
@@ -108,7 +108,7 @@ $(document).ready(() => {
 const showLoading = async () => {
 	await $.LoadingOverlay('show', {
 		image: '',
-		fontawesome: 'fa fa-spinner fa-spin',
+		fontawesome: 'fa fa-spinner fa-spin'
 	});
 };
 
@@ -176,7 +176,7 @@ const launchChecker = async () => {
 			courseGetter(),
 			listGetter(),
 			calendarSetter(),
-			courseSettingListing(),
+			courseSettingListing()
 		]);
 		await Promise.all([
 			selectChecker(),
@@ -185,7 +185,7 @@ const launchChecker = async () => {
 			settingsSetter(),
 			setSalarySummary(),
 			setChatSummary(),
-			setMentoringSummary(),
+			setMentoringSummary()
 		]);
 		$('.container').fadeIn(200);
 		$.LoadingOverlay('hide');
@@ -440,7 +440,7 @@ const applyShiftData = () => {
 
 	var obj = { year, month, calID, allShiftWDays };
 	var res = ipcRenderer.sendSync('applyShiftData', obj);
-	resultMessage(res);
+	chatResultMessage(res);
 	$('#applyShiftData i').css('display', 'none');
 };
 
@@ -479,6 +479,29 @@ const resultMessage = res => {
 	} else {
 		$('#modalMessage').append(
 			'<div class="alert alert-danger" role="alert">' + res.res + '</div>'
+		);
+	}
+};
+
+/**
+ * モーダルに登録された結果を追加表示する(チャットシフト用)
+ * @param  {Object} res   メインプロセスから送られてくるデータ
+ */
+const chatResultMessage = res => {
+	for (var i in res) {
+		var args = res[i];
+		var title = args.summary;
+		var start = new Date(args.start.dateTime);
+		var startYear = start.getFullYear();
+		var startMonth = paddingZero(start.getMonth() + 1);
+		var startDate = paddingZero(start.getDate());
+		var startWDay = start.getDay();
+		var startHours = paddingZero(start.getHours());
+		var startMinutes = paddingZero(start.getMinutes());
+		$('#modalMessage').append(
+			`<p>${title} @ ${startYear}/${startMonth}/${startDate} ${
+				weekday[startWDay]
+			} ${startHours}:${startMinutes}</p>`
 		);
 	}
 };

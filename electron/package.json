@@ -39,7 +39,7 @@
 	"main": "main.js",
 	"scripts": {
 		"start": "node_modules/.bin/electron .",
-		"release": "build -mw",
+		"release": "electron-builder -mw",
 		"clean": "rm -rf ../dist",
 		"clean:osx": "rm -rf ../dist/darwin",
 		"clean:win": "rm -rf ../dist/darwin/win-unpacked",

@@ -9,7 +9,7 @@ const {
 	app,
 	ipcMain,
 	dialog,
-	BrowserWindow,
+	BrowserWindow
 } = require('electron');
 
 // pathモジュール
@@ -31,7 +31,7 @@ require('update-electron-app')();
 // カレンダーAPIと個人情報用のAPIを許可するようにスコープ指定
 let SCOPES = [
 	'https://www.googleapis.com/auth/calendar',
-	'https://www.googleapis.com/auth/userinfo.profile',
+	'https://www.googleapis.com/auth/userinfo.profile'
 ];
 
 // TOKENは設定ファイルに保存
@@ -59,14 +59,14 @@ app.on('ready', () => {
 		x,
 		y,
 		webPreferences: { nodeIntegration: true },
-		show: false,
+		show: false
 	});
 
 	splashWindow = new BrowserWindow({
 		width: 320,
 		height: 320,
 		frame: false,
-		parent: mainWindow,
+		parent: mainWindow
 	});
 	splashWindow.setAlwaysOnTop(true);
 
@@ -75,7 +75,7 @@ app.on('ready', () => {
 		height: 320,
 		frame: false,
 		parent: mainWindow,
-		show: false,
+		show: false
 	});
 	loadingWindow.setAlwaysOnTop(true);
 
@@ -83,7 +83,8 @@ app.on('ready', () => {
 		modal: true,
 		parent: mainWindow,
 		frame: false,
-		show: false,
+		webPreferences: { nodeIntegration: true },
+		show: false
 	});
 	loadingWindow.setAlwaysOnTop(true);
 
@@ -125,7 +126,10 @@ app.on('ready', () => {
 		template.unshift(em.darwinTemplate.main);
 
 		// Edit menu
-		template[1].submenu = template[1].submenu.concat(template[1].submenu, em.darwinTemplate.sub1);
+		template[1].submenu = template[1].submenu.concat(
+			template[1].submenu,
+			em.darwinTemplate.sub1
+		);
 
 		// Window menu
 		template[3].submenu = em.darwinTemplate.sub2;
@@ -146,7 +150,7 @@ ipcMain.on('logout', () => {
 			message: 'Googleカレンダーからログアウトします。よろしいですか？',
 			detail:
 				'ログアウトすると、ウィンドウがリロードされ、認証画面が表示されます。',
-			cancelId: 0,
+			cancelId: 0
 		},
 		response => {
 			if (response) {
@@ -182,7 +186,7 @@ ipcMain.on('applySchedule', (event, obj) => {
 		week: week,
 		salaryTitle: salaryTitle,
 		startDate: startDate,
-		courseKey: courseKey,
+		courseKey: courseKey
 	};
 	event.returnValue = resObj;
 });
@@ -212,7 +216,7 @@ ipcMain.on('addschedule', async (event, option) => {
 		console.log(__dirname);
 		event.returnValue = {
 			result: true,
-			res: 'Error loading client secret file: ' + e,
+			res: 'Error loading client secret file: ' + e
 		};
 		loadingWindow.hide();
 		return;
@@ -237,7 +241,6 @@ ipcMain.on('getCalendarList', async event => {
 ipcMain.on('getProfileData', async event => {
 	try {
 		let content = await gg.getClientSecret();
-		// authorize(content, gg.userInfo, event);
 		let tokenedAuth = await authorize(content);
 		let res = await gg.userInfo(tokenedAuth, event);
 		event.returnValue = res;
@@ -306,7 +309,7 @@ ipcMain.on('applyShiftData', async (event, obj) => {
 	for (let i in allShiftWDays) {
 		allShiftWDaysNum.push({
 			wday: allShiftWDays[i].substr(3, 1),
-			shift: allShiftWDays[i].substr(5, 1),
+			shift: allShiftWDays[i].substr(5, 1)
 		});
 	}
 
@@ -338,8 +341,8 @@ ipcMain.on('applyShiftData', async (event, obj) => {
 		calID: calID,
 		data: {
 			title: title,
-			schedule: schedule,
-		},
+			schedule: schedule
+		}
 	};
 
 	try {
@@ -505,16 +508,23 @@ ipcMain.on('closeSettings', event => {
 function authorizeChecker(credentials) {
 	let res;
 	// Check if we have previously stored a token.
-	if (TOKEN === '') {
+	if (TOKEN === '' || TOKEN == null) {
 		let oauth2Client = gg.OAuth2(credentials);
 		let authUrl = oauth2Client.generateAuthUrl({
 			access_type: 'offline',
-			scope: SCOPES,
+			scope: SCOPES
 		});
 		shell.openExternal(authUrl);
 		res = authUrl;
 	} else {
-		res = 'OK';
+		const date = new Date();
+		if (TOKEN.expiry_date < date.getTime()) {
+			config.set('credentials.token', '');
+			TOKEN = '';
+			mainWindow.reload();
+		} else {
+			res = 'OK';
+		}
 	}
 	// });
 	return res;
@@ -534,7 +544,7 @@ function authorize(credentials) {
 	if (TOKEN === '') {
 		let authUrl = oauth2Client.generateAuthUrl({
 			access_type: 'offline',
-			scope: SCOPES,
+			scope: SCOPES
 		});
 		shell.openExternal(authUrl);
 	} else {

@@ -1,5 +1,6 @@
 language: objective-c
 os: osx
+osx_image: xcode11
 branches:
   only:
     - master

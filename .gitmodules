@@ -1,0 +1,3 @@
+[submodule "electron/bootstrap-datepicker-master"]
+	path = electron/bootstrap-datepicker-master
+	url = https://github.com/uxsolutions/bootstrap-datepicker.git

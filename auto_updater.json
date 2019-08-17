@@ -1,7 +1,7 @@
 {
 	"notes":
 		"構築時のパッケージのバージョンアップによるセキュリティ改善が含まれます。",
-	"name": "TAcalExporter v4.6.4",
+	"name": "TAcalExporter v4.6.5",
 	"url":
 		"https://github.com/sasagar/tacalexporter/releases/download/v4.6.4/TAcalExporter.zip"
 }

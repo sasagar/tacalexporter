@@ -119,13 +119,13 @@ app.on('ready', () => {
 	});
 
 	// メニューを作る
-	const template = em.template;
+	let template = em.template;
 
 	if (process.platform === 'darwin') {
 		template.unshift(em.darwinTemplate.main);
 
 		// Edit menu
-		template[1].submenu.push(em.darwinTemplate.sub1);
+		template[1].submenu = template[1].submenu.concat(template[1].submenu, em.darwinTemplate.sub1);
 
 		// Window menu
 		template[3].submenu = em.darwinTemplate.sub2;

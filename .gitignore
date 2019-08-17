@@ -5,5 +5,5 @@ dist/*
 signcode.p12
 envValue.txt
 electron/bootstrap-datepicker-master/*
-!electron/bootstrap-datepicker-master/css
+!electron/bootstrap-datepicker-master/dist
 !electron/bootstrap-datepicker-master/js

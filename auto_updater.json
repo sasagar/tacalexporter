@@ -1,5 +1,5 @@
 {
-  "notes": "Macで起動時にクラッシュする問題の修正",
-  "name": "TAcalExporter v4.6.9",
-  "url": "https://github.com/sasagar/tacalexporter/releases/download/v4.6.9/TAcalExporter.zip"
+  "notes": "Googleのトークンが期限切れになっているときの処理方法修正",
+  "name": "TAcalExporter v4.6.10",
+  "url": "https://github.com/sasagar/tacalexporter/releases/download/v4.6.10/TAcalExporter.zip"
 }

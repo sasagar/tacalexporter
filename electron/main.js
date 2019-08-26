@@ -519,9 +519,22 @@ function authorizeChecker(credentials) {
 	} else {
 		const date = new Date();
 		if (TOKEN.expiry_date < date.getTime()) {
-			config.set('credentials.token', '');
-			TOKEN = '';
-			mainWindow.reload();
+			let oauth2Client = gg.OAuth2(credentials);
+			oauth2Client.credentials = TOKEN;
+			oauth2Client.refreshAccessToken((err, token) => {
+				if (err) {
+					console.log(err);
+					let authUrl = oauth2Client.generateAuthUrl({
+						access_type: 'offline',
+						scope: SCOPES
+					});
+					shell.openExternal(authUrl);
+					res = authUrl;
+				}
+				oauth2Client.credentials = token;
+				config.set('credentials.token', token);
+			});
+			res = 'RENEW';
 		} else {
 			res = 'OK';
 		}

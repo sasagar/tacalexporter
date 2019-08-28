@@ -15,6 +15,9 @@ const {
 // pathモジュール
 const path = require('path');
 
+const log = require('electron-log');
+const { autoUpdater } = require('electron-updater');
+
 // 外部JSの読み込み
 const nf = require('./app/nodeFunc');
 const nc = require('./app/nodeCommon');
@@ -25,7 +28,46 @@ const gg = require('./app/google');
 // 設定のデフォルトを指定
 const { config } = require('./app/defaultConf.js');
 
-require('update-electron-app')();
+// autoUpdater関連の処理
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
+log.info('App starting...');
+
+function sendStatusToWindow(text) {
+	log.info(text);
+}
+
+autoUpdater.on('checking-for-update', () => {
+	sendStatusToWindow('Checking for update...');
+});
+autoUpdater.on('update-available', info => {
+	sendStatusToWindow('Update available.');
+});
+autoUpdater.on('update-not-available', info => {
+	sendStatusToWindow('Update not available.');
+});
+autoUpdater.on('error', err => {
+	sendStatusToWindow('Error in auto-updater. ' + err);
+});
+autoUpdater.on('download-progress', progressObj => {
+	let log_message = 'Download speed: ' + progressObj.bytesPerSecond;
+	log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+	log_message =
+		log_message +
+		' (' +
+		progressObj.transferred +
+		'/' +
+		progressObj.total +
+		')';
+	sendStatusToWindow(log_message);
+});
+autoUpdater.on('update-downloaded', info => {
+	sendStatusToWindow('Update downloaded');
+});
+
+app.on('ready', async () => {
+	autoUpdater.checkForUpdatesAndNotify();
+});
 
 // スコープの設定
 // カレンダーAPIと個人情報用のAPIを許可するようにスコープ指定
@@ -521,19 +563,23 @@ function authorizeChecker(credentials) {
 		if (TOKEN.expiry_date < date.getTime()) {
 			let oauth2Client = gg.OAuth2(credentials);
 			oauth2Client.credentials = TOKEN;
-			oauth2Client.refreshAccessToken((err, token) => {
-				if (err) {
-					console.log(err);
-					let authUrl = oauth2Client.generateAuthUrl({
-						access_type: 'offline',
-						scope: SCOPES
-					});
-					shell.openExternal(authUrl);
-					res = authUrl;
-				}
-				oauth2Client.credentials = token;
-				config.set('credentials.token', token);
-			});
+
+			oauth2Client
+				.getAccessToken()
+				.then(tokens => {
+					config.set('credentials.token.access_token', tokens.token);
+				})
+				.catch(err => {
+					sendStatusToWindow(err);
+					if (err) {
+						let authUrl = oauth2Client.generateAuthUrl({
+							access_type: 'offline',
+							scope: SCOPES
+						});
+						shell.openExternal(authUrl);
+						res = authUrl;
+					}
+				});
 			res = 'RENEW';
 		} else {
 			res = 'OK';

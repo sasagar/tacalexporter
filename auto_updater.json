@@ -1,5 +1,5 @@
 {
-  "notes": "Googleのトークンが期限切れになっているときの処理方法修正",
-  "name": "TAcalExporter v4.6.10",
-  "url": "https://github.com/sasagar/tacalexporter/releases/download/v4.6.10/TAcalExporter.zip"
+  "notes": "内部処理の見直し・アップデート処理の変更",
+  "name": "TAcalExporter v4.6.11",
+  "url": "https://github.com/sasagar/tacalexporter/releases/download/v4.6.11/TAcalExporter.zip"
 }

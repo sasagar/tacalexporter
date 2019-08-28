@@ -31,7 +31,7 @@
 		],
 		"releaseInfo": {
 			"releaseName": "内部処理変更",
-			"releaseNote": "主にアップデートの内部処理を変更をしました。"
+			"releaseNotes": "主にアップデートの内部処理を変更をしました。"
 		},
 		"directories": {
 			"output": "../dist"

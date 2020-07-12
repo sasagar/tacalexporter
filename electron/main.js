@@ -84,6 +84,7 @@ app.on('ready', () => {
 		parent: mainWindow,
 		frame: false,
 		show: false,
+		webPreferences: { nodeIntegration: true },
 	});
 	loadingWindow.setAlwaysOnTop(true);
 

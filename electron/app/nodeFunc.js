@@ -20,7 +20,11 @@ exports.scheduleMaker = obj => {
 
 	// 週一コースで追加サポートで無いならインターバルは無条件で7
 	// それ以外はインターバル計算する
-	if (perWeek === 1 && !obj.extra) {
+	//
+	// v4.7.0修正
+	// 追加サポートでもインターバルが通常と同じ判定になる用に変更
+	//if (perWeek === 1 && !obj.extra) {
+	if (perWeek === 1) {
 		res = onceScheduleMaker(obj, courseObj, courseKey, perWeek);
 	} else {
 		res = twiceScheduleMaker(obj, courseObj, courseKey, perWeek);
@@ -69,11 +73,11 @@ const onceScheduleMaker = (obj, courseObj, courseKey, perWeek) => {
 	interval3 = 7;
 
 	let addon = false;
-	if (obj.extra) {
-		addon = true;
-	}
 
-	let times = nc.findTimes(obj.week.value, courseKey, addon);
+	// v.4.7.0 修正
+	// addonの判定を削除
+
+	let times = nc.findTimes(obj.week.value, courseKey);
 
 	for (let i = perWeek + 1; i < times; i++) {
 		let interval = 0;
@@ -161,12 +165,10 @@ const twiceScheduleMaker = (obj, courseObj, courseKey, perWeek) => {
 	// 二回目と一回目の間の日数をinterval3とする
 	interval3 = nc.funcInterval(obj.first.value, obj.second.value);
 
-	let addon = false;
-	if (obj.extra) {
-		addon = true;
-	}
+	// v.4.7.0 修正
+	// addonの判定を削除
 
-	let times = nc.findTimes(obj.week.value, courseKey, addon);
+	let times = nc.findTimes(obj.week.value, courseKey);
 
 	for (let i = perWeek; i < times; i++) {
 		let interval = 0;

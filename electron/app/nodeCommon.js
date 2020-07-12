@@ -28,24 +28,38 @@ exports.funcInterval = (val1, val2) => {
  * @param  {Boolean} [addon=false] 追加プランの有無
  * @return {Number}                メンタリングの回数
  */
-exports.findTimes = (week, course, addon = false) => {
+// v4.7.0 修正
+// addonの引数を削除
+exports.findTimes = (week, course) => {
 	let courseObj = this.courseReader();
 	// 回数の計算
 	// addonがtrueで来たら必ずperWeekは2。
 	// addonがfalseで、perWeekが1だったら削らない
 	// addonがfalseで、perWeekが2だったら1削る
 	// セットの時の処理は、生成時のループで処理
+	//
+	// v.4.7.0 修正
+	// addonがどうであるかにかかわらず通常コースと同じ処理になる用に変更
+	// let times = 0;
+	//
+	// if (addon) {
+	// 	times = week * 2;
+	// } else {
+	// 	if (courseObj[course].perWeek === 1) {
+	// 		times = week * courseObj[course].perWeek;
+	// 	} else {
+	// 		times = week * courseObj[course].perWeek - 1;
+	// 	}
+	// }
 	let times = 0;
 
-	if (addon) {
-		times = week * 2;
+
+	if (courseObj[course].perWeek === 1) {
+		times = week * courseObj[course].perWeek;
 	} else {
-		if (courseObj[course].perWeek === 1) {
-			times = week * courseObj[course].perWeek;
-		} else {
-			times = week * courseObj[course].perWeek - 1;
-		}
+		times = week * courseObj[course].perWeek - 1;
 	}
+
 	return times;
 };
 /**

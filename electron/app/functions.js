@@ -79,7 +79,6 @@ $(document).ready(() => {
 	$('.flagCheckbox').on('change', eo => shiftFlagChecker(eo));
 
 	// どうやらモーダルで表示する物はそのページで拾った方が良いみたい。
-	// $('.courseFlag').on('change', () => console.log('test'));
 
 	$('#salarySummarySubmit').on('click', () => applySalarySummary());
 
@@ -120,9 +119,7 @@ const courseGetter = () => {
 	$('#course').empty();
 	for (var i in course) {
 		$('#course').append(
-			`<option value="${course[i].key}" data-fullname="${
-				course[i].fullname
-			}" data-perweek="${course[i].perWeek}">
+			`<option value="${course[i].key}" data-fullname="${course[i].fullname}" data-perweek="${course[i].perWeek}">
 			${course[i].fullname}
 			</option>`
 		);
@@ -203,9 +200,7 @@ const profileSetter = () => {
 			$('.familyName').text(profile.family_name);
 			$('.givenName').text(profile.given_name);
 			$('.iconImg').append(`
-				<img src="${
-	profile.picture
-}" class="rounded-circle" style="max-width: 56px;">`);
+				<img src="${profile.picture}" class="rounded-circle" style="max-width: 56px;">`);
 			resolve();
 		} catch (e) {
 			reject(e);
@@ -471,9 +466,7 @@ const resultMessage = res => {
 			var startHours = paddingZero(start.getHours());
 			var startMinutes = paddingZero(start.getMinutes());
 			$('#modalMessage').append(
-				`<p>${title} @ ${startYear}/${startMonth}/${startDate} ${
-					weekday[startWDay]
-				} ${startHours}:${startMinutes}</p>`
+				`<p>${title} @ ${startYear}/${startMonth}/${startDate} ${weekday[startWDay]} ${startHours}:${startMinutes}</p>`
 			);
 		}
 	} else {
@@ -499,9 +492,7 @@ const chatResultMessage = res => {
 		var startHours = paddingZero(start.getHours());
 		var startMinutes = paddingZero(start.getMinutes());
 		$('#modalMessage').append(
-			`<p>${title} @ ${startYear}/${startMonth}/${startDate} ${
-				weekday[startWDay]
-			} ${startHours}:${startMinutes}</p>`
+			`<p>${title} @ ${startYear}/${startMonth}/${startDate} ${weekday[startWDay]} ${startHours}:${startMinutes}</p>`
 		);
 	}
 };

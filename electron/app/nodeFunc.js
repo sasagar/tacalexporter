@@ -42,7 +42,7 @@ const onceScheduleMaker = (obj, courseObj, courseKey, perWeek) => {
 	// 時間を調整
 	obj.firstTime = { value: obj.firstHour.value + ':' + obj.firstMinutes.value };
 	obj.secondTime = {
-		value: obj.secondHour.value + ':' + obj.secondMinutes.value,
+		value: obj.secondHour.value + ':' + obj.secondMinutes.value
 	};
 
 	// 初回
@@ -102,7 +102,7 @@ const onceScheduleMaker = (obj, courseObj, courseKey, perWeek) => {
 		let dayEnd = new Date(dayStart.getTime() + 30 * 60 * 1000);
 		let day = {
 			start: dayStart,
-			end: dayEnd,
+			end: dayEnd
 		};
 		// 年末年始かチェックして、期間内なら一週間すっ飛ばし
 		if (checkHolidays(day)) {
@@ -135,7 +135,7 @@ const twiceScheduleMaker = (obj, courseObj, courseKey, perWeek) => {
 	// 時間を調整
 	obj.firstTime = { value: obj.firstHour.value + ':' + obj.firstMinutes.value };
 	obj.secondTime = {
-		value: obj.secondHour.value + ':' + obj.secondMinutes.value,
+		value: obj.secondHour.value + ':' + obj.secondMinutes.value
 	};
 
 	// 初回
@@ -193,7 +193,7 @@ const twiceScheduleMaker = (obj, courseObj, courseKey, perWeek) => {
 		let dayEnd = new Date(dayStart.getTime() + 30 * 60 * 1000);
 		let day = {
 			start: dayStart,
-			end: dayEnd,
+			end: dayEnd
 		};
 		// 年末年始かチェックして、期間内なら一週間すっ飛ばし
 		if (checkHolidays(day)) {
@@ -242,11 +242,8 @@ const checkHolidays = estDate => {
 	let res = false;
 	const month = estDate.start.getMonth() + 1;
 	const date = estDate.start.getDate();
-	console.log('month:' + month);
-	console.log('date:' + date);
 	if ((month == 12 && date >= 28) || (month == 1 && date <= 3)) {
 		res = true;
-		console.log('test');
 	}
 	return res;
 };

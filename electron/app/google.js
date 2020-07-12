@@ -50,17 +50,17 @@ exports.addEvents = (auth, option) => {
 				let eventData = {
 					summary: title,
 					start: {
-						dateTime: schedule[i].start,
+						dateTime: schedule[i].start
 					},
 					end: {
-						dateTime: schedule[i].end,
-					},
+						dateTime: schedule[i].end
+					}
 				};
 
 				let apiObj = {
 					auth: auth,
 					calendarId: calID,
-					resource: eventData,
+					resource: eventData
 				};
 
 				calendar.events.insert(apiObj, function(err, event) {
@@ -116,17 +116,17 @@ exports.addAllDayEvent = (auth, option) => {
 				let eventData = {
 					summary: title,
 					start: {
-						date: nc.addAllDayEventDateFormatter(tmpDate),
+						date: nc.addAllDayEventDateFormatter(tmpDate)
 					},
 					end: {
-						date: nc.addAllDayEventDateFormatter(tmpDate),
-					},
+						date: nc.addAllDayEventDateFormatter(tmpDate)
+					}
 				};
 
 				let apiObj = {
 					auth: auth,
 					calendarId: calID,
-					resource: eventData,
+					resource: eventData
 				};
 
 				calendar.events.insert(apiObj, function(err, event) {

@@ -9,11 +9,14 @@ const {
 	app,
 	ipcMain,
 	dialog,
-	BrowserWindow,
+	BrowserWindow
 } = require('electron');
 
 // pathモジュール
 const path = require('path');
+
+const log = require('electron-log');
+const { autoUpdater } = require('electron-updater');
 
 // 外部JSの読み込み
 const nf = require('./app/nodeFunc');
@@ -25,13 +28,52 @@ const gg = require('./app/google');
 // 設定のデフォルトを指定
 const { config } = require('./app/defaultConf.js');
 
-require('update-electron-app')();
+// autoUpdater関連の処理
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
+log.info('App starting...');
+
+function sendStatusToWindow(text) {
+	log.info(text);
+}
+
+autoUpdater.on('checking-for-update', () => {
+	sendStatusToWindow('Checking for update...');
+});
+autoUpdater.on('update-available', info => {
+	sendStatusToWindow('Update available.');
+});
+autoUpdater.on('update-not-available', info => {
+	sendStatusToWindow('Update not available.');
+});
+autoUpdater.on('error', err => {
+	sendStatusToWindow('Error in auto-updater. ' + err);
+});
+autoUpdater.on('download-progress', progressObj => {
+	let log_message = 'Download speed: ' + progressObj.bytesPerSecond;
+	log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+	log_message =
+		log_message +
+		' (' +
+		progressObj.transferred +
+		'/' +
+		progressObj.total +
+		')';
+	sendStatusToWindow(log_message);
+});
+autoUpdater.on('update-downloaded', info => {
+	sendStatusToWindow('Update downloaded');
+});
+
+app.on('ready', async () => {
+	autoUpdater.checkForUpdatesAndNotify();
+});
 
 // スコープの設定
 // カレンダーAPIと個人情報用のAPIを許可するようにスコープ指定
 let SCOPES = [
 	'https://www.googleapis.com/auth/calendar',
-	'https://www.googleapis.com/auth/userinfo.profile',
+	'https://www.googleapis.com/auth/userinfo.profile'
 ];
 
 // TOKENは設定ファイルに保存
@@ -59,14 +101,14 @@ app.on('ready', () => {
 		x,
 		y,
 		webPreferences: { nodeIntegration: true },
-		show: false,
+		show: false
 	});
 
 	splashWindow = new BrowserWindow({
 		width: 320,
 		height: 320,
 		frame: false,
-		parent: mainWindow,
+		parent: mainWindow
 	});
 	splashWindow.setAlwaysOnTop(true);
 
@@ -75,7 +117,7 @@ app.on('ready', () => {
 		height: 320,
 		frame: false,
 		parent: mainWindow,
-		show: false,
+		show: false
 	});
 	loadingWindow.setAlwaysOnTop(true);
 
@@ -126,7 +168,10 @@ app.on('ready', () => {
 		template.unshift(em.darwinTemplate.main);
 
 		// Edit menu
-		template[1].submenu = template[1].submenu.concat(template[1].submenu, em.darwinTemplate.sub1);
+		template[1].submenu = template[1].submenu.concat(
+			template[1].submenu,
+			em.darwinTemplate.sub1
+		);
 
 		// Window menu
 		template[3].submenu = em.darwinTemplate.sub2;
@@ -147,7 +192,7 @@ ipcMain.on('logout', () => {
 			message: 'Googleカレンダーからログアウトします。よろしいですか？',
 			detail:
 				'ログアウトすると、ウィンドウがリロードされ、認証画面が表示されます。',
-			cancelId: 0,
+			cancelId: 0
 		},
 		response => {
 			if (response) {
@@ -183,7 +228,7 @@ ipcMain.on('applySchedule', (event, obj) => {
 		week: week,
 		salaryTitle: salaryTitle,
 		startDate: startDate,
-		courseKey: courseKey,
+		courseKey: courseKey
 	};
 	event.returnValue = resObj;
 });
@@ -213,7 +258,7 @@ ipcMain.on('addschedule', async (event, option) => {
 		console.log(__dirname);
 		event.returnValue = {
 			result: true,
-			res: 'Error loading client secret file: ' + e,
+			res: 'Error loading client secret file: ' + e
 		};
 		loadingWindow.hide();
 		return;
@@ -238,7 +283,6 @@ ipcMain.on('getCalendarList', async event => {
 ipcMain.on('getProfileData', async event => {
 	try {
 		let content = await gg.getClientSecret();
-		// authorize(content, gg.userInfo, event);
 		let tokenedAuth = await authorize(content);
 		let res = await gg.userInfo(tokenedAuth, event);
 		event.returnValue = res;
@@ -307,7 +351,7 @@ ipcMain.on('applyShiftData', async (event, obj) => {
 	for (let i in allShiftWDays) {
 		allShiftWDaysNum.push({
 			wday: allShiftWDays[i].substr(3, 1),
-			shift: allShiftWDays[i].substr(5, 1),
+			shift: allShiftWDays[i].substr(5, 1)
 		});
 	}
 
@@ -339,8 +383,8 @@ ipcMain.on('applyShiftData', async (event, obj) => {
 		calID: calID,
 		data: {
 			title: title,
-			schedule: schedule,
-		},
+			schedule: schedule
+		}
 	};
 
 	try {
@@ -506,16 +550,40 @@ ipcMain.on('closeSettings', event => {
 function authorizeChecker(credentials) {
 	let res;
 	// Check if we have previously stored a token.
-	if (TOKEN === '') {
+	if (TOKEN === '' || TOKEN == null) {
 		let oauth2Client = gg.OAuth2(credentials);
 		let authUrl = oauth2Client.generateAuthUrl({
 			access_type: 'offline',
-			scope: SCOPES,
+			scope: SCOPES
 		});
 		shell.openExternal(authUrl);
 		res = authUrl;
 	} else {
-		res = 'OK';
+		const date = new Date();
+		if (TOKEN.expiry_date < date.getTime()) {
+			let oauth2Client = gg.OAuth2(credentials);
+			oauth2Client.credentials = TOKEN;
+
+			oauth2Client
+				.getAccessToken()
+				.then(tokens => {
+					config.set('credentials.token.access_token', tokens.token);
+				})
+				.catch(err => {
+					sendStatusToWindow(err);
+					if (err) {
+						let authUrl = oauth2Client.generateAuthUrl({
+							access_type: 'offline',
+							scope: SCOPES
+						});
+						shell.openExternal(authUrl);
+						res = authUrl;
+					}
+				});
+			res = 'RENEW';
+		} else {
+			res = 'OK';
+		}
 	}
 	// });
 	return res;
@@ -535,7 +603,7 @@ function authorize(credentials) {
 	if (TOKEN === '') {
 		let authUrl = oauth2Client.generateAuthUrl({
 			access_type: 'offline',
-			scope: SCOPES,
+			scope: SCOPES
 		});
 		shell.openExternal(authUrl);
 	} else {

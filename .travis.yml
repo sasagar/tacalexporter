@@ -9,7 +9,7 @@ cache:
   - node_modules
 sudo: required
 env:
-- NODE_VERSION="12.8.1"
+- NODE_VERSION="14.5.0"
 before_install:
 - git clone https://github.com/creationix/nvm.git /tmp/.nvm
 - source /tmp/.nvm/nvm.sh

@@ -7,6 +7,10 @@ const path = require('path');
 // GoogleCalendar
 const { google } = require('googleapis');
 
+const apis = google.getSupportedAPIs();
+const log = require('electron-log');
+log.info(apis);
+
 // nodeFunc.js
 const nc = require('./nodeCommon.js');
 

@@ -147,7 +147,7 @@
 	},
 	"OS": {
 		"fullname": "OSSコース",
-		"key": "PR",
+		"key": "OS",
 		"perWeek": 2,
 		"set": false,
 		"fixed": true

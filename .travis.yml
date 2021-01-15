@@ -1,6 +1,6 @@
 language: objective-c
 os: osx
-osx_image: xcode11
+osx_image: xcode12.2
 branches:
   only:
     - master
@@ -9,7 +9,7 @@ cache:
   - node_modules
 sudo: required
 env:
-- NODE_VERSION="14.5.0"
+- NODE_VERSION="15.4.0"
 before_install:
 - git clone https://github.com/creationix/nvm.git /tmp/.nvm
 - source /tmp/.nvm/nvm.sh

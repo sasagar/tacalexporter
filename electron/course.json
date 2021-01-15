@@ -64,7 +64,7 @@
 	"UI": {
 		"fullname": "UI/UXデザインコース",
 		"key": "UI",
-		"perWeek": 1,
+		"perWeek": 2,
 		"set": false,
 		"fixed": true
 	},
@@ -140,6 +140,13 @@
 	},
 	"PR": {
 		"fullname": "動画編集コース",
+		"key": "PR",
+		"perWeek": 2,
+		"set": false,
+		"fixed": true
+	},
+	"OS": {
+		"fullname": "OSSコース",
 		"key": "PR",
 		"perWeek": 2,
 		"set": false,

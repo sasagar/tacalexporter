@@ -67,7 +67,7 @@
 	"dependencies": {
 		"about-window": "^1.13.4",
 		"ajv": "^7.0.3",
-		"bootstrap": "^4.5.3",
+		"bootstrap": "^4.6.0",
 		"electron-config": "^2.0.0",
 		"electron-json-storage": "^4.3.0",
 		"electron-log": "^4.3.1",
@@ -83,7 +83,7 @@
 		"popper.js": "^1.15.0"
 	},
 	"devDependencies": {
-		"electron": "^11.2.0",
+		"electron": "^11.2.1",
 		"electron-builder": "^22.10.4",
 		"electron-packager": "^15.2.0"
 	}

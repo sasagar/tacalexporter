@@ -1,6 +1,6 @@
 {
   "name": "TAcalExporter",
-  "version": "4.8.5",
+  "version": "4.8.6",
   "description": "TechAcademy用メンタースケジュール登録アプリ",
   "standard": {
     "globals": [
@@ -36,7 +36,7 @@
     ],
     "releaseInfo": {
       "releaseName": "内部処理変更",
-      "releaseNotes": "主にアップデートの内部処理を変更をしました。"
+      "releaseNotes": "終日のスケジュール登録が「予定あり」になっていたものを変更しました。"
     },
     "directories": {
       "output": "../dist"

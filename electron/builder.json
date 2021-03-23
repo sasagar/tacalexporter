@@ -1,0 +1,16 @@
+{
+	"mac": {
+		"icon": "build/icon.icns"
+	},
+	"win": {
+		"icon": "build/icon.ico"
+	},
+	"publish": {
+		"provider": "github",
+		"releaseType": "release"
+	},
+	"directories": {
+		"output": "../dist/${platform}"
+	},
+	"artifactName": "${productName}.${ext}"
+}

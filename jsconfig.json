@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "components/*": ["src/components/*"]
+    }
+  },
+  "search.useIgnoreFilesByDefault": true,
+  "exclude": ["node_modules", "dist", "dist_electron"]
+}

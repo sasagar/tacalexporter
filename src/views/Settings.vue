@@ -1,5 +1,6 @@
 <template>
   <div class="settings container">
+    <NavToHome />
     <section class="google mb-4">
       <h2>Googleアカウント</h2>
       <button class="btn btn-pill btn-primary mb-4">
@@ -7,7 +8,7 @@
         Googleアカウントでログイン
       </button>
       <div class="logged-in">
-        <button class="btn btn-pill btn-primary mb-4">
+        <button class="btn btn-pill btn-primary text-danger mb-4">
           <span class="mr-1"><fontAwesome :icon="['fab', 'google']" /></span>
           ログアウトする
         </button>
@@ -66,21 +67,42 @@
         </small>
       </div>
     </section>
-    <section class="course">
+    <section class="course mb-4">
       <h2>コース選択</h2>
-      <div class="custom-control custom-switch">
-        <input type="checkbox" class="custom-control-input" id="RB" />
-        <label class="custom-control-label" for="RB">
-          Webアプリケーションコース
-        </label>
-      </div>
+      <template v-for="course in courses" :key="course.id">
+        <CourseSetting :course="course" />
+      </template>
     </section>
   </div>
 </template>
 
 <script>
+import CourseSetting from "@/components/CourseSetting.vue";
+import courseJson from "../json/course.json";
+import { useRouter } from "vue-router";
+// import { reactive } from "vue";
+
+import NavToHome from "@/components/NavToHome.vue";
+
 export default {
-  name: "Settings"
+  setup() {
+    const router = useRouter();
+
+    const goHome = () => {
+      router.push("/");
+    };
+    const courses = courseJson;
+
+    return {
+      goHome,
+      courses
+    };
+  },
+  name: "settings",
+  components: {
+    NavToHome,
+    CourseSetting
+  }
 };
 </script>
 

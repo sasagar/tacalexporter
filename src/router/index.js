@@ -17,6 +17,11 @@ const routes = [
     name: "monthly",
     component: () => import("../views/Monthly.vue"),
   },
+  {
+    path: "/mentoring",
+    name: "mentoring",
+    component: () => import("../views/Mentoring.vue"),
+  },
 ];
 
 const router = createRouter({

@@ -138,9 +138,9 @@
       </div>
       <div class="row">
         <div class="form-group mb-2 col">
-          <label for="monthly-title"
-            >メンタリングスケジュール登録時の予定タイトル</label
-          >
+          <label for="monthly-title">
+            メンタリングスケジュール登録時の予定タイトル
+          </label>
           <input
             type="text"
             class="form-control monthly-title"

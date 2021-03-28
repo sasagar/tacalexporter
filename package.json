@@ -26,6 +26,7 @@
     "vue": "^3.0.0",
     "vue-headroom": "^0.10.1",
     "vue-router": "^4.0.0-0",
+    "vue3-datepicker": "^0.2.4",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {

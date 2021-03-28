@@ -91,6 +91,20 @@
     <hr />
     <section id="schedule" class="schedule mb-4">
       <h2 class="mb-2">月間予定</h2>
+      <div class="form-group mb-2">
+        <label for="monthly-title">シフト登録時の予定タイトル</label>
+        <input
+          type="text"
+          class="form-control monthly-title"
+          id="email"
+          value="シフト用タイトルが入る"
+          disabled
+        />
+        <small class="form-text text-muted">
+          予定タイトルは、設定画面で変更できます。
+        </small>
+      </div>
+      <hr />
       <schedule
         status="completed"
         key="month-1"
@@ -128,7 +142,6 @@
 
 <script>
 import { defineComponent } from "vue";
-import { useRouter } from "vue-router";
 
 import NavToHome from "@/components/NavToHome.vue";
 import MonthlySwitch from "@/components/MonthlySwitch.vue";
@@ -136,12 +149,6 @@ import Schedule from "@/components/Schedule.vue";
 
 export default defineComponent({
   setup() {
-    const router = useRouter();
-
-    const goHome = () => {
-      router.push("/");
-    };
-
     const today = new Date();
     today.setDate(1);
 
@@ -171,7 +178,6 @@ export default defineComponent({
       wNextMonth.getDate();
 
     return {
-      goHome,
       today,
       nextMonth,
       wNextMonth,

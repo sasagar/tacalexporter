@@ -1,18 +1,21 @@
 <template>
   <div class="main container">
-    <button class="btn btn-pill btn-primary btn-block text-success mb-4">
+    <button
+      class="btn btn-pill btn-primary btn-block text-success mb-4"
+      @click="go('mentoring')"
+    >
       <span class="mr-1"><fontAwesome icon="user" /></span>
       新規メンタリングスケジュール登録
     </button>
     <button
       class="btn btn-pill btn-primary btn-block text-secondary mb-4"
-      @click="goMonthly"
+      @click="go('monthly')"
     >
       <span class="mr-1"><fontAwesome icon="calendar" /></span>
       月間シフト登録
     </button>
     <hr class="mb-4" />
-    <button class="btn btn-pill btn-primary mb-4" @click="goSettings">
+    <button class="btn btn-pill btn-primary mb-4" @click="go('settings')">
       <span class="mr-1"><fontAwesome icon="cogs" /></span>
       設定
     </button>
@@ -26,17 +29,12 @@ export default {
   setup() {
     const router = useRouter();
 
-    const goSettings = () => {
-      router.push("/settings");
-    };
-
-    const goMonthly = () => {
-      router.push("/monthly");
+    const go = view => {
+      router.push("/" + view);
     };
 
     return {
-      goSettings,
-      goMonthly
+      go
     };
   },
   name: "main-menu"

@@ -106,6 +106,11 @@
         key="month-3"
         date="2021年 03月 29日 (月) 19:00 - 23:00"
       />
+      <schedule
+        status="error"
+        key="month-4"
+        date="2021年 03月 30日 (火) 19:00 - 23:00"
+      />
       <div class="submit">
         <div class="form-group">
           <label class="my-1 mr-2" for="calSelect">登録するカレンダー</label>

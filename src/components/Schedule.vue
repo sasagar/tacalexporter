@@ -5,6 +5,7 @@
       'alert-secondary': stat.standby,
       'alert-info': stat.loading,
       'alert-success': stat.completed,
+      'alert-danger': stat.error,
     }"
   >
     <fontAwesome
@@ -21,6 +22,11 @@
     <fontAwesome
       v-else-if="stat.completed"
       :icon="['fas', 'check-circle']"
+      class="mr-2"
+    />
+    <fontAwesome
+      v-else-if="stat.error"
+      :icon="['fas', 'times-circle']"
       class="mr-2"
     />
 
@@ -61,7 +67,8 @@ export default defineComponent({
       const obj = {
         standby: false,
         loading: false,
-        completed: false
+        completed: false,
+        error: false
       };
       switch (props.status) {
         case "standby":
@@ -75,6 +82,10 @@ export default defineComponent({
         case "completed":
           obj.completed = true;
           break;
+
+        case "error":
+          obj.error = true;
+          break;
       }
       return obj;
     });
@@ -85,3 +96,19 @@ export default defineComponent({
   }
 });
 </script>
+
+<style lang="scss" scoped>
+.custom-switch {
+  padding-left: 3rem;
+
+  .custom-control-label {
+    &::before {
+      left: -3rem;
+    }
+
+    &::after {
+      left: calc(-3rem + 2px);
+    }
+  }
+}
+</style>

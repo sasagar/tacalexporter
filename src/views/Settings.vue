@@ -80,7 +80,6 @@
 import CourseSetting from "@/components/CourseSetting.vue";
 import courseJson from "../json/course.json";
 import { useRouter } from "vue-router";
-// import { reactive } from "vue";
 
 import NavToHome from "@/components/NavToHome.vue";
 

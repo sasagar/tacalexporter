@@ -70,7 +70,11 @@
       <div class="submit">
         <div class="form-group">
           <label class="my-1 mr-2" for="monthSelect">登録月</label>
-          <select class="custom-select my-1 mr-sm-2 col-3" id="monthSelect">
+          <select
+            class="custom-select my-1 mr-sm-2 col-3"
+            id="monthSelect"
+            v-model="state.selectedMonth"
+          >
             <option :value="thisMonthVal">
               {{ today.getFullYear() }}年 {{ today.getMonth() + 1 }} 月
             </option>
@@ -83,7 +87,10 @@
             </option>
           </select>
         </div>
-        <button class="btn btn-primary btn-pill text-secondary">
+        <button
+          class="btn btn-primary btn-pill text-secondary"
+          @click="makeSchedule"
+        >
           スケジュール生成
         </button>
       </div>
@@ -105,26 +112,13 @@
         </small>
       </div>
       <hr />
-      <schedule
-        status="completed"
-        key="month-1"
-        date="2021年 03月 26日 (金) 15:00 - 19:00"
-      />
-      <schedule
-        status="loading"
-        key="month-2"
-        date="2021年 03月 26日 (金) 19:00 - 23:00"
-      />
-      <schedule
-        status="standby"
-        key="month-3"
-        date="2021年 03月 29日 (月) 19:00 - 23:00"
-      />
-      <schedule
-        status="error"
-        key="month-4"
-        date="2021年 03月 30日 (火) 19:00 - 23:00"
-      />
+      <template v-for="shift in createdSchedule" :key="shift.start">
+        <schedule
+          :status="shift.status"
+          :start="shift.start"
+          :end="shift.end"
+        />
+      </template>
       <div class="submit">
         <div class="form-group">
           <label class="my-1 mr-2" for="calSelect">登録するカレンダー</label>
@@ -141,7 +135,7 @@
 </template>
 
 <script>
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, reactive } from "vue";
 import { useStore } from "vuex";
 
 import NavToHome from "@/components/NavToHome.vue";
@@ -180,6 +174,15 @@ export default defineComponent({
       "/" +
       wNextMonth.getDate();
 
+    const state = reactive({
+      selectedMonth:
+        nextMonth.getFullYear() +
+        "/" +
+        (nextMonth.getMonth() + 1) +
+        "/" +
+        nextMonth.getDate()
+    });
+
     const shiftTitle = computed({
       get: () => store.getters.getShiftTitle,
       set: str => {
@@ -187,14 +190,115 @@ export default defineComponent({
       }
     });
 
+    const makeSchedule = () => {
+      // 月間初日
+      const startDate = new Date(state.selectedMonth);
+      // 翌月初日
+      const endDate = new Date(state.selectedMonth);
+      endDate.setMonth(endDate.getMonth() + 1);
+      // 作業用の日付（ターゲット）
+      let targetDate = new Date(startDate);
+
+      // 作業用のスケジュール配列
+      let shifts = [];
+
+      // 翌月初日以前まで繰り返し
+      while (targetDate < endDate) {
+        // 曜日を取得
+        const wday = targetDate.getDay();
+        // キーを入れる為の作業用変数
+        let wkey = "";
+
+        // 曜日をキーにするために置き換え
+        switch (wday) {
+          case 0:
+            wkey = "sun";
+            break;
+
+          case 1:
+            wkey = "mon";
+            break;
+
+          case 2:
+            wkey = "thu";
+            break;
+
+          case 3:
+            wkey = "wed";
+            break;
+
+          case 4:
+            wkey = "thu";
+            break;
+
+          case 5:
+            wkey = "fri";
+            break;
+
+          case 6:
+            wkey = "sat";
+            break;
+        }
+
+        // 登録するべきシフトがあるかどうか確認して、あったらスケジュールの配列に追加
+        if (store.getters.getShiftSetting(wkey + "-1")) {
+          const obj = makeTime(1, targetDate);
+
+          // 作業用の配列に追加
+          shifts.push(obj);
+        }
+
+        // 同じ事を2でもやる
+        if (store.getters.getShiftSetting(wkey + "-2")) {
+          const obj = makeTime(2, targetDate);
+          // 作業用の配列に追加
+          shifts.push(obj);
+        }
+
+        // 繰り返しの最後に必ず1日ずらす
+        targetDate.setDate(targetDate.getDate() + 1);
+      }
+
+      // 作業用配列をstoreにおさめる
+      store.dispatch("updateCreatedSchedule", { arr: shifts });
+    };
+
+    const makeTime = (num, targetDate) => {
+      // 仮のオブジェクトを作って...
+      const obj = {};
+      let sHour = 0;
+      let eHour = 0;
+      // シフトに合わせた時間を用意して、突っ込む
+      if (num === 1) {
+        sHour = 15;
+        eHour = 19;
+      } else if (num === 2) {
+        sHour = 19;
+        eHour = 23;
+      }
+      const time = targetDate;
+      time.setHours(sHour, 0);
+      obj.start = new Date(time);
+      obj.end = new Date(time.setHours(eHour, 0));
+      obj.status = "standby";
+
+      return obj;
+    };
+
+    const createdSchedule = computed(() => store.state.createdSchedule);
+
     return {
+      store,
+      state,
       today,
       nextMonth,
       wNextMonth,
       thisMonthVal,
       nextMonthVal,
       wNextMonthVal,
-      shiftTitle
+      shiftTitle,
+      makeSchedule,
+      createdSchedule
     };
   },
   components: {

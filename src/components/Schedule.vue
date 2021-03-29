@@ -31,7 +31,7 @@
         class="mr-2"
       />
 
-      <span class="alert-inner--text"> {{ props.date }} </span>
+      <span class="alert-inner--text"> {{ date }} </span>
       <template v-if="stat.completed != true">
         <span class="custom-control custom-switch ml-4">
           <input
@@ -51,6 +51,9 @@
 
 <script>
 import { defineComponent, computed } from "vue";
+import moment from "moment";
+
+moment.locale("ja");
 
 export default defineComponent({
   props: {
@@ -60,8 +63,11 @@ export default defineComponent({
     key: {
       type: String
     },
-    date: {
-      type: String
+    start: {
+      type: Date
+    },
+    end: {
+      type: Date
     }
   },
   setup(props) {
@@ -91,9 +97,25 @@ export default defineComponent({
       }
       return obj;
     });
+
+    const date = computed(() => {
+      const str = makeTime(props.start) + " - " + makeEndTime(props.end);
+
+      return str;
+    });
+
+    const makeTime = date => {
+      return moment(date).format("YYYY年 MM月 DD日 (dd) HH:mm");
+    };
+
+    const makeEndTime = date => {
+      return moment(date).format("HH:mm");
+    };
+
     return {
       props,
-      stat
+      stat,
+      date
     };
   }
 });

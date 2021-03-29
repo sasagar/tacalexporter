@@ -36,7 +36,8 @@ export default createStore({
       state.shiftCalSelect = payload;
     },
     setCreatedSchedule(state, payload) {
-      state.createdSchedule = payload;
+      state.createdSchedule.splice(0);
+      state.createdSchedule.push(...payload.arr);
     },
   },
   actions: {
@@ -71,8 +72,9 @@ export default createStore({
     updateShiftCalSelect(payload) {
       this.setShiftCalSelect(payload);
     },
-    updateCreatedSchedule(payload) {
-      this.setCreatedSchedule(payload);
+    updateCreatedSchedule(context, payload) {
+      console.log(payload.arr);
+      context.commit("setCreatedSchedule", { arr: payload.arr });
     },
   },
   getters: {

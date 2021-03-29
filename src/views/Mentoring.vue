@@ -96,13 +96,13 @@
             <div class="form-group col">
               <label class="my-1 mr-2 col" for="secondDate">2回目</label>
               <select class="custom-select my-1 mr-sm-2 col-4" id="secondDate">
-                <option value="0">月曜日</option>
-                <option value="1">火曜日</option>
-                <option value="2">水曜日</option>
-                <option value="3">木曜日</option>
-                <option value="4">金曜日</option>
-                <option value="5">土曜日</option>
-                <option value="6">日曜日</option>
+                <option value="1">月曜日</option>
+                <option value="2">火曜日</option>
+                <option value="3">水曜日</option>
+                <option value="4">木曜日</option>
+                <option value="5">金曜日</option>
+                <option value="6">土曜日</option>
+                <option value="0">日曜日</option>
               </select>
 
               <select

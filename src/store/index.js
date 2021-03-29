@@ -2,9 +2,9 @@ import { createStore } from "vuex";
 
 export default createStore({
   state: {
-    mentoringTitle: "",
-    accountingTitle: "",
-    shiftTitle: "",
+    mentoringTitle: "メンタリング %name %course%week",
+    accountingTitle: "%course%week %name 計上日",
+    shiftTitle: "チャットシフト",
     courseSettings: {},
     shiftSettings: {},
     mentoringCalSelect: "",
@@ -13,19 +13,21 @@ export default createStore({
   },
   mutations: {
     setMentoringTitle(state, payload) {
-      state.mentoringTitle = payload;
+      state.mentoringTitle = payload.title;
     },
     setAccountingTitle(state, payload) {
-      state.accountingTitle = payload;
+      state.accountingTitle = payload.title;
     },
     setShiftTitle(state, payload) {
-      state.shiftTitle = payload;
+      state.shiftTitle = payload.title;
     },
     setCourseSettings(state, payload) {
-      state.courseSettings = payload;
+      const obj = { courseSettings: payload.obj };
+      Object.assign(state, obj);
     },
     setShiftSettings(state, payload) {
-      state.shiftSettings = payload;
+      const obj = { shiftSettings: payload.obj };
+      Object.assign(state, obj);
     },
     setMentoringCalSelect(state, payload) {
       state.mentoringCalSelect = payload;
@@ -38,20 +40,30 @@ export default createStore({
     },
   },
   actions: {
-    updateMentoringTitle(payload) {
-      this.setMentoringTitle(payload);
+    updateMentoringTitle(context, payload) {
+      context.commit("setMentoringTitle", payload);
     },
-    updateAccountingTitle(payload) {
-      this.setAccountingTitle(payload);
+    updateAccountingTitle(context, payload) {
+      context.commit("setAccountingTitle", payload);
     },
-    updateShiftTitle(payload) {
-      this.setShiftTitle(payload);
+    updateShiftTitle(context, payload) {
+      context.commit("setShiftTitle", payload);
     },
-    updateCourseSettings(payload) {
-      this.setCourseSettings(payload);
+    updateCourseSettings(context, payload) {
+      const obj = context.state.courseSettings;
+      obj[payload.key] = payload.flag;
+
+      context.commit("setCourseSettings", {
+        obj,
+      });
     },
-    updateShiftSettings(payload) {
-      this.setShiftSettings(payload);
+    updateShiftSettings(context, payload) {
+      const obj = context.state.shiftSettings;
+      obj[payload.key] = payload.flag;
+
+      context.commit("setShiftSettings", {
+        obj,
+      });
     },
     updateMentoringCalSelect(payload) {
       this.setMentoringCalSelect(payload);
@@ -61,6 +73,31 @@ export default createStore({
     },
     updateCreatedSchedule(payload) {
       this.setCreatedSchedule(payload);
+    },
+  },
+  getters: {
+    getCourseSetting: (state) => (courseKey) => {
+      if (state.courseSettings[courseKey]) {
+        return state.courseSettings[courseKey];
+      } else {
+        return false;
+      }
+    },
+    getMentoringTitle: (state) => {
+      return state.mentoringTitle;
+    },
+    getAccountingTitle: (state) => {
+      return state.accountingTitle;
+    },
+    getShiftTitle: (state) => {
+      return state.shiftTitle;
+    },
+    getShiftSetting: (state) => (shiftKey) => {
+      if (state.shiftSettings[shiftKey]) {
+        return state.shiftSettings[shiftKey];
+      } else {
+        return false;
+      }
     },
   },
   modules: {},

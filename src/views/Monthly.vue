@@ -97,7 +97,7 @@
           type="text"
           class="form-control monthly-title"
           id="email"
-          value="シフト用タイトルが入る"
+          v-model="shiftTitle"
           disabled
         />
         <small class="form-text text-muted">
@@ -141,7 +141,8 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
+import { useStore } from "vuex";
 
 import NavToHome from "@/components/NavToHome.vue";
 import MonthlySwitch from "@/components/MonthlySwitch.vue";
@@ -149,6 +150,8 @@ import Schedule from "@/components/Schedule.vue";
 
 export default defineComponent({
   setup() {
+    const store = useStore();
+
     const today = new Date();
     today.setDate(1);
 
@@ -177,13 +180,21 @@ export default defineComponent({
       "/" +
       wNextMonth.getDate();
 
+    const shiftTitle = computed({
+      get: () => store.getters.getShiftTitle,
+      set: str => {
+        store.dispatch("updateShiftTitle", { title: str });
+      }
+    });
+
     return {
       today,
       nextMonth,
       wNextMonth,
       thisMonthVal,
       nextMonthVal,
-      wNextMonthVal
+      wNextMonthVal,
+      shiftTitle
     };
   },
   components: {

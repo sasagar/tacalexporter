@@ -45,7 +45,12 @@
       </div>
       <div class="form-group mb-3">
         <label for="mentoring">メンタリング用タイトル</label>
-        <input type="text" id="mentoring" class="form-control col-9" />
+        <input
+          type="text"
+          id="mentoring"
+          class="form-control col-9"
+          v-model="mentoringTitle"
+        />
         <small class="form-text text-muted">
           一回ずつのメンタリングの予定タイトルになります。
         </small>
@@ -54,14 +59,24 @@
         <label for="accounting">
           専任制 報酬計上日の終日スケジュールタイトル
         </label>
-        <input type="text" id="accounting" class="form-control col-9" />
+        <input
+          type="text"
+          id="accounting"
+          class="form-control col-9"
+          v-model="accountingTitle"
+        />
         <small class="form-text text-muted">
-          専任制は最終日が計上日となるため、その計算ができるように、期間最終日に終日のスケジュールを登録します。そのタイトルになります
+          専任制は最終日が計上日となるため、その計算ができるように、期間最終日に終日のスケジュールを登録します。そのタイトルになります。この欄を空欄にすると、専任制の計上日は登録されなくなります。
         </small>
       </div>
       <div class="form-group mb-3">
         <label for="shift">シフト用タイトル</label>
-        <input type="text" id="shift" class="form-control col-9" />
+        <input
+          type="text"
+          id="shift"
+          class="form-control col-9"
+          v-model="shiftTitle"
+        />
         <small class="form-text text-muted">
           一回ずつのシフト勤務（チャット対応）の予定タイトルになります。
         </small>
@@ -69,7 +84,7 @@
     </section>
     <section class="course mb-4">
       <h2>コース選択</h2>
-      <template v-for="course in courses" :key="course.id">
+      <template v-for="course in courses" :key="course.key">
         <CourseSetting :course="course" />
       </template>
     </section>
@@ -79,22 +94,43 @@
 <script>
 import CourseSetting from "@/components/CourseSetting.vue";
 import courseJson from "../json/course.json";
-import { useRouter } from "vue-router";
+
+import { computed } from "vue";
+import { useStore } from "vuex";
 
 import NavToHome from "@/components/NavToHome.vue";
 
 export default {
   setup() {
-    const router = useRouter();
-
-    const goHome = () => {
-      router.push("/");
-    };
+    const store = useStore();
     const courses = courseJson;
 
+    const mentoringTitle = computed({
+      get: () => store.getters.getMentoringTitle,
+      set: str => {
+        store.dispatch("updateMentoringTitle", { title: str });
+      }
+    });
+
+    const accountingTitle = computed({
+      get: () => store.getters.getAccountingTitle,
+      set: str => {
+        store.dispatch("updateAccountingTitle", { title: str });
+      }
+    });
+
+    const shiftTitle = computed({
+      get: () => store.getters.getShiftTitle,
+      set: str => {
+        store.dispatch("updateShiftTitle", { title: str });
+      }
+    });
+
     return {
-      goHome,
-      courses
+      courses,
+      mentoringTitle,
+      accountingTitle,
+      shiftTitle
     };
   },
   name: "settings",

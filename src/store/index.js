@@ -2,7 +2,7 @@ import { createStore } from "vuex";
 
 export default createStore({
   state: {
-    mentoringTitle: "メンタリング %name %course%week",
+    mentoringTitle: "メンタリング %name %courseid%week",
     accountingTitle: "%course%week %name 計上日",
     shiftTitle: "チャットシフト",
     courseSettings: {},
@@ -39,6 +39,9 @@ export default createStore({
       state.createdSchedule.splice(0);
       state.createdSchedule.push(...payload.arr);
     },
+    clearSchedule(state) {
+      state.createdSchedule.splice(0);
+    },
   },
   actions: {
     updateMentoringTitle(context, payload) {
@@ -73,8 +76,10 @@ export default createStore({
       this.setShiftCalSelect(payload);
     },
     updateCreatedSchedule(context, payload) {
-      console.log(payload.arr);
       context.commit("setCreatedSchedule", { arr: payload.arr });
+    },
+    clearCreatedSchedule(context) {
+      context.commit("clearSchedule");
     },
   },
   getters: {

@@ -30,6 +30,9 @@
         :icon="['fas', 'times-circle']"
         class="mr-2"
       />
+      <span v-if="index >= 0" class="alert-inner--text counter">
+        {{ index + 1 }}回目
+      </span>
 
       <span class="alert-inner--text"> {{ date }} </span>
       <template v-if="stat.completed != true">
@@ -68,6 +71,9 @@ export default defineComponent({
     },
     end: {
       type: Date
+    },
+    index: {
+      type: Number
     }
   },
   setup(props) {
@@ -122,6 +128,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.counter {
+  margin-right: 10px;
+}
+
 .custom-switch {
   padding-left: 3rem;
 

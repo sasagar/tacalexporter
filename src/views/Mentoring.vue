@@ -11,10 +11,18 @@
           <div class="row">
             <div class="form-group col">
               <label class="my-1 mr-2" for="courseSelect">コース</label>
-              <select class="custom-select my-1 mr-sm-2" id="courseSelect">
-                <option value="WD">Webデザインコース</option>
-                <option value="WP">WordPressコース</option>
+              <select
+                class="custom-select my-1 mr-sm-2"
+                id="courseSelect"
+                v-model="state.selectedCourse"
+              >
+                <template v-for="course in courses" :key="course.key">
+                  <option v-if="courseFlag(course.key)" :value="course.key">
+                    {{ course.fullname }}
+                  </option>
+                </template>
               </select>
+              <small>{{ courseDescription() }}</small>
             </div>
           </div>
         </div>
@@ -23,13 +31,18 @@
           <div class="row">
             <div class="form-group col">
               <label class="my-1 mr-2" for="courseSelect">期間</label>
-              <select class="custom-select my-1 mr-sm-2" id="courseSelect">
+              <select
+                class="custom-select my-1 mr-sm-2"
+                id="courseSelect"
+                v-model="state.selectedWeek"
+              >
                 <option value="4">4週間</option>
                 <option value="6">6週間</option>
                 <option value="8">8週間</option>
                 <option value="12">12週間</option>
                 <option value="16">16週間</option>
               </select>
+              <small>想定メンタリング回数: {{ numOfMentoring }}回</small>
             </div>
           </div>
         </div>
@@ -53,7 +66,12 @@
       <div class="row">
         <div class="form-group col">
           <label class="my-1 mr-2" for="name">受講生氏名</label>
-          <input class="form-control" type="text" id="name" />
+          <input
+            class="form-control"
+            type="text"
+            id="name"
+            v-model="state.studentName"
+          />
         </div>
       </div>
 
@@ -62,27 +80,35 @@
           <div class="row">
             <div class="form-group col">
               <label class="my-1 mr-2 col" for="firstDate">1回目</label>
-              <select class="custom-select my-1 mr-sm-2 col-4" id="firstDate">
-                <option value="0">月曜日</option>
-                <option value="1">火曜日</option>
-                <option value="2">水曜日</option>
-                <option value="3">木曜日</option>
-                <option value="4">金曜日</option>
-                <option value="5">土曜日</option>
-                <option value="6">日曜日</option>
+              <select
+                class="custom-select my-1 mr-sm-2 col-4"
+                id="firstDate"
+                v-model="state.firstDay"
+              >
+                <option value="1">月曜日</option>
+                <option value="2">火曜日</option>
+                <option value="3">水曜日</option>
+                <option value="4">木曜日</option>
+                <option value="5">金曜日</option>
+                <option value="6">土曜日</option>
+                <option value="0">日曜日</option>
               </select>
 
               <select
                 class="custom-select my-1 mr-0 col-3"
                 id="firstHour"
-                v-model="firstHour"
+                v-model="state.firstHour"
               >
                 <template v-for="n in 24" :key="n - 1">
                   <option :value="n - 1">{{ n - 1 }}</option>
                 </template>
               </select>
               <span class="col-1 p-0"> 時 </span>
-              <select class="custom-select my-1 mr-0 col-3" id="firstMinutes">
+              <select
+                class="custom-select my-1 mr-0 col-3"
+                id="firstMinutes"
+                v-model="state.firstMin"
+              >
                 <option value="0">00</option>
                 <option value="30">30</option>
               </select>
@@ -95,7 +121,11 @@
           <div class="row">
             <div class="form-group col">
               <label class="my-1 mr-2 col" for="secondDate">2回目</label>
-              <select class="custom-select my-1 mr-sm-2 col-4" id="secondDate">
+              <select
+                class="custom-select my-1 mr-sm-2 col-4"
+                id="secondDate"
+                v-model="state.secondDay"
+              >
                 <option value="1">月曜日</option>
                 <option value="2">火曜日</option>
                 <option value="3">水曜日</option>
@@ -108,14 +138,18 @@
               <select
                 class="custom-select my-1 mr-0 col-3"
                 id="secondHour"
-                v-model="secondHour"
+                v-model="state.secondHour"
               >
                 <template v-for="n in 24" :key="n - 1">
                   <option :value="n - 1">{{ n - 1 }}</option>
                 </template>
               </select>
               <span class="col-1 p-0"> 時 </span>
-              <select class="custom-select my-1 mr-0 col-3" id="secondMinutes">
+              <select
+                class="custom-select my-1 mr-0 col-3"
+                id="secondMinutes"
+                v-model="state.secondMin"
+              >
                 <option value="0">00</option>
                 <option value="30">30</option>
               </select>
@@ -126,7 +160,10 @@
       </div>
 
       <div class="submit row justify-content-center">
-        <button class="btn btn-primary btn-pill text-secondary">
+        <button
+          class="btn btn-primary btn-pill text-secondary"
+          @click="makeSchedule"
+        >
           メンタリングスケジュール生成
         </button>
       </div>
@@ -145,7 +182,7 @@
             type="text"
             class="form-control monthly-title"
             id="email"
-            value="シフト用タイトルが入る"
+            v-model="mentoringTitle"
             disabled
           />
           <small class="form-text text-muted">
@@ -154,37 +191,21 @@
         </div>
       </div>
       <hr />
-      <schedule
-        status="completed"
-        key="month-1"
-        date="2021年 03月 26日 (金) 15:00 - 19:00"
-      />
-      <schedule
-        status="loading"
-        key="month-2"
-        date="2021年 03月 26日 (金) 19:00 - 23:00"
-      />
-      <schedule
-        status="standby"
-        key="month-3"
-        date="2021年 03月 29日 (月) 19:00 - 23:00"
-      />
-      <schedule
-        status="error"
-        key="month-4"
-        date="2021年 03月 30日 (火) 19:00 - 23:00"
-      />
-      <div class="submit row justify-content-center">
+      <template v-for="(shift, index) in createdSchedule" :key="shift.start">
+        <schedule
+          :index="index"
+          :status="shift.status"
+          :start="shift.start"
+          :end="shift.end"
+        />
+      </template>
+      <div class="submit">
         <div class="form-group">
-          <label class="my-1 mr-2 col" for="calSelect">
-            登録するカレンダー
-          </label>
-          <select class="custom-select my-1 mr-sm-2 col" id="calSelect">
+          <label class="my-1 mr-2" for="calSelect">登録するカレンダー</label>
+          <select class="custom-select my-1 mr-sm-2 col-3" id="calSelect">
             <option>カレンダー</option>
           </select>
         </div>
-      </div>
-      <div class="submit row justify-content-center">
         <button class="btn btn-primary btn-pill text-secondary">
           スケジュール登録
         </button>
@@ -194,7 +215,8 @@
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, reactive, computed, onUnmounted } from "vue";
+import { useStore } from "vuex";
 
 import Datepicker from "vue3-datepicker";
 
@@ -203,52 +225,183 @@ import { ja } from "date-fns/locale";
 import NavToHome from "@/components/NavToHome.vue";
 import Schedule from "@/components/Schedule.vue";
 
+import courseJson from "../json/course.json";
+
 export default defineComponent({
   setup() {
+    const store = useStore();
+    const courses = courseJson;
+
+    const state = reactive({
+      selectedCourse: "",
+      selectedWeek: 4,
+      studentName: "",
+      firstDay: 4,
+      firstHour: 13,
+      firstMin: 0,
+      secondDay: 0,
+      secondHour: 13,
+      secondMin: 0
+    });
+
     const startDate = ref(new Date());
 
-    const firstHour = 13;
-    const secondHour = 13;
+    const courseFlag = key => {
+      return store.getters.getCourseSetting(key);
+    };
 
-    const today = new Date();
-    today.setDate(1);
+    // 選択中のコースのデータを返す
+    const courseData = computed(() => {
+      let res = [{}];
+      if (state.selectedCourse) {
+        res = courses.filter(course => course.key === state.selectedCourse);
+      }
+      return res[0];
+    });
 
-    const nextMonth = new Date(today);
-    nextMonth.setMonth(today.getMonth() + 1);
+    // タイトルを随時文字列置換する
+    const mentoringTitle = computed({
+      get: () => {
+        let str = store.getters.getMentoringTitle;
+        if (state.studentName) {
+          str = str.replace(/%name/g, state.studentName);
+        }
 
-    const wNextMonth = new Date(nextMonth);
-    wNextMonth.setMonth(nextMonth.getMonth() + 1);
+        if (state.selectedCourse) {
+          str = str.replace(/%courseid/g, state.selectedCourse);
+          str = str.replace(/%course/g, courseData.value["fullname"]);
+        }
 
-    const thisMonthVal =
-      today.getFullYear() +
-      "/" +
-      (today.getMonth() + 1) +
-      "/" +
-      today.getDate();
-    const nextMonthVal =
-      nextMonth.getFullYear() +
-      "/" +
-      (nextMonth.getMonth() + 1) +
-      "/" +
-      nextMonth.getDate();
-    const wNextMonthVal =
-      wNextMonth.getFullYear() +
-      "/" +
-      (wNextMonth.getMonth() + 1) +
-      "/" +
-      wNextMonth.getDate();
+        if (state.selectedWeek) {
+          str = str.replace(/%week/g, ("0" + state.selectedWeek).slice(-2));
+        }
+
+        return str;
+      },
+      set: str => {
+        store.dispatch("updateMentoringTitle", { title: str });
+      }
+    });
+
+    // コースの設定がわかるようにする
+    const courseDescription = () => {
+      let str = "";
+
+      if (state.selectedCourse) {
+        const data = courseData.value;
+
+        str = "メンタリング回数: 週";
+        str += data["perWeek"];
+        str += "回　";
+        if (data["fixed"]) {
+          str += "専任制";
+        } else {
+          str += "非専任制";
+        }
+      }
+
+      return str;
+    };
+
+    // メンタリング回数を割り出す
+    const numOfMentoring = computed(() => {
+      let count = 0;
+      if (courseData.value["perWeek"] === 1) {
+        count = state.selectedWeek;
+      } else if (courseData.value["perWeek"] === 2) {
+        count = state.selectedWeek * 2 - 1;
+      }
+      return count;
+    });
+
+    // 期間を繰り返してスケジュールを割り出す
+    const makeSchedule = () => {
+      // 初日
+      const date = new Date(startDate.value);
+      // 一回目の情報
+      const first = {
+        day: state.firstDay,
+        hour: state.firstHour,
+        min: state.firstMin
+      };
+      // 二回目の曜日
+      const second = {
+        day: state.secondDay,
+        hour: state.secondHour,
+        min: state.secondMin
+      };
+
+      // メンタリング回数
+      const count = numOfMentoring.value;
+
+      // コースのデータ
+      const data = courseData.value;
+
+      // 作業用のカレンダー一覧
+      let shifts = [];
+
+      // 繰り返し用の情報用意
+      // カウンタ
+      let tmpcount = 0;
+      // 回数フラグ
+      let flag = true;
+
+      while (tmpcount < count) {
+        let dayData = 4;
+
+        if (flag) {
+          dayData = first;
+        } else {
+          dayData = second;
+        }
+
+        if (dayData.day * 1 === date.getDay()) {
+          const obj = {};
+          let startTime = new Date(date);
+          startTime.setHours(dayData.hour);
+          startTime.setMinutes(dayData.min);
+
+          let endTime = new Date(startTime);
+          endTime.setMinutes(startTime.getMinutes() + 30);
+
+          obj.start = startTime;
+          obj.end = endTime;
+          obj.status = "standby";
+
+          shifts.push(obj);
+          // 週1かどうかで処理を分ける
+          if (data["perWeek"] === 1) {
+            // 週1は一回目以外でfalse
+            flag = false;
+          } else {
+            // 週2は毎回フラグ入れ替え
+            flag = !flag;
+          }
+          tmpcount = ++tmpcount;
+        }
+        date.setDate(date.getDate() + 1);
+      }
+      // 作業用配列をstoreにおさめる
+      store.dispatch("updateCreatedSchedule", { arr: shifts });
+    };
+
+    const createdSchedule = computed(() => store.state.createdSchedule);
+
+    onUnmounted(() => {
+      store.dispatch("clearCreatedSchedule");
+    });
 
     return {
+      courses,
+      state,
       ja,
       startDate,
-      firstHour,
-      secondHour,
-      today,
-      nextMonth,
-      wNextMonth,
-      thisMonthVal,
-      nextMonthVal,
-      wNextMonthVal
+      courseFlag,
+      mentoringTitle,
+      courseDescription,
+      numOfMentoring,
+      makeSchedule,
+      createdSchedule
     };
   },
   components: {

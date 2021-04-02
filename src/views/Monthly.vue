@@ -135,7 +135,7 @@
 </template>
 
 <script>
-import { defineComponent, computed, reactive } from "vue";
+import { defineComponent, computed, reactive, onUnmounted } from "vue";
 import { useStore } from "vuex";
 
 import NavToHome from "@/components/NavToHome.vue";
@@ -286,6 +286,10 @@ export default defineComponent({
     };
 
     const createdSchedule = computed(() => store.state.createdSchedule);
+
+    onUnmounted(() => {
+      store.dispatch("clearCreatedSchedule");
+    });
 
     return {
       store,

@@ -31,5 +31,10 @@ module.exports = {
     webpackBundleAnalyzer: {
       openAnalyzer: false,
     },
+    electronBuilder: {
+      builderOptions: {
+        extraResources: ["src/preload.js"],
+      },
+    },
   },
 };

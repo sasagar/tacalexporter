@@ -1,12 +1,16 @@
 "use strict";
 
-import { app, protocol, BrowserWindow } from "electron";
+import { app, protocol, BrowserWindow, ipcMain } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 const isDevelopment = process.env.NODE_ENV !== "production";
 
+const path = require("path");
+
 import ElectronStore from "electron-store";
 import "./autoUpdate";
+
+const log = require("electron-log");
 
 const DEFAULT_WINDOW_SIZE = [800, 600];
 
@@ -15,9 +19,35 @@ const schema = {
     type: "object",
     default: { pos: [800, 600], size: [800, 600] },
   },
+  shiftSettings: {
+    type: "object",
+    default: {},
+  },
+  courseSettings: {
+    type: "object",
+    default: {},
+  },
+  mentoringTitle: {
+    type: "string",
+    default: "メンタリング %name %courseid%week",
+  },
+  accountingTitle: {
+    type: "string",
+    default: "%courseid%week %name 計上日",
+  },
+  shiftTitle: {
+    type: "string",
+    default: "チャットシフト",
+  },
 };
 
-const conf = new ElectronStore({ schema });
+const migrations = {
+  "5.0.0": (store) => {
+    store.set("dbVersion", "5.0.0");
+  },
+};
+
+const conf = new ElectronStore({ schema, migrations });
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -36,7 +66,10 @@ async function createWindow() {
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
+      // nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
+      nodeIntegration: false,
+      contextIsolation: false,
+      preload: path.join(__static, "preload.js"),
     },
   });
 
@@ -112,3 +145,56 @@ function getCenterPosition() {
   const y = Math.floor((height - DEFAULT_WINDOW_SIZE[1]) / 2);
   return [x, y];
 }
+
+/********************************
+ * ipc
+ */
+
+/**
+ * 設定の保存
+ *
+ * @param {object}
+ *
+ * @return {boolean}
+ */
+ipcMain.handle("save-settings", (e, settings) => {
+  try {
+    conf.set(settings.name, settings.setting);
+  } catch (error) {
+    log.error(error);
+    return false;
+  }
+  return true;
+});
+
+/**
+ * 設定の取得
+ *
+ * @param {string}
+ *
+ * @return {boolean}
+ */
+ipcMain.handle("get-settings", (e, name) => {
+  try {
+    const settings = conf.get(name);
+    return settings;
+  } catch (error) {
+    log.error(error);
+    return false;
+  }
+});
+
+/********************************
+ * Error Logging
+ */
+
+/**
+ * プロセスまで来たエラーの記録
+ * @param {error}
+ *
+ * @return {void}
+ */
+process.on("uncaughtException", (err) => {
+  log.error(err); // ログファイルへ記録
+  app.quit(); // アプリを終了する (継続しない方が良い)
+});

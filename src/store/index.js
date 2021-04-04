@@ -1,9 +1,11 @@
 import { createStore } from "vuex";
 
+const ipcRenderer = window.ipcRenderer;
+
 export default createStore({
   state: {
     mentoringTitle: "メンタリング %name %courseid%week",
-    accountingTitle: "%course%week %name 計上日",
+    accountingTitle: "%courseid%week %name 計上日",
     shiftTitle: "チャットシフト",
     courseSettings: {},
     shiftSettings: {},
@@ -47,11 +49,20 @@ export default createStore({
     updateMentoringTitle(context, payload) {
       context.commit("setMentoringTitle", payload);
     },
+    initMentoringTitle(context, payload) {
+      context.commit("setMentoringTitle", { title: payload });
+    },
     updateAccountingTitle(context, payload) {
       context.commit("setAccountingTitle", payload);
     },
+    initAccountingTitle(context, payload) {
+      context.commit("setAccountingTitle", { title: payload });
+    },
     updateShiftTitle(context, payload) {
       context.commit("setShiftTitle", payload);
+    },
+    initShiftTitle(context, payload) {
+      context.commit("setShiftTitle", { title: payload });
     },
     updateCourseSettings(context, payload) {
       const obj = context.state.courseSettings;
@@ -60,6 +71,18 @@ export default createStore({
       context.commit("setCourseSettings", {
         obj,
       });
+
+      const courseSettings = {
+        name: "courseSettings",
+        setting: context.getters.getAllCourseSettings,
+      };
+
+      ipcRenderer.invoke("save-settings", courseSettings);
+    },
+    initCourseSettings(context, payload) {
+      if (payload) {
+        context.commit("setCourseSettings", { obj: payload });
+      }
     },
     updateShiftSettings(context, payload) {
       const obj = context.state.shiftSettings;
@@ -68,6 +91,18 @@ export default createStore({
       context.commit("setShiftSettings", {
         obj,
       });
+
+      const shiftSettings = {
+        name: "shiftSettings",
+        setting: context.getters.getAllShiftSettings,
+      };
+
+      ipcRenderer.invoke("save-settings", shiftSettings);
+    },
+    initShiftSettings(context, payload) {
+      if (payload) {
+        context.commit("setShiftSettings", { obj: payload });
+      }
     },
     updateMentoringCalSelect(payload) {
       this.setMentoringCalSelect(payload);
@@ -84,7 +119,7 @@ export default createStore({
   },
   getters: {
     getCourseSetting: (state) => (courseKey) => {
-      if (state.courseSettings[courseKey]) {
+      if (courseKey in state.courseSettings) {
         return state.courseSettings[courseKey];
       } else {
         return false;
@@ -100,11 +135,33 @@ export default createStore({
       return state.shiftTitle;
     },
     getShiftSetting: (state) => (shiftKey) => {
-      if (state.shiftSettings[shiftKey]) {
+      if (shiftKey in state.shiftSettings) {
         return state.shiftSettings[shiftKey];
       } else {
         return false;
       }
+    },
+    getAllShiftSettings: (state) => {
+      const settings = state.shiftSettings;
+      const res = {};
+
+      for (const shift in settings) {
+        if (settings[shift] === true) {
+          res[shift] = true;
+        }
+      }
+      return res;
+    },
+    getAllCourseSettings: (state) => {
+      const settings = state.courseSettings;
+      const res = {};
+
+      for (const course in settings) {
+        if (settings[course] === true) {
+          res[course] = true;
+        }
+      }
+      return res;
     },
   },
   modules: {},

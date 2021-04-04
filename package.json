@@ -21,11 +21,11 @@
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.9.1",
+    "dayjs": "^1.10.4",
     "electron-log": "^4.3.2",
     "electron-store": "^7.0.2",
     "electron-updater": "^4.3.8",
     "jquery": "^3.6.0",
-    "moment": "^2.29.1",
     "sass": "^1.32.8",
     "vue": "^3.0.0",
     "vue-headroom": "^0.10.1",
@@ -47,11 +47,11 @@
     "eslint": "^7.22.0",
     "eslint-plugin-jquery": "^1.5.1",
     "eslint-plugin-vue": "^7.8.0",
-    "moment-locales-webpack-plugin": "^1.2.0",
     "node-sass": "^5.0.0",
     "sass-loader": "^10.1.1",
     "style-loader": "^2.0.0",
-    "vue-cli-plugin-electron-builder": "^2.0.0-rc.6"
+    "vue-cli-plugin-electron-builder": "^2.0.0-rc.6",
+    "vue-cli-plugin-webpack-bundle-analyzer": "^4.0.0"
   },
   "eslintConfig": {
     "root": true,

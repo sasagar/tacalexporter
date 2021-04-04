@@ -54,9 +54,10 @@
 
 <script>
 import { defineComponent, computed } from "vue";
-import moment from "moment";
+import dayjs from "dayjs";
+import "dayjs/locale/ja";
 
-moment.locale("ja");
+dayjs.locale("ja");
 
 export default defineComponent({
   props: {
@@ -111,11 +112,11 @@ export default defineComponent({
     });
 
     const makeTime = date => {
-      return moment(date).format("YYYY年 MM月 DD日 (dd) HH:mm");
+      return dayjs(date).format("YYYY年 MM月 DD日 (dd) HH:mm");
     };
 
     const makeEndTime = date => {
-      return moment(date).format("HH:mm");
+      return dayjs(date).format("HH:mm");
     };
 
     return {

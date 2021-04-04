@@ -24,4 +24,12 @@ module.exports = {
       title: "TechAcademy Mentor Console",
     },
   },
+  configureWebpack: {
+    devtool: "source-map",
+  },
+  pluginOptions: {
+    webpackBundleAnalyzer: {
+      openAnalyzer: false,
+    },
+  },
 };

@@ -355,6 +355,8 @@ export default defineComponent({
       let tmpcount = 0;
       // 回数フラグ
       let flag = true;
+      // 作業用の日時
+      let targetDate = date.clone();
 
       while (tmpcount < count) {
         let dayData = 4;
@@ -365,14 +367,14 @@ export default defineComponent({
           dayData = second;
         }
 
-        if (dayData.day * 1 === date.getDay()) {
+        if (dayData.day * 1 === targetDate.day()) {
           const obj = {};
-          let startTime = dayjs(new Date(date));
-          startTime.hour(dayData.hour);
-          startTime.minute(dayData.min);
+          let startTime = targetDate
+            .hour(dayData.hour)
+            .minute(dayData.min)
+            .clone();
 
-          let endTime = dayjs(new Date(startTime));
-          endTime.minute(startTime.minute() + 30);
+          let endTime = startTime.add(30, "minute").clone();
 
           obj.start = startTime.toDate();
           obj.end = endTime.toDate();
@@ -389,7 +391,7 @@ export default defineComponent({
           }
           tmpcount = ++tmpcount;
         }
-        date.add(1, "day");
+        targetDate = targetDate.add(1, "day");
       }
       // 作業用配列をstoreにおさめる
       store.dispatch("updateCreatedSchedule", { arr: shifts });

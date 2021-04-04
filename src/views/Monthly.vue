@@ -76,14 +76,13 @@
             v-model="state.selectedMonth"
           >
             <option :value="thisMonthVal">
-              {{ today.getFullYear() }}年 {{ today.getMonth() + 1 }} 月
+              {{ today.year() }}年 {{ today.month() + 1 }} 月
             </option>
             <option :value="nextMonthVal">
-              {{ nextMonth.getFullYear() }}年 {{ nextMonth.getMonth() + 1 }} 月
+              {{ nextMonth.year() }}年 {{ nextMonth.month() + 1 }} 月
             </option>
             <option :value="wNextMonthVal">
-              {{ wNextMonth.getFullYear() }}年
-              {{ wNextMonth.getMonth() + 1 }} 月
+              {{ wNextMonth.year() }}年 {{ wNextMonth.month() + 1 }} 月
             </option>
           </select>
         </div>
@@ -156,14 +155,11 @@ export default defineComponent({
   setup() {
     const store = useStore();
 
-    const today = dayjs(new Date());
-    today.date(1);
+    const today = dayjs(new Date()).date(1);
 
-    const nextMonth = dayjs(new Date(today));
-    nextMonth.add(1, "month");
+    const nextMonth = dayjs(new Date(today)).add(1, "month");
 
-    const wNextMonth = dayjs(new Date(nextMonth));
-    wNextMonth.add(1, "month");
+    const wNextMonth = dayjs(new Date(nextMonth)).add(1, "month");
 
     const thisMonthVal = today.format("YYYY/M/D");
     const nextMonthVal = nextMonth.format("YYYY/M/D");
@@ -182,10 +178,10 @@ export default defineComponent({
 
     const makeSchedule = () => {
       // 月間初日
-      const startDate = dayjs(new Date(state.selectedMonth));
+      const startDate = dayjs(new Date(state.selectedMonth)).date(1);
       // 翌月初日
-      const endDate = dayjs(new Date(state.selectedMonth));
-      endDate.add(1, "month");
+      const endDate = dayjs(new Date(state.selectedMonth)).add(1, "month");
+
       // 作業用の日付（ターゲット）
       let targetDate = dayjs(new Date(startDate));
 
@@ -246,7 +242,7 @@ export default defineComponent({
         }
 
         // 繰り返しの最後に必ず1日ずらす
-        targetDate.add(1, "day");
+        targetDate = targetDate.add(1, "days");
       }
 
       // 作業用配列をstoreにおさめる
@@ -257,19 +253,22 @@ export default defineComponent({
       // 仮のオブジェクトを作って...
       const obj = {};
       let sHour = 0;
-      let eHour = 0;
       // シフトに合わせた時間を用意して、突っ込む
       if (num === 1) {
         sHour = 15;
-        eHour = 19;
       } else if (num === 2) {
         sHour = 19;
-        eHour = 23;
       }
-      const time = targetDate;
-      time.hour(sHour).minute(0);
-      obj.start = new Date(time);
-      obj.end = new Date(time.hours(eHour).minute(0));
+      const time = targetDate.clone();
+      obj.start = time
+        .hour(sHour)
+        .minute(0)
+        .clone();
+      obj.end = time
+        .hour(sHour)
+        .minute(0)
+        .add(4, "hour")
+        .clone();
       obj.status = "standby";
 
       return obj;

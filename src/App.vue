@@ -11,15 +11,24 @@
 </template>
 
 <script>
-import { defineComponent, onBeforeMount } from "vue";
+import { defineComponent, reactive, onBeforeMount } from "vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+
 const ipcRenderer = window.ipcRenderer;
 
 export default defineComponent({
   setup() {
     const store = useStore();
+    const router = useRouter();
+
+    const state = reactive({
+      launchCheck: false
+    });
 
     onBeforeMount(async () => {
+      state.launchCheck = await ipcRenderer.invoke("launch-checker");
+
       const shiftSettings = await ipcRenderer.invoke(
         "get-settings",
         "shiftSettings"
@@ -43,6 +52,10 @@ export default defineComponent({
       store.dispatch("initMentoringTitle", mentoringTitle);
       store.dispatch("initAccountingTitle", accountingTitle);
       store.dispatch("initShiftTitle", shiftTitle);
+
+      if (!state.launchCheck) {
+        router.push("google");
+      }
     });
   }
 });

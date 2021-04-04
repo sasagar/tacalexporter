@@ -1,6 +1,6 @@
 "use strict";
 
-import { app, protocol, BrowserWindow, ipcMain } from "electron";
+import { app, protocol, BrowserWindow, ipcMain, shell } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 const isDevelopment = process.env.NODE_ENV !== "production";
@@ -11,6 +11,16 @@ import ElectronStore from "electron-store";
 import "./autoUpdate";
 
 const log = require("electron-log");
+
+const google = require("./googleApi.js");
+const clientSecret = google.getClientSecret();
+
+// スコープの設定
+// カレンダーAPIと個人情報用のAPIを許可するようにスコープ指定
+const SCOPES = [
+  "https://www.googleapis.com/auth/calendar",
+  "https://www.googleapis.com/auth/userinfo.profile",
+];
 
 const DEFAULT_WINDOW_SIZE = [800, 600];
 
@@ -38,6 +48,10 @@ const schema = {
   shiftTitle: {
     type: "string",
     default: "チャットシフト",
+  },
+  token: {
+    type: "object",
+    default: {},
   },
 };
 
@@ -183,6 +197,127 @@ ipcMain.handle("get-settings", (e, name) => {
     return false;
   }
 });
+
+/**
+ * 起動時チェック
+ *
+ * @returns {boolean}
+ */
+ipcMain.handle("launch-checker", () => {
+  try {
+    const res = authChecker();
+    return res;
+  } catch (error) {
+    log.error(error);
+    return false;
+  }
+});
+
+/**
+ * Google認証コードの登録
+ *
+ * @returns {boolean}
+ */
+ipcMain.handle("google-code", (e, code) => {
+  try {
+    const oauth2Client = google.OAuth2(clientSecret);
+    oauth2Client.getToken(code, (err, token) => {
+      if (err) {
+        log.error("Error while trying to retrieve access token", err);
+        return false;
+      }
+      oauth2Client.credentials = token;
+      conf.set("token", token);
+
+      return true;
+    });
+
+    return true;
+  } catch (error) {
+    log.error(error);
+    return false;
+  }
+});
+
+/**
+ * ユーザー情報の取得
+ *
+ * @returns {object}
+ */
+ipcMain.handle("google-profile", async () => {
+  try {
+    const content = await google.getClientSecret();
+    const tokenedAuth = await authorize(content);
+    const res = await google.userInfo(tokenedAuth);
+    return res;
+  } catch (e) {
+    log.error("Error at ipc: google-profile: " + e);
+    return false;
+  }
+});
+
+/********************************
+ * Google API
+ */
+const authChecker = () => {
+  const token = conf.get("token");
+  const oauth2Client = google.OAuth2(clientSecret);
+
+  if (Object.keys(token).length === 0) {
+    const authUrl = oauth2Client.generateAuthUrl({
+      access_type: "offline",
+      scope: SCOPES,
+    });
+
+    shell.openExternal(authUrl);
+
+    return false;
+  } else {
+    const date = new Date();
+    if (token.expiry_date < date.getTime()) {
+      oauth2Client.credentials = token;
+
+      oauth2Client
+        .getAccessToken()
+        .then((tokens) => {
+          conf.set("token", tokens.token);
+        })
+        .catch((err) => {
+          log.error(err);
+          if (err) {
+            const authUrl = oauth2Client.generateAuthUrl({
+              access_type: "offline",
+              scope: SCOPES,
+            });
+            shell.openExternal(authUrl);
+            return false;
+          }
+        });
+      return true;
+    } else {
+      return true;
+    }
+  }
+};
+
+const authorize = () => {
+  const token = conf.get("token");
+
+  const oauth2Client = google.OAuth2(clientSecret);
+
+  if (Object.keys(token).length === 0) {
+    let authUrl = oauth2Client.generateAuthUrl({
+      access_type: "offline",
+      scope: SCOPES,
+    });
+    shell.openExternal(authUrl);
+
+    return false;
+  } else {
+    oauth2Client.credentials = token;
+    return oauth2Client;
+  }
+};
 
 /********************************
  * Error Logging

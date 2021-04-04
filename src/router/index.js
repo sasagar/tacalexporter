@@ -1,11 +1,17 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import MainMenu from "@/views/MainMenu.vue";
+import Google from "@/views/Google.vue";
 
 const routes = [
   {
     path: "/",
     name: "main-menu",
     component: MainMenu,
+  },
+  {
+    path: "/google",
+    name: "google",
+    component: Google,
   },
   {
     path: "/settings",

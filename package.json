@@ -25,6 +25,7 @@
     "electron-log": "^4.3.2",
     "electron-store": "^7.0.2",
     "electron-updater": "^4.3.8",
+    "googleapis": "^70.0.0",
     "jquery": "^3.6.0",
     "sass": "^1.32.8",
     "vue": "^3.0.0",

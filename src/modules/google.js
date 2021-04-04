@@ -67,7 +67,7 @@ exports.addEvents = (auth, option) => {
           resource: eventData,
         };
 
-        calendar.events.insert(apiObj, function (err, event) {
+        calendar.events.insert(apiObj, function(err, event) {
           if (err) {
             console.log(
               "There was an error contacting the Calendar service: " + err
@@ -134,7 +134,7 @@ exports.addAllDayEvent = (auth, option) => {
           resource: eventData,
         };
 
-        calendar.events.insert(apiObj, function (err, event) {
+        calendar.events.insert(apiObj, function(err, event) {
           if (err) {
             console.log(
               "There was an error contacting the Calendar service: " + err
@@ -170,7 +170,7 @@ exports.addAllDayEvent = (auth, option) => {
 exports.listCalendar = (auth) => {
   let calendar = google.calendar("v3");
   let apiObj = { auth: auth };
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     calendar.calendarList.list(apiObj, (err, list) => {
       if (err) {
         console.log(
@@ -192,7 +192,7 @@ exports.listCalendar = (auth) => {
 exports.userInfo = (auth) => {
   let profApi = google.oauth2("v2");
   let apiObj = { auth: auth };
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     profApi.userinfo.v2.me.get(apiObj, (err, prof) => {
       if (err) {
         console.log(

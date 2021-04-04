@@ -138,6 +138,16 @@
 import { defineComponent, computed, reactive, onUnmounted } from "vue";
 import { useStore } from "vuex";
 
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import "dayjs/locale/ja";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault("Asia/Tokyo");
+dayjs.locale("ja");
+
 import NavToHome from "@/components/NavToHome.vue";
 import MonthlySwitch from "@/components/MonthlySwitch.vue";
 import Schedule from "@/components/Schedule.vue";
@@ -146,41 +156,21 @@ export default defineComponent({
   setup() {
     const store = useStore();
 
-    const today = new Date();
-    today.setDate(1);
+    const today = dayjs(new Date());
+    today.date(1);
 
-    const nextMonth = new Date(today);
-    nextMonth.setMonth(today.getMonth() + 1);
+    const nextMonth = dayjs(new Date(today));
+    nextMonth.add(1, "month");
 
-    const wNextMonth = new Date(nextMonth);
-    wNextMonth.setMonth(nextMonth.getMonth() + 1);
+    const wNextMonth = dayjs(new Date(nextMonth));
+    wNextMonth.add(1, "month");
 
-    const thisMonthVal =
-      today.getFullYear() +
-      "/" +
-      (today.getMonth() + 1) +
-      "/" +
-      today.getDate();
-    const nextMonthVal =
-      nextMonth.getFullYear() +
-      "/" +
-      (nextMonth.getMonth() + 1) +
-      "/" +
-      nextMonth.getDate();
-    const wNextMonthVal =
-      wNextMonth.getFullYear() +
-      "/" +
-      (wNextMonth.getMonth() + 1) +
-      "/" +
-      wNextMonth.getDate();
+    const thisMonthVal = today.format("YYYY/M/D");
+    const nextMonthVal = nextMonth.format("YYYY/M/D");
+    const wNextMonthVal = wNextMonth.format("YYYY/M/D");
 
     const state = reactive({
-      selectedMonth:
-        nextMonth.getFullYear() +
-        "/" +
-        (nextMonth.getMonth() + 1) +
-        "/" +
-        nextMonth.getDate()
+      selectedMonth: nextMonth.format("YYYY/M/D")
     });
 
     const shiftTitle = computed({
@@ -192,12 +182,12 @@ export default defineComponent({
 
     const makeSchedule = () => {
       // 月間初日
-      const startDate = new Date(state.selectedMonth);
+      const startDate = dayjs(new Date(state.selectedMonth));
       // 翌月初日
-      const endDate = new Date(state.selectedMonth);
-      endDate.setMonth(endDate.getMonth() + 1);
+      const endDate = dayjs(new Date(state.selectedMonth));
+      endDate.add(1, "month");
       // 作業用の日付（ターゲット）
-      let targetDate = new Date(startDate);
+      let targetDate = dayjs(new Date(startDate));
 
       // 作業用のスケジュール配列
       let shifts = [];
@@ -205,7 +195,7 @@ export default defineComponent({
       // 翌月初日以前まで繰り返し
       while (targetDate < endDate) {
         // 曜日を取得
-        const wday = targetDate.getDay();
+        const wday = targetDate.day();
         // キーを入れる為の作業用変数
         let wkey = "";
 
@@ -256,7 +246,7 @@ export default defineComponent({
         }
 
         // 繰り返しの最後に必ず1日ずらす
-        targetDate.setDate(targetDate.getDate() + 1);
+        targetDate.add(1, "day");
       }
 
       // 作業用配列をstoreにおさめる
@@ -277,9 +267,9 @@ export default defineComponent({
         eHour = 23;
       }
       const time = targetDate;
-      time.setHours(sHour, 0);
+      time.hour(sHour).minute(0);
       obj.start = new Date(time);
-      obj.end = new Date(time.setHours(eHour, 0));
+      obj.end = new Date(time.hours(eHour).minute(0));
       obj.status = "standby";
 
       return obj;

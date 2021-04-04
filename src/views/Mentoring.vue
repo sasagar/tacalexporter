@@ -222,6 +222,16 @@ import Datepicker from "vue3-datepicker";
 
 import { ja } from "date-fns/locale";
 
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import "dayjs/locale/ja";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault("Asia/Tokyo");
+dayjs.locale("ja");
+
 import NavToHome from "@/components/NavToHome.vue";
 import Schedule from "@/components/Schedule.vue";
 
@@ -317,7 +327,7 @@ export default defineComponent({
     // 期間を繰り返してスケジュールを割り出す
     const makeSchedule = () => {
       // 初日
-      const date = new Date(startDate.value);
+      const date = dayjs(new Date(startDate.value));
       // 一回目の情報
       const first = {
         day: state.firstDay,
@@ -357,15 +367,15 @@ export default defineComponent({
 
         if (dayData.day * 1 === date.getDay()) {
           const obj = {};
-          let startTime = new Date(date);
-          startTime.setHours(dayData.hour);
-          startTime.setMinutes(dayData.min);
+          let startTime = dayjs(new Date(date));
+          startTime.hour(dayData.hour);
+          startTime.minute(dayData.min);
 
-          let endTime = new Date(startTime);
-          endTime.setMinutes(startTime.getMinutes() + 30);
+          let endTime = dayjs(new Date(startTime));
+          endTime.minute(startTime.minute() + 30);
 
-          obj.start = startTime;
-          obj.end = endTime;
+          obj.start = startTime.toDate();
+          obj.end = endTime.toDate();
           obj.status = "standby";
 
           shifts.push(obj);
@@ -379,7 +389,7 @@ export default defineComponent({
           }
           tmpcount = ++tmpcount;
         }
-        date.setDate(date.getDate() + 1);
+        date.add(1, "day");
       }
       // 作業用配列をstoreにおさめる
       store.dispatch("updateCreatedSchedule", { arr: shifts });

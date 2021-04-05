@@ -203,9 +203,9 @@ ipcMain.handle("get-settings", (e, name) => {
  *
  * @returns {boolean}
  */
-ipcMain.handle("launch-checker", () => {
+ipcMain.handle("launch-checker", async () => {
   try {
-    const res = authChecker();
+    const res = await authChecker();
     return res;
   } catch (error) {
     log.error(error);
@@ -256,6 +256,21 @@ ipcMain.handle("google-profile", async () => {
   }
 });
 
+/**
+ * ログアウト
+ *
+ * @returns {object}
+ */
+ipcMain.handle("google-logout", async () => {
+  try {
+    conf.set("token", {});
+    return true;
+  } catch (e) {
+    log.error("Error at ipc: google-logout: " + e);
+    return false;
+  }
+});
+
 /********************************
  * Google API
  */
@@ -274,13 +289,17 @@ const authChecker = () => {
     return false;
   } else {
     const date = new Date();
+
     if (token.expiry_date < date.getTime()) {
       oauth2Client.credentials = token;
 
       oauth2Client
         .getAccessToken()
         .then((tokens) => {
-          conf.set("token", tokens.token);
+          conf.set("token", tokens.res.data);
+        })
+        .then(() => {
+          return true;
         })
         .catch((err) => {
           log.error(err);
@@ -293,7 +312,6 @@ const authChecker = () => {
             return false;
           }
         });
-      return true;
     } else {
       return true;
     }

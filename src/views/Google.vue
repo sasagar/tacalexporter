@@ -21,12 +21,12 @@
         </small>
       </div>
     </div>
-  </div>
 
-  <div class="submit row justify-content-center">
-    <button class="btn btn-primary btn-pill text-secondary" @click="sendCode">
-      コードを登録
-    </button>
+    <div class="submit row justify-content-center">
+      <button class="btn btn-primary btn-pill text-secondary" @click="sendCode">
+        コードを登録
+      </button>
+    </div>
   </div>
 </template>
 
@@ -55,7 +55,7 @@ export default defineComponent({
       const res = await ipcRenderer.invoke("google-code", state.code);
 
       if (res) {
-        router.push("/");
+        router.push({ name: "main-menu" });
       }
     };
 

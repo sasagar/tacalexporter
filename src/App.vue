@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { defineComponent, reactive, onBeforeMount } from "vue";
+import { defineComponent, onBeforeMount } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
@@ -22,12 +22,9 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
 
-    const state = reactive({
-      launchCheck: false
-    });
-
     onBeforeMount(async () => {
-      state.launchCheck = await ipcRenderer.invoke("launch-checker");
+      const launchCheck = await ipcRenderer.invoke("launch-checker");
+      store.dispatch("updateLaunchCheck", launchCheck);
 
       const shiftSettings = await ipcRenderer.invoke(
         "get-settings",
@@ -53,7 +50,7 @@ export default defineComponent({
       store.dispatch("initAccountingTitle", accountingTitle);
       store.dispatch("initShiftTitle", shiftTitle);
 
-      if (!state.launchCheck) {
+      if (!store.state.launchCheck) {
         router.push("google");
       }
     });

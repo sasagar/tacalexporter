@@ -4,6 +4,8 @@ const ipcRenderer = window.ipcRenderer;
 
 export default createStore({
   state: {
+    launchCheck: false,
+    userData: {},
     mentoringTitle: "メンタリング %name %courseid%week",
     accountingTitle: "%courseid%week %name 計上日",
     shiftTitle: "チャットシフト",
@@ -14,6 +16,12 @@ export default createStore({
     createdSchedule: [],
   },
   mutations: {
+    setLaunchCheck(state, payload) {
+      state.launchCheck = payload;
+    },
+    setUserData(state, payload) {
+      Object.assign(state, { userData: payload });
+    },
     setMentoringTitle(state, payload) {
       state.mentoringTitle = payload.title;
     },
@@ -46,6 +54,16 @@ export default createStore({
     },
   },
   actions: {
+    async updateLaunchCheck(context, payload) {
+      context.commit("setLaunchCheck", payload);
+      if (!payload) {
+        await ipcRenderer.invoke("google-logout");
+        context.commit("setUserData", {});
+      }
+    },
+    updateUserData(context, payload) {
+      context.commit("setUserData", payload);
+    },
     updateMentoringTitle(context, payload) {
       context.commit("setMentoringTitle", payload);
     },
@@ -162,6 +180,12 @@ export default createStore({
         }
       }
       return res;
+    },
+    getLaunchCheck: (state) => {
+      return state.launchCheck;
+    },
+    getUserData: (state) => {
+      return state.userData;
     },
   },
   modules: {},

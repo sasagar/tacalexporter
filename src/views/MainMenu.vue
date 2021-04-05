@@ -1,8 +1,12 @@
 <template>
   <div class="main container">
     <template v-if="state.loading">
-      <fontAwesome :icon="['fas', 'spinner']" class="mr-2" spin />
-      Now Loading...
+      <div class="row">
+        <div class="col lead">
+          <fontAwesome :icon="['fas', 'spinner']" class="mr-2" spin />
+          Googleアカウントの確認中...
+        </div>
+      </div>
     </template>
     <template v-else>
       <button
@@ -30,12 +34,14 @@
 
 <script>
 import { reactive, onBeforeMount } from "vue";
+import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
 const ipcRenderer = window.ipcRenderer;
 
 export default {
   setup() {
+    const store = useStore();
     const router = useRouter();
 
     const state = reactive({
@@ -49,7 +55,7 @@ export default {
     onBeforeMount(async () => {
       const userData = await ipcRenderer.invoke("google-profile");
       state.loading = false;
-      console.log(userData);
+      store.dispatch("updateUserData", userData);
     });
 
     return {

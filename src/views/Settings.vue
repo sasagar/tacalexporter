@@ -3,15 +3,23 @@
     <NavToHome />
     <section class="google mb-4">
       <h2>Googleアカウント</h2>
-      <button class="btn btn-pill btn-primary mb-4">
-        <span class="mr-1"><fontAwesome :icon="['fab', 'google']" /></span>
-        Googleアカウントでログイン
-      </button>
-      <div class="logged-in">
-        <button class="btn btn-pill btn-primary text-danger mb-4">
-          <span class="mr-1"><fontAwesome :icon="['fab', 'google']" /></span>
-          ログアウトする
-        </button>
+      <div class="row">
+        <div v-if="launchCheck" class="logged-in col">
+          <button class="btn btn-pill btn-primary text-danger" @click="logout">
+            <span class="mr-1"><fontAwesome :icon="['fab', 'google']" /></span>
+            ログアウトする
+          </button>
+          <span class="user-img ml-4">
+            <img :src="userData.picture" :alt="userData.name" />
+          </span>
+          <span class="user-name ml-2">{{ userData.name }}</span>
+        </div>
+        <div v-else class="logged-out col">
+          <button class="btn btn-pill btn-primary" @click="login">
+            <span class="mr-1"><fontAwesome :icon="['fab', 'google']" /></span>
+            Googleアカウントでログイン
+          </button>
+        </div>
       </div>
     </section>
     <section class="title mb-4">
@@ -97,12 +105,16 @@ import courseJson from "../json/course.json";
 
 import { computed } from "vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 import NavToHome from "@/components/NavToHome.vue";
+
+const ipcRenderer = window.ipcRenderer;
 
 export default {
   setup() {
     const store = useStore();
+    const router = useRouter();
     const courses = courseJson;
 
     const mentoringTitle = computed({
@@ -126,11 +138,35 @@ export default {
       }
     });
 
+    const launchCheck = computed({
+      get: () => store.getters.getLaunchCheck,
+      set: bool => {
+        store.dispatch("updateLaunchCheck", bool);
+      }
+    });
+
+    const userData = computed(() => {
+      return store.getters.getUserData;
+    });
+
+    const logout = () => {
+      launchCheck.value = false;
+    };
+
+    const login = async () => {
+      await ipcRenderer.invoke("launch-checker");
+      router.push("google");
+    };
+
     return {
       courses,
       mentoringTitle,
       accountingTitle,
-      shiftTitle
+      shiftTitle,
+      launchCheck,
+      userData,
+      logout,
+      login
     };
   },
   name: "settings",
@@ -144,5 +180,12 @@ export default {
 <style lang="scss">
 .settings {
   text-align: left;
+  .user-img {
+    img {
+      width: 40px;
+      height: auto;
+      border-radius: 50%;
+    }
+  }
 }
 </style>

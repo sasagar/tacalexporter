@@ -6,7 +6,7 @@
   "author": "SASAGAWA, Kiyoshi <sasagawa@kent-and-co.com> (https://github.com/sasagar)",
   "repository": {
     "type": "git",
-    "url": "get+ssh://git@github.com/sasagar/tacalexporter.git"
+    "url": "git+ssh://git@github.com/sasagar/tacalexporter.git"
   },
   "bugs": {
     "url": "https://github.com/sasagar/tacalexporter/issues"

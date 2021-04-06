@@ -14,7 +14,7 @@
 
     <div class="row">
       <div class="form-group mb-2 col">
-        <label for="code"> メンタリングスケジュール登録時の予定タイトル </label>
+        <label for="code"> Googleの認証コード </label>
         <input type="text" class="form-control code" id="code" v-model="code" />
         <small class="form-text text-muted">
           コードは表示された物をそのままコピー&ペーストで貼り付けてください。
@@ -32,12 +32,14 @@
 
 <script>
 import { defineComponent, reactive, computed } from "vue";
+import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
 const ipcRenderer = window.ipcRenderer;
 
 export default defineComponent({
   setup() {
+    const store = useStore();
     const router = useRouter();
 
     const state = reactive({
@@ -55,6 +57,8 @@ export default defineComponent({
       const res = await ipcRenderer.invoke("google-code", state.code);
 
       if (res) {
+        const launchCheck = await ipcRenderer.invoke("launch-checker");
+        store.dispatch("updateLaunchCheck", launchCheck);
         router.push({ name: "main-menu" });
       }
     };

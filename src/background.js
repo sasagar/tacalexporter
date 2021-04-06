@@ -13,7 +13,6 @@ import "./autoUpdate";
 const log = require("electron-log");
 
 const google = require("./googleApi.js");
-const clientSecret = google.getClientSecret();
 
 // スコープの設定
 // カレンダーAPIと個人情報用のAPIを許可するようにスコープ指定
@@ -223,24 +222,25 @@ ipcMain.handle("launch-checker", async () => {
  * @returns {boolean}
  */
 ipcMain.handle("google-code", (e, code) => {
-  try {
-    const oauth2Client = google.OAuth2(clientSecret);
-    oauth2Client.getToken(code, (err, token) => {
-      if (err) {
-        log.error("Error while trying to retrieve access token", err);
-        return false;
-      }
-      oauth2Client.credentials = token;
-      conf.set("token", token);
+  return new Promise((resolve, reject) => {
+    try {
+      const clientSecret = google.getClientSecret();
+      const oauth2Client = google.OAuth2(clientSecret);
+      oauth2Client.getToken(code, (err, token) => {
+        if (err) {
+          log.error("Error while trying to retrieve access token", err);
+          reject(false);
+        }
+        oauth2Client.credentials = token;
+        conf.set("token", token);
 
-      return true;
-    });
-
-    return true;
-  } catch (error) {
-    log.error(error);
-    return false;
-  }
+        resolve(true);
+      });
+    } catch (error) {
+      log.error(error);
+      reject(false);
+    }
+  });
 });
 
 /**
@@ -320,66 +320,69 @@ ipcMain.handle("google-logout", () => {
  * Google API
  */
 const authChecker = () => {
-  const token = conf.get("token");
-  const oauth2Client = google.OAuth2(clientSecret);
+  return new Promise((resolve, reject) => {
+    const token = conf.get("token");
+    const clientSecret = google.getClientSecret();
+    const oauth2Client = google.OAuth2(clientSecret);
 
-  if (Object.keys(token).length === 0) {
-    const authUrl = oauth2Client.generateAuthUrl({
-      access_type: "offline",
-      scope: SCOPES,
-    });
+    if (Object.keys(token).length === 0) {
+      log.info("authChecker: token.length is zero.");
 
-    shell.openExternal(authUrl);
+      const authUrl = oauth2Client.generateAuthUrl({
+        access_type: "offline",
+        scope: SCOPES,
+      });
 
-    return false;
-  } else {
-    const date = new Date();
+      shell.openExternal(authUrl);
 
-    if (token.expiry_date < date.getTime()) {
-      oauth2Client.credentials = token;
-
-      oauth2Client
-        .getAccessToken()
-        .then((tokens) => {
-          conf.set("token", tokens.res.data);
-        })
-        .then(() => {
-          return true;
-        })
-        .catch((err) => {
-          log.error(err);
-          if (err) {
-            const authUrl = oauth2Client.generateAuthUrl({
-              access_type: "offline",
-              scope: SCOPES,
-            });
-            shell.openExternal(authUrl);
-            return false;
-          }
-        });
+      reject(false);
     } else {
-      return true;
+      const date = new Date();
+
+      if (token.expiry_date < date.getTime()) {
+        log.info("authChecker: token renew.");
+        oauth2Client.credentials = token;
+
+        oauth2Client
+          .getAccessToken()
+          .then((tokens) => {
+            conf.set("token", tokens.res.data);
+          })
+          .then(() => {
+            resolve(true);
+          })
+          .catch((err) => {
+            log.error(err);
+            if (err) {
+              log.error("authChecker: error " + err);
+              const authUrl = oauth2Client.generateAuthUrl({
+                access_type: "offline",
+                scope: SCOPES,
+              });
+              shell.openExternal(authUrl);
+              reject(false);
+            }
+          });
+      } else {
+        resolve(true);
+      }
     }
-  }
+  });
 };
 
 const authorize = () => {
-  const token = conf.get("token");
+  return new Promise((resolve, reject) => {
+    const token = conf.get("token");
+    const clientSecret = google.getClientSecret();
+    const oauth2Client = google.OAuth2(clientSecret);
 
-  const oauth2Client = google.OAuth2(clientSecret);
-
-  if (Object.keys(token).length === 0) {
-    let authUrl = oauth2Client.generateAuthUrl({
-      access_type: "offline",
-      scope: SCOPES,
-    });
-    shell.openExternal(authUrl);
-
-    return false;
-  } else {
-    oauth2Client.credentials = token;
-    return oauth2Client;
-  }
+    if (Object.keys(token).length === 0) {
+      reject(false);
+    } else {
+      oauth2Client.credentials = token;
+      resolve(oauth2Client);
+    }
+  });
 };
 
 /********************************

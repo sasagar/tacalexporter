@@ -189,6 +189,21 @@
             予定タイトルは、設定画面で変更できます。
           </small>
         </div>
+        <template v-if="fixedFlag">
+          <div class="form-group mb-2 col">
+            <label for="accounting-title"> 計上日登録時の予定タイトル </label>
+            <input
+              type="text"
+              class="form-control accounting-title"
+              id="accounting-title"
+              v-model="accountingTitle"
+              disabled
+            />
+            <small class="form-text text-muted">
+              予定タイトルは、設定画面で変更できます。
+            </small>
+          </div>
+        </template>
       </div>
       <hr />
       <template v-for="(shift, index) in createdSchedule" :key="shift.start">
@@ -197,16 +212,40 @@
           :status="shift.status"
           :start="shift.start"
           :end="shift.end"
+          :regFlag="shift.regFlag"
         />
+      </template>
+      <template v-if="fixedFlag">
+        <hr />
+        <h3>計上日</h3>
+        <template
+          v-for="(shift, index) in createdAccountingSchedule"
+          :key="shift.start"
+        >
+          <AccountingSchedule
+            :index="index"
+            :status="shift.status"
+            :start="shift.start"
+            :end="shift.end"
+            :amount="shift.amount"
+            :regFlag="shift.regFlag"
+          />
+        </template>
       </template>
       <div class="submit">
         <div class="form-group">
           <label class="my-1 mr-2" for="calSelect">登録するカレンダー</label>
-          <select class="custom-select my-1 mr-sm-2 col-3" id="calSelect">
-            <option>カレンダー</option>
-          </select>
+          <CalendarSelect
+            :calList="calList"
+            :sel="selectedCalendar"
+            @update="changeCal"
+          />
         </div>
-        <button class="btn btn-primary btn-pill text-secondary">
+        <button
+          class="btn btn-primary btn-pill text-secondary"
+          @click="registSchedule"
+          v-bind:disabled="!state.submitReady"
+        >
           スケジュール登録
         </button>
       </div>
@@ -217,6 +256,8 @@
 <script>
 import { defineComponent, ref, reactive, computed, onUnmounted } from "vue";
 import { useStore } from "vuex";
+
+const ipcRenderer = window.ipcRenderer;
 
 import Datepicker from "vue3-datepicker";
 
@@ -234,6 +275,8 @@ dayjs.locale("ja");
 
 import NavToHome from "@/components/NavToHome.vue";
 import Schedule from "@/components/Schedule.vue";
+import AccountingSchedule from "@/components/AccountingSchedule.vue";
+import CalendarSelect from "@/components/CalendarSelect.vue";
 
 import courseJson from "../json/course.json";
 
@@ -251,13 +294,33 @@ export default defineComponent({
       firstMin: 0,
       secondDay: 0,
       secondHour: 13,
-      secondMin: 0
+      secondMin: 0,
+      submitReady: false
     });
 
     const startDate = ref(new Date());
 
     const courseFlag = key => {
       return store.getters.getCourseSetting(key);
+    };
+
+    const fixedFlag = computed(() => {
+      return courseData.value["fixed"];
+    });
+
+    const calList = computed(() => store.state.calendarList);
+
+    const selectedCalendar = computed(() => {
+      let selected = store.getters.getShiftCalSelect;
+      if (selected === "") {
+        selected = calList.value[0].id;
+        store.dispatch("updateMentoringCalSelect", selected);
+      }
+      return selected;
+    });
+
+    const changeCal = id => {
+      store.dispatch("updateMentoringCalSelect", id);
     };
 
     // 選択中のコースのデータを返す
@@ -290,6 +353,30 @@ export default defineComponent({
       },
       set: str => {
         store.dispatch("updateMentoringTitle", { title: str });
+      }
+    });
+
+    // 計上日タイトルを随時文字列置換する
+    const accountingTitle = computed({
+      get: () => {
+        let str = store.getters.getAccountingTitle;
+        if (state.studentName) {
+          str = str.replace(/%name/g, state.studentName);
+        }
+
+        if (state.selectedCourse) {
+          str = str.replace(/%courseid/g, state.selectedCourse);
+          str = str.replace(/%course/g, courseData.value["fullname"]);
+        }
+
+        if (state.selectedWeek) {
+          str = str.replace(/%week/g, ("0" + state.selectedWeek).slice(-2));
+        }
+
+        return str;
+      },
+      set: str => {
+        store.dispatch("updateAccountingTitle", { title: str });
       }
     });
 
@@ -379,6 +466,7 @@ export default defineComponent({
           obj.start = startTime.toDate();
           obj.end = endTime.toDate();
           obj.status = "standby";
+          obj.regFlag = true;
 
           shifts.push(obj);
           // 週1かどうかで処理を分ける
@@ -395,12 +483,158 @@ export default defineComponent({
       }
       // 作業用配列をstoreにおさめる
       store.dispatch("updateCreatedSchedule", { arr: shifts });
+
+      // 専任制なら計上日を割り出す
+      let accountingDates = [];
+
+      if (data["fixed"]) {
+        const accountingCounter = state.selectedWeek / 4;
+
+        let n = 1;
+        while (n <= accountingCounter) {
+          const accountingDate = date
+            .clone()
+            .add(n * 28 - 1, "days")
+            .toDate();
+
+          let amount = 1;
+          if (!Number.isInteger(n)) {
+            amount = n - Math.floor(n);
+          }
+
+          const obj = {
+            start: accountingDate,
+            end: accountingDate,
+            status: "standby",
+            regFlag: true,
+            amount: amount
+          };
+          accountingDates.push(obj);
+
+          if (accountingCounter - n >= 1 || accountingCounter === n) {
+            n = ++n;
+          } else {
+            n = accountingCounter;
+          }
+        }
+        // 作業用配列をstoreにおさめる
+        store.dispatch("updateCreatedAccountingSchedule", {
+          arr: accountingDates
+        });
+      }
+
+      // ステータスを変更
+      state.submitReady = true;
     };
 
-    const createdSchedule = computed(() => store.state.createdSchedule);
+    const createdSchedule = computed({
+      get: () => store.state.createdSchedule,
+      set: obj => {
+        store.dispatch("updateCreatedSchedule", { arr: obj });
+      }
+    });
+
+    const createdAccountingSchedule = computed({
+      get: () => store.state.createdAccountingSchedule,
+      set: obj => {
+        console.log(obj);
+        store.dispatch("updateCreatedAccountingSchedule", { arr: obj });
+      }
+    });
+
+    const registSchedule = async () => {
+      // ステータスを変更
+      state.submitReady = false;
+
+      const shifts = store.getters.getCreatedSchedule;
+
+      // 通常のコース分
+      for (const i in shifts) {
+        if (shifts[i].regFlag) {
+          store.dispatch("updateStatusOfCreatedSchedule", {
+            num: i,
+            status: "loading"
+          });
+          let obj = shifts[i];
+
+          const selected = store.getters.getShiftCalSelect;
+          const title = mentoringTitle;
+          obj.allDay = false;
+          obj.cal = selected;
+          obj.title = title;
+          // オブジェクトのままだと送れないので文字列に
+          const str = JSON.stringify(obj);
+          const res = await ipcRenderer.invoke("google-cal-regist", str);
+          if (res) {
+            store.dispatch("updateStatusOfCreatedSchedule", {
+              num: i,
+              status: "completed"
+            });
+            store.dispatch("updateFlagOfCreatedSchedule", {
+              num: i,
+              flag: false
+            });
+          } else {
+            store.dispatch("updateStatusOfCreatedSchedule", {
+              num: i,
+              status: "error"
+            });
+          }
+        }
+      }
+
+      // 専任制の計上日を追加
+      if (courseData.value["fixed"]) {
+        const dates = store.getters.getCreatedAccountingSchedule;
+
+        for (const i in dates) {
+          if (dates[i].regFlag) {
+            store.dispatch("updateStatusOfCreatedAccountingSchedule", {
+              num: i,
+              status: "loading"
+            });
+            let obj = dates[i];
+
+            const selected = store.getters.getShiftCalSelect;
+            let title = accountingTitle;
+
+            if (obj["amount"] < 1) {
+              title = title + " x" + obj["amount"];
+            }
+
+            obj.allDay = true;
+            obj.cal = selected;
+            obj.title = title;
+            obj.start = dayjs(obj.start).format("YYYY-MM-DD");
+            obj.end = dayjs(obj.start).format("YYYY-MM-DD"); // 終日イベントのスタートとエンドは一緒。今回は結局使わないけど念のため渡す。
+            // オブジェクトのままだと送れないので文字列に
+            const str = JSON.stringify(obj);
+            const res = await ipcRenderer.invoke("google-cal-regist", str);
+            if (res) {
+              store.dispatch("updateStatusOfCreatedAccountingSchedule", {
+                num: i,
+                status: "completed"
+              });
+              store.dispatch("updateFlagOfCreatedAccountingSchedule", {
+                num: i,
+                flag: false
+              });
+            } else {
+              store.dispatch("updateStatusOfCreatedAccountingSchedule", {
+                num: i,
+                status: "error"
+              });
+            }
+          }
+        }
+      }
+      // ステータスを変更
+      state.submitReady = true;
+    };
 
     onUnmounted(() => {
       store.dispatch("clearCreatedSchedule");
+      store.dispatch("clearCreatedAccountingSchedule");
     });
 
     return {
@@ -408,18 +642,27 @@ export default defineComponent({
       state,
       ja,
       startDate,
+      fixedFlag,
       courseFlag,
       mentoringTitle,
+      accountingTitle,
       courseDescription,
       numOfMentoring,
       makeSchedule,
-      createdSchedule
+      createdSchedule,
+      createdAccountingSchedule,
+      registSchedule,
+      selectedCalendar,
+      calList,
+      changeCal
     };
   },
   components: {
     NavToHome,
     Schedule,
-    Datepicker
+    AccountingSchedule,
+    Datepicker,
+    CalendarSelect
   }
 });
 </script>

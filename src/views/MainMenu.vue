@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { reactive, onBeforeMount } from "vue";
+import { reactive, computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
@@ -44,6 +44,8 @@ export default {
     const store = useStore();
     const router = useRouter();
 
+    const launchCheck = computed(() => store.getters.getLaunchCheck);
+
     const state = reactive({
       loading: true
     });
@@ -52,11 +54,23 @@ export default {
       router.push("/" + view);
     };
 
-    onBeforeMount(async () => {
-      const userData = await ipcRenderer.invoke("google-profile");
-      state.loading = false;
-      store.dispatch("updateUserData", userData);
-    });
+    const getUserData = async () => {
+      if (launchCheck.value) {
+        const userData = await ipcRenderer.invoke("google-profile");
+        state.loading = false;
+        store.dispatch("updateUserData", userData);
+        store.dispatch("updateLaunchCheck", launchCheck.value);
+      }
+    };
+
+    const check = async () => {
+      await getUserData();
+      if (launchCheck.value) {
+        state.loading = false;
+      }
+    };
+
+    check();
 
     return {
       state,

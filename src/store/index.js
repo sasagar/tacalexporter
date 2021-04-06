@@ -14,6 +14,7 @@ export default createStore({
     mentoringCalSelect: "",
     shiftCalSelect: "",
     createdSchedule: [],
+    createdAccountingSchedule: [],
     calendarList: [],
   },
   mutations: {
@@ -50,11 +51,21 @@ export default createStore({
       state.createdSchedule.splice(0);
       state.createdSchedule.push(...payload.arr);
     },
+    setCreatedAccountingSchedule(state, payload) {
+      state.createdAccountingSchedule.splice(0);
+      state.createdAccountingSchedule.push(...payload.arr);
+    },
     setStatusOfCreatedSchedule(state, payload) {
       state.createdSchedule[payload.num].status = payload.status;
     },
+    setStatusOfCreatedAccountingSchedule(state, payload) {
+      state.createdAccountingSchedule[payload.num].status = payload.status;
+    },
     setFlagOfCreatedSchedule(state, payload) {
       state.createdSchedule[payload.num].regFlag = payload.flag;
+    },
+    setFlagOfCreatedAccountingSchedule(state, payload) {
+      state.createdAccountingSchedule[payload.num].regFlag = payload.flag;
     },
     setCalendarList(state, payload) {
       state.calendarList.splice(0);
@@ -62,6 +73,9 @@ export default createStore({
     },
     clearSchedule(state) {
       state.createdSchedule.splice(0);
+    },
+    clearAccountingSchedule(state) {
+      state.createdAccountingSchedule.splice(0);
     },
   },
   actions: {
@@ -156,6 +170,12 @@ export default createStore({
     },
     updateMentoringCalSelect(context, payload) {
       context.commit("setMentoringCalSelect", payload);
+      const selectedCal = {
+        name: "mentoringSelectedCal",
+        setting: payload,
+      };
+
+      ipcRenderer.invoke("save-settings", selectedCal);
     },
     updateShiftCalSelect(context, payload) {
       context.commit("setShiftCalSelect", payload);
@@ -169,17 +189,29 @@ export default createStore({
     updateCreatedSchedule(context, payload) {
       context.commit("setCreatedSchedule", { arr: payload.arr });
     },
+    updateCreatedAccountingSchedule(context, payload) {
+      context.commit("setCreatedAccountingSchedule", { arr: payload.arr });
+    },
     updateStatusOfCreatedSchedule(context, payload) {
       context.commit("setStatusOfCreatedSchedule", payload);
     },
+    updateStatusOfCreatedAccountingSchedule(context, payload) {
+      context.commit("setStatusOfCreatedAccountingSchedule", payload);
+    },
     updateFlagOfCreatedSchedule(context, payload) {
       context.commit("setFlagOfCreatedSchedule", payload);
+    },
+    updateFlagOfCreatedAccountingSchedule(context, payload) {
+      context.commit("setFlagOfCreatedAccountingSchedule", payload);
     },
     updateCalendarList(context, payload) {
       context.commit("setCalendarList", { arr: payload });
     },
     clearCreatedSchedule(context) {
       context.commit("clearSchedule");
+    },
+    clearCreatedAccountingSchedule(context) {
+      context.commit("clearAccountingSchedule");
     },
   },
   getters: {
@@ -239,6 +271,9 @@ export default createStore({
     },
     getCreatedSchedule: (state) => {
       return state.createdSchedule;
+    },
+    getCreatedAccountingSchedule: (state) => {
+      return state.createdAccountingSchedule;
     },
   },
   modules: {},

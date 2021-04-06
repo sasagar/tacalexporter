@@ -309,12 +309,14 @@ export default defineComponent({
     const createdSchedule = computed({
       get: () => store.state.createdSchedule,
       set: obj => {
-        console.log(obj);
         store.dispatch("updateCreatedSchedule", { arr: obj });
       }
     });
 
     const registSchedule = async () => {
+      // ステータスを変更
+      state.submitReady = false;
+
       const shifts = store.getters.getCreatedSchedule;
 
       for (const i in shifts) {
@@ -346,6 +348,8 @@ export default defineComponent({
           }
         }
       }
+      // ステータスを変更
+      state.submitReady = true;
     };
 
     onUnmounted(() => {

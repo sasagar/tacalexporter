@@ -34,6 +34,22 @@ module.exports = {
     electronBuilder: {
       builderOptions: {
         extraResources: ["src/preload.js"],
+        productName: "TechAcademy Mentor Console",
+        appId: "com.kent-and-co.tacalexport",
+        win: {
+          target: [
+            {
+              target: "nsis",
+              arch: ["x64", "ia32"],
+            },
+          ],
+          publish: {
+            provider: "github",
+            releaseType: "release",
+            vPrefixedTagName: true,
+          },
+          icon: "./assets/logo.jpg",
+        },
       },
     },
   },

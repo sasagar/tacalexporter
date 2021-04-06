@@ -1,5 +1,4 @@
 module.exports = {
-  mainProcessWatch: ["googleApi.js", "auto-update.js"],
   css: {
     loaderOptions: {
       // pass options to sass-loader
@@ -33,6 +32,7 @@ module.exports = {
       openAnalyzer: false,
     },
     electronBuilder: {
+      mainProcessWatch: ["googleApi.js", "auto-update.js"],
       builderOptions: {
         extraResources: ["src/preload.js"],
         productName: "TechAcademy Mentor Console",

@@ -1,4 +1,5 @@
 module.exports = {
+  mainProcessWatch: ["googleApi.js", "auto-update.js"],
   css: {
     loaderOptions: {
       // pass options to sass-loader
@@ -41,6 +42,20 @@ module.exports = {
             {
               target: "nsis",
               arch: ["x64", "ia32"],
+            },
+          ],
+          publish: {
+            provider: "github",
+            releaseType: "release",
+            vPrefixedTagName: true,
+          },
+          icon: "./assets/logo.jpg",
+        },
+        mac: {
+          target: [
+            {
+              target: "dmg",
+              arch: ["x64", "arm64"],
             },
           ],
           publish: {

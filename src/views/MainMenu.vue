@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { reactive, computed } from "vue";
+import { reactive, computed, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
@@ -71,6 +71,13 @@ export default {
     };
 
     check();
+
+    watch(
+      () => launchCheck.value,
+      () => {
+        check();
+      }
+    );
 
     return {
       state,

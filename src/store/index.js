@@ -14,6 +14,7 @@ export default createStore({
     mentoringCalSelect: "",
     shiftCalSelect: "",
     createdSchedule: [],
+    calendarList: [],
   },
   mutations: {
     setLaunchCheck(state, payload) {
@@ -49,6 +50,16 @@ export default createStore({
       state.createdSchedule.splice(0);
       state.createdSchedule.push(...payload.arr);
     },
+    setStatusOfCreatedSchedule(state, payload) {
+      state.createdSchedule[payload.num].status = payload.status;
+    },
+    setFlagOfCreatedSchedule(state, payload) {
+      state.createdSchedule[payload.num].regFlag = payload.flag;
+    },
+    setCalendarList(state, payload) {
+      state.calendarList.splice(0);
+      state.calendarList.push(...payload.arr);
+    },
     clearSchedule(state) {
       state.createdSchedule.splice(0);
     },
@@ -66,18 +77,39 @@ export default createStore({
     },
     updateMentoringTitle(context, payload) {
       context.commit("setMentoringTitle", payload);
+
+      const mentoringTitle = {
+        name: "mentoringTitle",
+        setting: payload.title,
+      };
+
+      ipcRenderer.invoke("save-settings", mentoringTitle);
     },
     initMentoringTitle(context, payload) {
       context.commit("setMentoringTitle", { title: payload });
     },
     updateAccountingTitle(context, payload) {
       context.commit("setAccountingTitle", payload);
+
+      const accountingTitle = {
+        name: "accountingTitle",
+        setting: payload.title,
+      };
+
+      ipcRenderer.invoke("save-settings", accountingTitle);
     },
     initAccountingTitle(context, payload) {
       context.commit("setAccountingTitle", { title: payload });
     },
     updateShiftTitle(context, payload) {
       context.commit("setShiftTitle", payload);
+
+      const shiftTitle = {
+        name: "shiftTitle",
+        setting: payload.title,
+      };
+
+      ipcRenderer.invoke("save-settings", shiftTitle);
     },
     initShiftTitle(context, payload) {
       context.commit("setShiftTitle", { title: payload });
@@ -122,14 +154,29 @@ export default createStore({
         context.commit("setShiftSettings", { obj: payload });
       }
     },
-    updateMentoringCalSelect(payload) {
-      this.setMentoringCalSelect(payload);
+    updateMentoringCalSelect(context, payload) {
+      context.commit("setMentoringCalSelect", payload);
     },
-    updateShiftCalSelect(payload) {
-      this.setShiftCalSelect(payload);
+    updateShiftCalSelect(context, payload) {
+      context.commit("setShiftCalSelect", payload);
+      const selectedCal = {
+        name: "shiftSelectedCal",
+        setting: payload,
+      };
+
+      ipcRenderer.invoke("save-settings", selectedCal);
     },
     updateCreatedSchedule(context, payload) {
       context.commit("setCreatedSchedule", { arr: payload.arr });
+    },
+    updateStatusOfCreatedSchedule(context, payload) {
+      context.commit("setStatusOfCreatedSchedule", payload);
+    },
+    updateFlagOfCreatedSchedule(context, payload) {
+      context.commit("setFlagOfCreatedSchedule", payload);
+    },
+    updateCalendarList(context, payload) {
+      context.commit("setCalendarList", { arr: payload });
     },
     clearCreatedSchedule(context) {
       context.commit("clearSchedule");
@@ -186,6 +233,12 @@ export default createStore({
     },
     getUserData: (state) => {
       return state.userData;
+    },
+    getShiftCalSelect: (state) => {
+      return state.shiftCalSelect;
+    },
+    getCreatedSchedule: (state) => {
+      return state.createdSchedule;
     },
   },
   modules: {},

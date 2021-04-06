@@ -40,10 +40,10 @@
           <input
             type="checkbox"
             class="custom-control-input"
-            id="month-3"
-            checked
+            :id="switchIndex"
+            v-model="reg"
           />
-          <label class="custom-control-label text-center" for="month-3">
+          <label class="custom-control-label text-center" :for="switchIndex">
             登録
           </label>
         </span>
@@ -54,6 +54,8 @@
 
 <script>
 import { defineComponent, computed } from "vue";
+import { useStore } from "vuex";
+
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -80,9 +82,19 @@ export default defineComponent({
     },
     index: {
       type: Number
+    },
+    regFlag: {
+      type: Boolean,
+      default: true
     }
   },
-  setup(props) {
+  emits: ["update"],
+  setup(
+    props
+    // context
+  ) {
+    const store = useStore();
+
     const stat = computed(() => {
       const obj = {
         standby: false,
@@ -124,10 +136,26 @@ export default defineComponent({
       return dayjs(date).format("HH:mm");
     };
 
+    const switchIndex = computed(() => "sch" + props.index);
+
+    const reg = computed({
+      get: () => {
+        return props.regFlag;
+      },
+      set: flag => {
+        store.dispatch("updateFlagOfCreatedSchedule", {
+          num: props.index,
+          regFlag: flag
+        });
+      }
+    });
+
     return {
       props,
       stat,
-      date
+      date,
+      switchIndex,
+      reg
     };
   }
 });

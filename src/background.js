@@ -49,6 +49,10 @@ const schema = {
     type: "string",
     default: "チャットシフト",
   },
+  shiftSelectedCal: {
+    type: "string",
+    default: "",
+  },
   token: {
     type: "object",
     default: {},
@@ -257,11 +261,52 @@ ipcMain.handle("google-profile", async () => {
 });
 
 /**
+ * カレンダーリストの取得
+ *
+ * @returns {object}
+ */
+ipcMain.handle("google-cal-list", async () => {
+  try {
+    const content = await google.getClientSecret();
+    const tokenedAuth = await authorize(content);
+    const res = await google.listCalendar(tokenedAuth);
+    return res;
+  } catch (e) {
+    log.error("Error at ipc: google-cal-list: " + e);
+    return false;
+  }
+});
+
+/**
+ * 予定登録
+ *
+ * @returns {boolean}
+ */
+ipcMain.handle("google-cal-regist", async (e, obj) => {
+  try {
+    const sch = JSON.parse(obj);
+
+    const content = await google.getClientSecret();
+    const tokenedAuth = await authorize(content);
+
+    let result = await google.addSchedule(tokenedAuth, sch);
+
+    if (typeof result === Error) {
+      log.error("Error at ipc: google-cal-regist: " + result);
+      result = false;
+    }
+    return result;
+  } catch (e) {
+    log.error("Error at ipc: google-cal-regist: " + e);
+    return false;
+  }
+});
+/**
  * ログアウト
  *
  * @returns {object}
  */
-ipcMain.handle("google-logout", async () => {
+ipcMain.handle("google-logout", () => {
   try {
     conf.set("token", {});
     return true;

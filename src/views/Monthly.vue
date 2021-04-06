@@ -111,21 +111,29 @@
         </small>
       </div>
       <hr />
-      <template v-for="shift in createdSchedule" :key="shift.start">
+      <template v-for="(shift, index) in createdSchedule" :key="shift.start">
         <schedule
           :status="shift.status"
           :start="shift.start"
           :end="shift.end"
+          :index="index"
+          :regFlag="shift.regFlag"
         />
       </template>
       <div class="submit">
         <div class="form-group">
           <label class="my-1 mr-2" for="calSelect">登録するカレンダー</label>
-          <select class="custom-select my-1 mr-sm-2 col-3" id="calSelect">
-            <option>カレンダー</option>
-          </select>
+          <CalendarSelect
+            :calList="calList"
+            :sel="selectedCalendar"
+            @update="changeCal"
+          />
         </div>
-        <button class="btn btn-primary btn-pill text-secondary">
+        <button
+          class="btn btn-primary btn-pill text-secondary"
+          @click="registSchedule"
+          v-bind:disabled="!state.submitReady"
+        >
           スケジュール登録
         </button>
       </div>
@@ -150,6 +158,9 @@ dayjs.locale("ja");
 import NavToHome from "@/components/NavToHome.vue";
 import MonthlySwitch from "@/components/MonthlySwitch.vue";
 import Schedule from "@/components/Schedule.vue";
+import CalendarSelect from "@/components/CalendarSelect.vue";
+
+const ipcRenderer = window.ipcRenderer;
 
 export default defineComponent({
   setup() {
@@ -166,8 +177,11 @@ export default defineComponent({
     const wNextMonthVal = wNextMonth.format("YYYY/M/D");
 
     const state = reactive({
-      selectedMonth: nextMonth.format("YYYY/M/D")
+      selectedMonth: nextMonth.format("YYYY/M/D"),
+      submitReady: false
     });
+
+    const calList = computed(() => store.state.calendarList);
 
     const shiftTitle = computed({
       get: () => store.getters.getShiftTitle,
@@ -175,6 +189,19 @@ export default defineComponent({
         store.dispatch("updateShiftTitle", { title: str });
       }
     });
+
+    const selectedCalendar = computed(() => {
+      let selected = store.getters.getShiftCalSelect;
+      if (selected === "") {
+        selected = calList.value[0].id;
+        store.dispatch("updateShiftCalSelect", selected);
+      }
+      return selected;
+    });
+
+    const changeCal = id => {
+      store.dispatch("updateShiftCalSelect", id);
+    };
 
     const makeSchedule = () => {
       // 月間初日
@@ -247,6 +274,8 @@ export default defineComponent({
 
       // 作業用配列をstoreにおさめる
       store.dispatch("updateCreatedSchedule", { arr: shifts });
+      // ステータスを変更
+      state.submitReady = true;
     };
 
     const makeTime = (num, targetDate) => {
@@ -263,18 +292,61 @@ export default defineComponent({
       obj.start = time
         .hour(sHour)
         .minute(0)
-        .clone();
+        .clone()
+        .toDate();
       obj.end = time
         .hour(sHour)
         .minute(0)
         .add(4, "hour")
-        .clone();
+        .clone()
+        .toDate();
       obj.status = "standby";
+      obj.regFlag = true;
 
       return obj;
     };
 
-    const createdSchedule = computed(() => store.state.createdSchedule);
+    const createdSchedule = computed({
+      get: () => store.state.createdSchedule,
+      set: obj => {
+        console.log(obj);
+        store.dispatch("updateCreatedSchedule", { arr: obj });
+      }
+    });
+
+    const registSchedule = async () => {
+      const shifts = store.getters.getCreatedSchedule;
+
+      for (const i in shifts) {
+        if (shifts[i].regFlag) {
+          store.dispatch("updateStatusOfCreatedSchedule", {
+            num: i,
+            status: "loading"
+          });
+          let obj = shifts[i];
+
+          const selected = store.getters.getShiftCalSelect;
+          const title = store.getters.getShiftTitle;
+          obj.allDay = false;
+          obj.cal = selected;
+          obj.title = title;
+          // オブジェクトのままだと送れないので文字列に
+          const str = JSON.stringify(obj);
+          const res = await ipcRenderer.invoke("google-cal-regist", str);
+          if (res) {
+            store.dispatch("updateStatusOfCreatedSchedule", {
+              num: i,
+              status: "completed"
+            });
+          } else {
+            store.dispatch("updateStatusOfCreatedSchedule", {
+              num: i,
+              status: "error"
+            });
+          }
+        }
+      }
+    };
 
     onUnmounted(() => {
       store.dispatch("clearCreatedSchedule");
@@ -291,13 +363,18 @@ export default defineComponent({
       wNextMonthVal,
       shiftTitle,
       makeSchedule,
-      createdSchedule
+      createdSchedule,
+      selectedCalendar,
+      calList,
+      changeCal,
+      registSchedule
     };
   },
   components: {
     NavToHome,
     MonthlySwitch,
-    Schedule
+    Schedule,
+    CalendarSelect
   }
 });
 </script>

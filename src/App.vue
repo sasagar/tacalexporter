@@ -3,15 +3,27 @@
     <h1 class="mb-0">TechAcademy Mentor Console</h1>
     <hr />
   </div>
-  <router-view v-slot="{ Component }">
-    <transition name="content" mode="out-in">
-      <component :is="Component" />
-    </transition>
-  </router-view>
+  <Suspense>
+    <template #default>
+      <router-view v-slot="{ Component }">
+        <transition name="content" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
+    </template>
+    <template #fallback>
+      <div class="row">
+        <div class="col lead">
+          <fontAwesome :icon="['fas', 'spinner']" class="mr-2" spin />
+          処理中...
+        </div>
+      </div>
+    </template>
+  </Suspense>
 </template>
 
 <script>
-import { defineComponent, onBeforeMount } from "vue";
+import { defineComponent } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
@@ -22,7 +34,7 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
 
-    onBeforeMount(async () => {
+    const readyFunc = async () => {
       const launchCheck = await ipcRenderer.invoke("launch-checker");
       store.dispatch("updateLaunchCheck", launchCheck);
 
@@ -50,10 +62,26 @@ export default defineComponent({
       store.dispatch("initAccountingTitle", accountingTitle);
       store.dispatch("initShiftTitle", shiftTitle);
 
+      if (launchCheck) {
+        let calList = await ipcRenderer.invoke("google-cal-list");
+        calList = calList.filter(cal => cal.accessRole === "owner");
+
+        store.dispatch("updateCalendarList", calList);
+      }
+
+      const shiftCalSelect = await ipcRenderer.invoke(
+        "get-settings",
+        "shiftSelectedCal"
+      );
+
+      store.dispatch("updateShiftCalSelect", shiftCalSelect);
+
       if (!store.state.launchCheck) {
         router.push("google");
       }
-    });
+    };
+
+    readyFunc();
   }
 });
 </script>

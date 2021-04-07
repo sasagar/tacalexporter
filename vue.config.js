@@ -37,6 +37,7 @@ module.exports = {
         extraResources: ["src/preload.js"],
         productName: "TechAcademy Mentor Console",
         appId: "com.kent-and-co.tacalexport",
+        afterSign: "./scripts/notarize.js",
         win: {
           target: [
             {
@@ -64,6 +65,13 @@ module.exports = {
             vPrefixedTagName: true,
           },
           icon: "./assets/logo.jpg",
+          hardenedRuntime: true,
+          gatekeeperAssess: false,
+          entitlements: "./build/entitlements.mac.plist",
+          entitlementsInherit: "./build/entitlements.mac.plist",
+        },
+        dmg: {
+          sign: false,
         },
       },
     },

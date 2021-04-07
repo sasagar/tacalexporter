@@ -1,6 +1,6 @@
 {
   "name": "tacalexport",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "private": true,
   "description": "Schedule register for TechAcademy Mentors.",
   "author": "SASAGAWA, Kiyoshi <sasagawa@kent-and-co.com> (https://github.com/sasagar)",
@@ -32,7 +32,9 @@
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.9.1",
     "dayjs": "^1.10.4",
+    "dotenv": "^8.2.0",
     "electron-log": "^4.3.2",
+    "electron-notarize": "^1.0.0",
     "electron-store": "^7.0.2",
     "electron-updater": "^4.3.8",
     "googleapis": "^70.0.0",

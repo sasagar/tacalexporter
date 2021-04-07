@@ -28,7 +28,9 @@ jobs:
           p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
       # ここでアプリをビルド
       - name: build application
-        run: npm run electron:release --mac
+        run: |
+          security add-generic-password -a $APPPLEID -w $APPLEIDPASS -s "AC_PASSWORD"
+          npm run electron:release --mac
         env:
           APPLEID: ${{ secrets.APPLEID }},
           APPLEIDPASS: ${{ secrets.APPLEIDPASS }},

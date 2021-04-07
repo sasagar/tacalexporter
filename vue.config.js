@@ -27,8 +27,8 @@ module.exports = {
   configureWebpack: {
     devtool: "source-map",
     performance: {
-      maxAssetSize: 1700000,
-      maxEntrypointSize: 1700000,
+      maxAssetSize: 2100000,
+      maxEntrypointSize: 2100000,
     },
   },
   pluginOptions: {
@@ -40,7 +40,7 @@ module.exports = {
       builderOptions: {
         extraResources: ["src/preload.js"],
         productName: "TechAcademy Mentor Console",
-        appId: "com.kent-and-co.tacalexport",
+        appId: "com.kent-and-co.tacalexport.vue",
         afterSign: "./scripts/notarize.js",
         win: {
           target: [

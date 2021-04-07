@@ -12,9 +12,6 @@ jobs:
     runs-on: macos-latest
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      APPLEID: ${{ secrets.APPLEID }},
-      APPLEIDPASS: ${{ secrets.APPLEIDPASS }},
-      ASC_PROVIDER: ${{ secrets.ASC_PROVIDER }},
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 15.x
@@ -32,6 +29,10 @@ jobs:
       # ここでアプリをビルド
       - name: build application
         run: npm run electron:release --mac
+        env:
+          APPLEID: ${{ secrets.APPLEID }},
+          APPLEIDPASS: ${{ secrets.APPLEIDPASS }},
+          ASC_PROVIDER: ${{ secrets.ASC_PROVIDER }},
       # Release の作成とビルドしたパッケージのアップロード
       # - name: create release
       #   uses: softprops/action-gh-release@v1

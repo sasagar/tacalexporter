@@ -66,6 +66,7 @@ module.exports = {
           },
           icon: "./assets/logo.jpg",
           hardenedRuntime: true,
+          gatekeeperAssess: false,
           entitlements: "build/entitlements.mac.plist",
           entitlementsInherit: "build/entitlements.mac.plist",
         },

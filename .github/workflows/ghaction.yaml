@@ -28,13 +28,13 @@ jobs:
           p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
       # ここでアプリをビルド
       - name: build application
-        run: |
-          security add-generic-password -a $APPPLEID -w $APPLEIDPASS -s "AC_PASSWORD"
-          npm run electron:release --mac
         env:
           APPLEID: ${{ secrets.APPLEID }},
           APPLEIDPASS: ${{ secrets.APPLEIDPASS }},
           ASC_PROVIDER: ${{ secrets.ASC_PROVIDER }},
+        run: |
+          security add-generic-password -a env.APPPLEID -w env.APPLEIDPASS -s "AC_PASSWORD"
+          npm run electron:release --mac
       # Release の作成とビルドしたパッケージのアップロード
       # - name: create release
       #   uses: softprops/action-gh-release@v1

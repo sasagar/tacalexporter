@@ -12,6 +12,9 @@ jobs:
     runs-on: macos-latest
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      APPLEID: ${{ secrets.APPLEID}},
+      APPLEIDPASS: ${{ secrets.APPLEIDPASS}},
+      ASC_PROVIDER: ${{ secrets.ASC_PROVIDER}},
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 15.x

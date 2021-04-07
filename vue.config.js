@@ -26,6 +26,10 @@ module.exports = {
   },
   configureWebpack: {
     devtool: "source-map",
+    performance: {
+      maxAssetSize: 1700000,
+      maxEntrypointSize: 1700000,
+    },
   },
   pluginOptions: {
     webpackBundleAnalyzer: {

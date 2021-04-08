@@ -33,7 +33,7 @@ jobs:
           APPLEIDPASS: ${{ secrets.APPLEIDPASS }},
           ASC_PROVIDER: ${{ secrets.ASC_PROVIDER }},
         run: |
-          security add-generic-password -a env.APPPLEID -w env.APPLEIDPASS -s "AC_PASSWORD"
+          security add-generic-password -a ${{ secrets.APPLEID }} -w ${{ secrets.APPLEIDPASS }} -s "AC_PASSWORD"
           npm run electron:release --mac
       # Release の作成とビルドしたパッケージのアップロード
       # - name: create release

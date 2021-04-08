@@ -66,6 +66,7 @@
     "vue-cli-plugin-electron-builder": "^2.0.0-rc.6",
     "vue-cli-plugin-webpack-bundle-analyzer": "^4.0.0"
   },
+  "license": "GPL-3.0",
   "eslintConfig": {
     "root": true,
     "env": {

@@ -9,6 +9,24 @@
       <!-- miners -->
       <hr />
       <div class="row miners">
+        <div class="col"><h3>v5.0.7</h3></div>
+      </div>
+      <div class="row">
+        <div class="col"><h5>変更</h5></div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <ul>
+            <li>メニューの日本語化</li>
+            <li>このアプリについての画面追加</li>
+          </ul>
+        </div>
+      </div>
+      <!-- /minors -->
+
+      <!-- miners -->
+      <hr />
+      <div class="row miners">
         <div class="col"><h3>v5.0.6</h3></div>
       </div>
       <div class="row">

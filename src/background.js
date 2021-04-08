@@ -1,11 +1,13 @@
 "use strict";
 
-import { app, protocol, BrowserWindow, ipcMain, shell } from "electron";
+import { app, protocol, BrowserWindow, Menu, ipcMain, shell } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 const path = require("path");
+
+import { template, darwinTemplate } from "./scripts/menu";
 
 import ElectronStore from "electron-store";
 import "./autoUpdate";
@@ -104,6 +106,22 @@ async function createWindow() {
     conf.set("window.pos", win.getPosition()); // ウィンドウの座標を記録
     conf.set("window.size", win.getSize()); // ウィンドウのサイズを記録
   });
+
+  if (process.platform === "darwin") {
+    template.unshift(darwinTemplate.main);
+
+    // Edit menu
+    template[1].submenu = template[1].submenu.concat(
+      template[1].submenu,
+      darwinTemplate.sub1
+    );
+
+    // Window menu
+    template[3].submenu = darwinTemplate.sub2;
+  }
+
+  const menu = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(menu);
 }
 
 // Quit when all windows are closed.
@@ -224,7 +242,6 @@ ipcMain.handle("launch-checker", async () => {
 ipcMain.handle("get-ver", async () => {
   try {
     const version = app.getVersion();
-    console.log(version);
     return version;
   } catch (error) {
     log.error(error);

@@ -1,6 +1,6 @@
 {
   "name": "tacalexport",
-  "version": "5.0.6",
+  "version": "5.0.7",
   "private": true,
   "description": "Schedule register for TechAcademy Mentors.",
   "author": "SASAGAWA, Kiyoshi <sasagawa@kent-and-co.com> (https://github.com/sasagar)",
@@ -11,6 +11,7 @@
   "bugs": {
     "url": "https://github.com/sasagar/tacalexporter/issues"
   },
+  "homepage": "https://github.com/sasagar/tacalexporter#readme",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -28,6 +29,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.15.3",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/vue-fontawesome": "^3.0.0-3",
+    "about-window": "^1.14.0",
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.9.1",

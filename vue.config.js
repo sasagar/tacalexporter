@@ -36,7 +36,7 @@ module.exports = {
       openAnalyzer: false,
     },
     electronBuilder: {
-      mainProcessWatch: ["googleApi.js", "auto-update.js"],
+      mainProcessWatch: ["googleApi.js", "auto-update.js", "scripts/menu.js"],
       builderOptions: {
         extraResources: ["src/preload.js"],
         productName: "TechAcademy Mentor Console",

@@ -29,11 +29,11 @@ jobs:
       # ここでアプリをビルド
       - name: build application
         env:
-          APPLEID: ${{ secrets.APPLEID }},
-          APPLEIDPASS: ${{ secrets.APPLEIDPASS }},
-          ASC_PROVIDER: ${{ secrets.ASC_PROVIDER }},
+          APPLEID: ${{ secrets.APPLEID }}
+          APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
+          ASC_PROVIDER: ${{ secrets.ASC_PROVIDER }}
         run: |
-          security add-generic-password -a ${{ secrets.APPLEID }} -w ${{ secrets.APPLEIDPASS }} -s "AC_PASSWORD"
+          xcrun altool --store-password-in-keychain-item "AC_PASSWORD" -u $APPLEID -p $APPLEIDPASS
           npm run electron:release --mac
       # Release の作成とビルドしたパッケージのアップロード
       # - name: create release

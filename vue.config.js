@@ -43,6 +43,7 @@ module.exports = {
         appId: "com.kent-and-co.tacalexport.vue",
         afterSign: "./scripts/notarize.js",
         win: {
+          electronUpdaterCompatibility: ">=2.16",
           target: [
             {
               target: "nsis",
@@ -57,6 +58,7 @@ module.exports = {
           icon: "./assets/icon.png",
         },
         mac: {
+          electronUpdaterCompatibility: ">=2.16",
           target: [
             {
               target: "dmg",

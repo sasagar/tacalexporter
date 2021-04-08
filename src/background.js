@@ -217,6 +217,22 @@ ipcMain.handle("launch-checker", async () => {
 });
 
 /**
+ * バージョン取得
+ *
+ * @returns {boolean}
+ */
+ipcMain.handle("get-ver", async () => {
+  try {
+    const version = process.env.npm_package_version;
+    console.log(version);
+    return version;
+  } catch (error) {
+    log.error(error);
+    return false;
+  }
+});
+
+/**
  * Google認証コードの登録
  *
  * @returns {boolean}

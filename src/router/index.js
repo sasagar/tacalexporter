@@ -28,6 +28,11 @@ const routes = [
     name: "mentoring",
     component: () => import("../views/Mentoring.vue"),
   },
+  {
+    path: "/changelog",
+    name: "changelog",
+    component: () => import("../views/Changelog.vue"),
+  },
 ];
 
 const router = createRouter({

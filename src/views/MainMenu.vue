@@ -28,12 +28,19 @@
         <span class="mr-1"><fontAwesome icon="cogs" /></span>
         設定
       </button>
+      <hr />
+      <button class="btn btn-pill btn-primary mb-4" @click="go('changelog')">
+        <span class="mr-1"><fontAwesome icon="code-branch" /></span>
+        Change log
+      </button>
+      <hr />
+      <small> version {{ ver }} </small>
     </template>
   </div>
 </template>
 
 <script>
-import { reactive, computed, watch } from "vue";
+import { reactive, computed, watch, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
@@ -45,6 +52,14 @@ export default {
     const router = useRouter();
 
     const launchCheck = computed(() => store.getters.getLaunchCheck);
+
+    let version = ref("");
+
+    const getver = async () => {
+      version = await ipcRenderer.invoke("get-ver");
+    };
+
+    const ver = computed(() => version);
 
     const state = reactive({
       loading: true
@@ -70,6 +85,7 @@ export default {
       }
     };
 
+    getver();
     check();
 
     watch(
@@ -81,7 +97,8 @@ export default {
 
     return {
       state,
-      go
+      go,
+      ver
     };
   },
   name: "main-menu"

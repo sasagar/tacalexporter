@@ -61,7 +61,7 @@ module.exports = {
           electronUpdaterCompatibility: ">=2.16",
           target: [
             {
-              target: "dmg",
+              target: "default",
               arch: ["x64", "arm64"],
             },
           ],

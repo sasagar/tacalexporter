@@ -9,6 +9,23 @@
       <!-- miners -->
       <hr />
       <div class="row miners">
+        <div class="col"><h3>v5.0.5</h3></div>
+      </div>
+      <div class="row">
+        <div class="col"><h5>修正</h5></div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <ul>
+            <li>バージョン表示が適切に表示されない場合があることの修正</li>
+          </ul>
+        </div>
+      </div>
+      <!-- /minors -->
+
+      <!-- miners -->
+      <hr />
+      <div class="row miners">
         <div class="col"><h3>v5.0.4</h3></div>
       </div>
       <div class="row">

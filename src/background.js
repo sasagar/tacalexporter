@@ -223,7 +223,7 @@ ipcMain.handle("launch-checker", async () => {
  */
 ipcMain.handle("get-ver", async () => {
   try {
-    const version = process.env.npm_package_version;
+    const version = app.getVersion();
     console.log(version);
     return version;
   } catch (error) {

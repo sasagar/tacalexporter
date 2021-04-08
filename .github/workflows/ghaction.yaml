@@ -32,10 +32,9 @@ jobs:
           APPLEID: ${{ secrets.APPLEID }}
           APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
           ASC_PROVIDER: ${{ secrets.ASC_PROVIDER }}
-          TCE_GOOGLE_CLIENT_SECRET: ${{ secrets.TCE_GOOGLE_CLIENT_SECRET }}
         run: |
           xcrun altool --store-password-in-keychain-item "AC_PASSWORD" -u $APPLEID -p $APPLEIDPASS
-          echo 'TCE_GOOGLE_CLIENT_SECRET='${{ secrets.TCE_GOOGLE_CLIENT_SECRET }} > .env
+          echo ${{ secrets.TCE_GOOGLE_CLIENT_SECRET }} | base64 -d > src/json/client_secret.json
           npm run electron:release --mac
       # Release の作成とビルドしたパッケージのアップロード
       # - name: create release
@@ -65,7 +64,7 @@ jobs:
         run: npm install
       - name: build application
         run: |
-          echo 'TCE_GOOGLE_CLIENT_SECRET='${{ secrets.TCE_GOOGLE_CLIENT_SECRET }} > .env
+          echo ${{ secrets.TCE_GOOGLE_CLIENT_SECRET }} | base64 -d > src/json/client_secret.json
           npm run electron:release --win
       # - name: create release
       #   uses: softprops/action-gh-release@v1

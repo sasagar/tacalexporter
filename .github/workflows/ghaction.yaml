@@ -35,6 +35,7 @@ jobs:
           TCE_GOOGLE_CLIENT_SECRET: ${{ secrets.TCE_GOOGLE_CLIENT_SECRET }}
         run: |
           xcrun altool --store-password-in-keychain-item "AC_PASSWORD" -u $APPLEID -p $APPLEIDPASS
+          echo ${{ secrets.TCE_GOOGLE_CLIENT_SECRET }} > .env
           npm run electron:release --mac
       # Release の作成とビルドしたパッケージのアップロード
       # - name: create release

@@ -54,7 +54,7 @@ module.exports = {
             releaseType: "release",
             vPrefixedTagName: true,
           },
-          icon: "./assets/logo.jpg",
+          icon: "./assets/logo.png",
         },
         mac: {
           target: [
@@ -68,7 +68,7 @@ module.exports = {
             releaseType: "release",
             vPrefixedTagName: true,
           },
-          icon: "./assets/logo.jpg",
+          icon: "./assets/logo.png",
           hardenedRuntime: true,
           gatekeeperAssess: false,
           entitlements: "build/entitlements.mac.plist",

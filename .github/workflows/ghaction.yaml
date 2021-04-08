@@ -32,6 +32,7 @@ jobs:
           APPLEID: ${{ secrets.APPLEID }}
           APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
           ASC_PROVIDER: ${{ secrets.ASC_PROVIDER }}
+          TCE_GOOGLE_CLIENT_SECRET: ${{ secrets.TCE_GOOGLE_CLIENT_SECRET }}
         run: |
           xcrun altool --store-password-in-keychain-item "AC_PASSWORD" -u $APPLEID -p $APPLEIDPASS
           npm run electron:release --mac

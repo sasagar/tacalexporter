@@ -1,7 +1,9 @@
 // const path = require("path");
+require("dotenv").config();
 const { google } = require("googleapis");
-const clientSecret = require("./json/client_secret.json");
+// const clientSecret = require("./json/client_secret.json");
 const log = require("electron-log");
+const clientSecret = JSON.parse(process.env.TCE_GOOGLE_CLIENT_SECRET);
 
 exports.getClientSecret = () => {
   return clientSecret;

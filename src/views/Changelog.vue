@@ -9,6 +9,23 @@
       <!-- miners -->
       <hr />
       <div class="row miners">
+        <div class="col"><h3>v5.0.8</h3></div>
+      </div>
+      <div class="row">
+        <div class="col"><h5>変更</h5></div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <ul>
+            <li>通知アイコンの対応</li>
+          </ul>
+        </div>
+      </div>
+      <!-- /minors -->
+
+      <!-- miners -->
+      <hr />
+      <div class="row miners">
         <div class="col"><h3>v5.0.7</h3></div>
       </div>
       <div class="row">

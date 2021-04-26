@@ -33,6 +33,11 @@ const routes = [
     name: "changelog",
     component: () => import("../views/Changelog.vue"),
   },
+  {
+    path: "/license",
+    name: "license",
+    component: () => import("../views/License.vue"),
+  },
 ];
 
 const router = createRouter({

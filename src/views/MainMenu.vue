@@ -33,6 +33,12 @@
         <span class="mr-1"><fontAwesome icon="code-branch" /></span>
         Change log
       </button>
+      <button class="btn btn-pill btn-primary mb-4 ml-4" @click="go('license')">
+        <span class="mr-1">
+          <fontAwesome :icon="['fas', 'file-contract']" />
+        </span>
+        License
+      </button>
       <hr />
       <small> version {{ ver }} </small>
     </template>

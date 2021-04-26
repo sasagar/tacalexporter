@@ -1,6 +1,6 @@
 {
   "name": "tacalexport",
-  "version": "5.0.8",
+  "version": "5.1.0",
   "private": true,
   "description": "Schedule register for TechAcademy Mentors.",
   "author": "SASAGAWA, Kiyoshi <sasagawa@kent-and-co.com> (https://github.com/sasagar)",
@@ -16,6 +16,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
+    "licensegen": "node license-generator.js",
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
     "electron:release": "vue-cli-service electron:build --publish always",
@@ -32,6 +33,7 @@
     "about-window": "^1.14.0",
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
+    "compare-versions": "^3.6.0",
     "core-js": "^3.9.1",
     "dayjs": "^1.10.4",
     "dotenv": "^8.2.0",

@@ -21,16 +21,6 @@
           </ul>
         </div>
       </div>
-      <div class="row">
-        <div class="col"><h5>変更</h5></div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <ul>
-            <li>Windows版のビルドのベースをNode v16系に変更</li>
-          </ul>
-        </div>
-      </div>
       <!-- /minors -->
 
       <!-- miners -->

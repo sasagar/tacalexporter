@@ -31,7 +31,7 @@
 <script>
 import NavToHome from "@/components/NavToHome.vue";
 
-import licensesJson from "../assets/licenses/licenses.json"; // 自動生成したライセンスを定義したJSONファイルをimport
+import licensesJson from "../assets/licenses.json"; // 自動生成したライセンスを定義したJSONファイルをimport
 
 export default {
   setup() {

@@ -27,7 +27,7 @@
       <div class="row">
         <div class="col">
           <ul>
-            <li>ビルドのベースをNode v16系に変更</li>
+            <li>Windows版のビルドのベースをNode v16系に変更</li>
           </ul>
         </div>
       </div>

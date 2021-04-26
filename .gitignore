@@ -28,4 +28,4 @@ pnpm-debug.log*
 /dist_electron
 
 # License Generator JSON
-public/licenses.json
+/src/assets/licenses/licenses.json

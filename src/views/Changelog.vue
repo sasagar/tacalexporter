@@ -9,6 +9,33 @@
       <!-- miners -->
       <hr />
       <div class="row miners">
+        <div class="col"><h3>v5.1.0</h3></div>
+      </div>
+      <div class="row">
+        <div class="col"><h5>追加</h5></div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <ul>
+            <li>OSSライセンスの表示ページを追加</li>
+          </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col"><h5>変更</h5></div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <ul>
+            <li>ビルドのベースをNode v16系に変更</li>
+          </ul>
+        </div>
+      </div>
+      <!-- /minors -->
+
+      <!-- miners -->
+      <hr />
+      <div class="row miners">
         <div class="col"><h3>v5.0.8</h3></div>
       </div>
       <div class="row">

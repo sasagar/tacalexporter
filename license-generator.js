@@ -1,8 +1,9 @@
 const execSync = require("child_process").execSync;
+const path = require("path");
 const fs = require("fs");
 const compareVersions = require("compare-versions");
 
-const filePath = "./src/assets/licenses/licenses.json";
+const filePath = path.join(__dirname, "src/assets/licenses/licenses.json");
 
 // 元情報となるライセンス一覧のJSONを出力
 const ret = execSync(`license-checker --production --json > ${filePath}`);

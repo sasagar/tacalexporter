@@ -18,20 +18,7 @@
         <div class="col">
           <ul>
             <li>
-              カレンダーの選択変更が反映されない点の修正が完了していなかった点の修正
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col"><h5>Warning対応</h5></div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <ul>
-            <li>
-              Dart
-              Sassでスラッシュの除算が非対応となる事に対するmath.divへの置き換え
+              カレンダーの選択変更が反映されない点の修正が修正できていなかった点の修正
             </li>
           </ul>
         </div>

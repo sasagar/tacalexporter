@@ -266,6 +266,9 @@ export default createStore({
     getUserData: (state) => {
       return state.userData;
     },
+    getMentoringCalSelect: (state) => {
+      return state.mentoringCalSelect;
+    },
     getShiftCalSelect: (state) => {
       return state.shiftCalSelect;
     },

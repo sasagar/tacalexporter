@@ -9,6 +9,33 @@
       <!-- miners -->
       <hr />
       <div class="row miners">
+        <div class="col"><h3>v5.2.0</h3></div>
+      </div>
+      <div class="row">
+        <div class="col"><h5>バグ修正</h5></div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <ul>
+            <li>カレンダーの選択変更が反映されない点の修正</li>
+          </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col"><h5>追加</h5></div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <ul>
+            <li>Webデザインフリーランスコースの追加</li>
+          </ul>
+        </div>
+      </div>
+      <!-- /minors -->
+
+      <!-- miners -->
+      <hr />
+      <div class="row miners">
         <div class="col"><h3>v5.1.1</h3></div>
       </div>
       <div class="row">

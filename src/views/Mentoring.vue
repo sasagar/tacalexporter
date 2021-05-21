@@ -557,7 +557,7 @@ export default defineComponent({
           });
           let obj = shifts[i];
 
-          const selected = store.getters.getShiftCalSelect;
+          const selected = store.getters.getMentoringCalSelect;
           const title = mentoringTitle;
           obj.allDay = false;
           obj.cal = selected;
@@ -595,7 +595,7 @@ export default defineComponent({
             });
             let obj = dates[i];
 
-            const selected = store.getters.getShiftCalSelect;
+            const selected = store.getters.getMentoringCalSelect;
             let title = accountingTitle;
 
             if (obj["amount"] < 1) {

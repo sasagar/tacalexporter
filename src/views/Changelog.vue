@@ -9,6 +9,38 @@
       <!-- miners -->
       <hr />
       <div class="row miners">
+        <div class="col"><h3>v5.2.1</h3></div>
+      </div>
+      <div class="row">
+        <div class="col"><h5>バグ修正</h5></div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <ul>
+            <li>
+              カレンダーの選択変更が反映されない点の修正が完了していなかった点の修正
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col"><h5>Warning対応</h5></div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <ul>
+            <li>
+              Dart
+              Sassでスラッシュの除算が非対応となる事に対するmath.divへの置き換え
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!-- /minors -->
+
+      <!-- miners -->
+      <hr />
+      <div class="row miners">
         <div class="col"><h3>v5.2.0</h3></div>
       </div>
       <div class="row">

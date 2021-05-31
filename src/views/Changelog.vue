@@ -9,7 +9,7 @@
       <!-- miners -->
       <hr />
       <div class="row miners">
-        <div class="col"><h3>v5.2.3</h3></div>
+        <div class="col"><h3>v5.2.3 / v5.2.4</h3></div>
       </div>
       <div class="row">
         <div class="col"><h5>バグ修正</h5></div>

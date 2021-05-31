@@ -2,48 +2,46 @@
 * = Helper classes
 */
 
-@use 'sass:math';
-
 // Overflows
 .overflow-visible {
-  overflow: visible !important;
+    overflow: visible !important;
 }
 
 // Opacity classes
 @for $nr from 0 to 10 {
-  .opacity-#{$nr} {
-    opacity: #{$nr / 10} !important;
-  }
+    .opacity-#{$nr} {
+        opacity: #{$nr/10} !important;
+    }
 }
 
 // Fill opacity classes
 @for $nr from 0 to 10 {
-  .fill-opacity-#{$nr} {
-    fill-opacity: #{$nr / 10} !important;
-  }
+    .fill-opacity-#{$nr} {
+        fill-opacity: #{$nr/10} !important;
+    }
 }
 
 // Z indexes
 @for $nr from 0 to 10 {
-  .z-#{$nr} {
-    position: relative;
-    z-index: #{$nr} !important;
-  }
+    .z-#{$nr} {
+        position: relative;
+        z-index: #{$nr} !important;
+    }
 }
 
 // Border widths
 .bw-md {
-  border-width: $border-width-md !important;
+    border-width: $border-width-md !important;
 }
 .bw-lg {
-  border-width: $border-width-lg !important;
+    border-width: $border-width-lg !important;
 }
 .bw-xl {
-  border-width: $border-width-xl !important;
+    border-width: $border-width-xl !important;
 }
 
 //Rounded xl fix
 
 .rounded-xl {
-  border-radius: $border-radius-xl !important;
-}
+    border-radius: $border-radius-xl !important;
+  }

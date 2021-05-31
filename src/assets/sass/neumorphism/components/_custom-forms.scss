@@ -91,11 +91,8 @@
     &::after {
       top: calc(
         #{(
-            math.div(
-              $font-size-base * $line-height-base -
-                $custom-control-indicator-size,
+            $font-size-base * $line-height-base - $custom-control-indicator-size /
               2
-            )
           )} + #{$custom-control-indicator-border-width * 2}
       );
       left: calc(

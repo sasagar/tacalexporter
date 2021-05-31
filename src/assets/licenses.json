@@ -3,13 +3,13 @@
         "licenses": "MIT",
         "repository": "https://github.com/babel/babel"
     },
-    "@babel/parser@7.14.3": {
+    "@babel/parser@7.14.4": {
         "licenses": "MIT",
         "repository": "https://github.com/babel/babel",
         "publisher": "Sebastian McKenzie",
         "email": "sebmck@gmail.com"
     },
-    "@babel/types@7.14.2": {
+    "@babel/types@7.14.4": {
         "licenses": "MIT",
         "repository": "https://github.com/babel/babel",
         "publisher": "Sebastian McKenzie",
@@ -50,7 +50,7 @@
         "email": "dave@fontawesome.com",
         "url": "http://twitter.com/davegandy"
     },
-    "@fortawesome/vue-fontawesome@3.0.0-3": {
+    "@fortawesome/vue-fontawesome@3.0.0-4": {
         "licenses": "MIT",
         "repository": "https://github.com/FortAwesome/vue-fontawesome"
     },
@@ -72,7 +72,7 @@
         "repository": "https://github.com/vuejs/vue-next",
         "publisher": "Evan You"
     },
-    "@vue/devtools-api@6.0.0-beta.10": {
+    "@vue/devtools-api@6.0.0-beta.12": {
         "licenses": "MIT",
         "repository": "https://github.com/vuejs/vue-devtools",
         "publisher": "Guillaume Chau"
@@ -226,7 +226,7 @@
         "licenses": "MIT",
         "repository": "https://github.com/nuxt/consola"
     },
-    "core-js@3.12.1": {
+    "core-js@3.13.1": {
         "licenses": "MIT",
         "repository": "https://github.com/zloirock/core-js"
     },
@@ -236,11 +236,11 @@
         "publisher": "Fredrik Nicol",
         "email": "fredrik.nicol@gmail.com"
     },
-    "date-fns@2.21.3": {
+    "date-fns@2.22.1": {
         "licenses": "MIT",
         "repository": "https://github.com/date-fns/date-fns"
     },
-    "dayjs@1.10.4": {
+    "dayjs@1.10.5": {
         "licenses": "MIT",
         "repository": "https://github.com/iamkun/dayjs",
         "publisher": "iamkun"
@@ -350,7 +350,7 @@
         "publisher": "Raynos",
         "email": "raynos2@gmail.com"
     },
-    "gaxios@4.2.1": {
+    "gaxios@4.3.0": {
         "licenses": "Apache-2.0",
         "repository": "https://github.com/googleapis/gaxios",
         "publisher": "Google, LLC"
@@ -366,7 +366,7 @@
         "publisher": "Jordan Harband",
         "email": "ljharb@gmail.com"
     },
-    "google-auth-library@7.0.4": {
+    "google-auth-library@7.1.0": {
         "licenses": "Apache-2.0",
         "repository": "https://github.com/googleapis/google-auth-library-nodejs",
         "publisher": "Google Inc."
@@ -726,7 +726,7 @@
         "repository": "https://github.com/vuejs/vue-next",
         "publisher": "Evan You"
     },
-    "vuex@4.0.0": {
+    "vuex@4.0.1": {
         "licenses": "MIT",
         "repository": "https://github.com/vuejs/vuex",
         "publisher": "Evan You"

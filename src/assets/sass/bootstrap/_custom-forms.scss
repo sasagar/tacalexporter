@@ -75,7 +75,8 @@
   // Background-color and (when enabled) gradient
   &::before {
     position: absolute;
-    top: math.div(($font-size-base * $line-height-base - $custom-control-indicator-size), 2);
+    top: ($font-size-base * $line-height-base - $custom-control-indicator-size) /
+      2;
     left: -($custom-control-gutter + $custom-control-indicator-size);
     display: block;
     width: $custom-control-indicator-size;
@@ -91,10 +92,8 @@
   // Foreground (icon)
   &::after {
     position: absolute;
-    top: math.div(
-      ($font-size-base * $line-height-base - $custom-control-indicator-size),
-      2
-    );
+    top: ($font-size-base * $line-height-base - $custom-control-indicator-size) /
+      2;
     left: -($custom-control-gutter + $custom-control-indicator-size);
     display: block;
     width: $custom-control-indicator-size;
@@ -181,12 +180,9 @@
 
     &::after {
       top: calc(
-        #{math.div(
-            (
-                $font-size-base * $line-height-base -
-                  $custom-control-indicator-size
-              ), 2
-          )} + #{$custom-control-indicator-border-width * 2}
+        #{(
+            $font-size-base * $line-height-base - $custom-control-indicator-size
+          ) / 2} + #{$custom-control-indicator-border-width * 2}
       );
       left: calc(
         #{- ($custom-switch-width + $custom-control-gutter)} + #{$custom-control-indicator-border-width *
@@ -416,7 +412,7 @@
   &::-webkit-slider-thumb {
     width: $custom-range-thumb-width;
     height: $custom-range-thumb-height;
-    margin-top: math.div(($custom-range-track-height - $custom-range-thumb-height), 2); // Webkit specific
+    margin-top: ($custom-range-track-height - $custom-range-thumb-height) / 2; // Webkit specific
     @include gradient-bg($custom-range-thumb-bg);
     border: $custom-range-thumb-border;
     @include border-radius($custom-range-thumb-border-radius);
@@ -491,7 +487,7 @@
     cursor: $custom-range-track-cursor;
     background-color: transparent;
     border-color: transparent;
-    border-width: math.div($custom-range-thumb-height, 2);
+    border-width: $custom-range-thumb-height / 2;
     @include box-shadow($custom-range-track-box-shadow);
   }
 

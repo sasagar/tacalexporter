@@ -596,8 +596,8 @@ export default defineComponent({
             let obj = dates[i];
 
             const selected = store.getters.getMentoringCalSelect;
-            let title = accountingTitle;
-
+            let title = accountingTitle.value;
+  
             if (obj["amount"] < 1) {
               title = title + " x" + obj["amount"];
             }

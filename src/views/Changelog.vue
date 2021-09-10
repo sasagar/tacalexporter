@@ -9,6 +9,23 @@
       <!-- miners -->
       <hr />
       <div class="row miners">
+        <div class="col"><h3>v5.3.0</h3></div>
+      </div>
+      <div class="row">
+        <div class="col"><h5>機能追加</h5></div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <ul>
+            <li>年末年始期間に対応（毎年12/28～1/3の間を休みと判定）</li>
+          </ul>
+        </div>
+      </div>
+      <!-- /minors -->
+
+      <!-- miners -->
+      <hr />
+      <div class="row miners">
         <div class="col"><h3>v5.2.3 / v5.2.4</h3></div>
       </div>
       <div class="row">

@@ -266,10 +266,15 @@ import { ja } from "date-fns/locale";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import isBetween from "dayjs/plugin/isBetween";
 import "dayjs/locale/ja";
 
-dayjs.extend(utc);
-dayjs.extend(timezone);
+dayjs
+  .extend(utc)
+  .extend(timezone)
+  .extend(isSameOrAfter)
+  .extend(isBetween);
 dayjs.tz.setDefault("Asia/Tokyo");
 dayjs.locale("ja");
 
@@ -445,39 +450,80 @@ export default defineComponent({
       // 作業用の日時
       let targetDate = date.clone();
 
+      // 年末年始判定用
+      // 年末年始を二年分前後で用意
+      const nyHolidayStart1 = targetDate
+        .clone()
+        .set("month", 11)
+        .set("date", 28)
+        .set("hour", 0)
+        .set("minute", 0);
+      const nyHolidayEnd1 = targetDate
+        .clone()
+        .add(1, "year")
+        .set("month", 0)
+        .set("date", 4)
+        .set("hour", 0)
+        .set("minute", 0);
+      const nyHolidayStart2 = targetDate
+        .clone()
+        .add(-1, "year")
+        .set("month", 11)
+        .set("date", 28)
+        .set("hour", 0)
+        .set("minute", 0);
+      const nyHolidayEnd2 = targetDate
+        .clone()
+        .set("month", 0)
+        .set("date", 4)
+        .set("hour", 0)
+        .set("minute", 0);
       while (tmpcount < count) {
-        let dayData = 4;
-
-        if (flag) {
-          dayData = first;
-        } else {
-          dayData = second;
+        // 年末年始判定
+        let notHolFlag = true;
+        if (
+          (targetDate.isSameOrAfter(nyHolidayStart1) &&
+            targetDate.isBefore(nyHolidayEnd1)) ||
+          (targetDate.isSameOrAfter(nyHolidayStart2) &&
+            targetDate.isBefore(nyHolidayEnd2))
+        ) {
+          notHolFlag = false;
         }
 
-        if (dayData.day * 1 === targetDate.day()) {
-          const obj = {};
-          let startTime = targetDate
-            .hour(dayData.hour)
-            .minute(dayData.min)
-            .clone();
+        if (notHolFlag) {
+          let dayData = 4;
 
-          let endTime = startTime.add(30, "minute").clone();
-
-          obj.start = startTime.toDate();
-          obj.end = endTime.toDate();
-          obj.status = "standby";
-          obj.regFlag = true;
-
-          shifts.push(obj);
-          // 週1かどうかで処理を分ける
-          if (data["perWeek"] === 1) {
-            // 週1は一回目以外でfalse
-            flag = false;
+          if (flag) {
+            dayData = first;
           } else {
-            // 週2は毎回フラグ入れ替え
-            flag = !flag;
+            dayData = second;
           }
-          tmpcount = ++tmpcount;
+
+          if (dayData.day * 1 === targetDate.day()) {
+            const obj = {};
+            let startTime = targetDate
+              .hour(dayData.hour)
+              .minute(dayData.min)
+              .clone();
+
+            let endTime = startTime.add(30, "minute").clone();
+
+            obj.start = startTime.toDate();
+            obj.end = endTime.toDate();
+            obj.status = "standby";
+            obj.regFlag = true;
+
+            shifts.push(obj);
+            // 週1かどうかで処理を分ける
+            if (data["perWeek"] === 1) {
+              // 週1は一回目以外でfalse
+              flag = false;
+            } else {
+              // 週2は毎回フラグ入れ替え
+              flag = !flag;
+            }
+            tmpcount = ++tmpcount;
+          }
         }
         targetDate = targetDate.add(1, "day");
       }
@@ -491,11 +537,25 @@ export default defineComponent({
         const accountingCounter = state.selectedWeek / 4;
 
         let n = 1;
+        let lastAccountingDate = dayjs(new Date(startDate.value));
+        let offsetFlag = false;
+
         while (n <= accountingCounter) {
-          const accountingDate = date
-            .clone()
-            .add(n * 28 - 1, "days")
-            .toDate();
+          let accountingDate = date.clone().add(n * 28 - 1, "days");
+
+          if (
+            lastAccountingDate.year() != accountingDate.year() ||
+            accountingDate.isBetween(nyHolidayStart1, nyHolidayEnd1) ||
+            accountingDate.isBetween(nyHolidayStart2, nyHolidayEnd2)
+          ) {
+            offsetFlag = true;
+          }
+
+          if (offsetFlag) {
+            accountingDate = accountingDate.add(7, "days");
+          }
+          lastAccountingDate = accountingDate.clone();
+          accountingDate = accountingDate.toDate();
 
           let amount = 1;
           if (!Number.isInteger(n)) {
@@ -597,7 +657,7 @@ export default defineComponent({
 
             const selected = store.getters.getMentoringCalSelect;
             let title = accountingTitle.value;
-  
+
             if (obj["amount"] < 1) {
               title = title + " x" + obj["amount"];
             }

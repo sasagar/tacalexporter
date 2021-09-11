@@ -163,6 +163,7 @@
         <button
           class="btn btn-primary btn-pill text-secondary"
           @click="makeSchedule"
+          v-bind:disabled="!state.notInProgres"
         >
           メンタリングスケジュール生成
         </button>
@@ -235,11 +236,7 @@
       <div class="submit">
         <div class="form-group">
           <label class="my-1 mr-2" for="calSelect">登録するカレンダー</label>
-          <CalendarSelect
-            :calList="calList"
-            :sel="selectedCalendar"
-            @update="changeCal"
-          />
+          <CalendarSelect :calList="calList" v-model:sel="changeCal" />
         </div>
         <button
           class="btn btn-primary btn-pill text-secondary"
@@ -254,7 +251,14 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive, computed, onUnmounted } from "vue";
+import {
+  defineComponent,
+  ref,
+  reactive,
+  computed,
+  onUnmounted,
+  onMounted
+} from "vue";
 import { useStore } from "vuex";
 
 const ipcRenderer = window.ipcRenderer;
@@ -300,7 +304,8 @@ export default defineComponent({
       secondDay: 0,
       secondHour: 13,
       secondMin: 0,
-      submitReady: false
+      submitReady: false,
+      notInProgres: true
     });
 
     const startDate = ref(new Date());
@@ -315,18 +320,15 @@ export default defineComponent({
 
     const calList = computed(() => store.state.calendarList);
 
-    const selectedCalendar = computed(() => {
-      let selected = store.getters.getShiftCalSelect;
-      if (selected === "") {
-        selected = calList.value[0].id;
-        store.dispatch("updateMentoringCalSelect", selected);
-      }
-      return selected;
-    });
+    const selectedCalendar = ref("");
 
-    const changeCal = id => {
-      store.dispatch("updateMentoringCalSelect", id);
-    };
+    const changeCal = computed({
+      get: () => selectedCalendar.value,
+      set: id => {
+        selectedCalendar.value = id;
+        store.dispatch("updateMentoringCalSelect", id);
+      }
+    });
 
     // 選択中のコースのデータを返す
     const courseData = computed(() => {
@@ -597,7 +599,6 @@ export default defineComponent({
     const createdAccountingSchedule = computed({
       get: () => store.state.createdAccountingSchedule,
       set: obj => {
-        console.log(obj);
         store.dispatch("updateCreatedAccountingSchedule", { arr: obj });
       }
     });
@@ -605,6 +606,7 @@ export default defineComponent({
     const registSchedule = async () => {
       // ステータスを変更
       state.submitReady = false;
+      state.notInProgres = false;
 
       const shifts = store.getters.getCreatedSchedule;
 
@@ -690,8 +692,12 @@ export default defineComponent({
       }
       // ステータスを変更
       state.submitReady = true;
+      state.notInProgres = true;
     };
 
+    onMounted(() => {
+      selectedCalendar.value = store.getters.getMentoringCalSelect;
+    });
     onUnmounted(() => {
       store.dispatch("clearCreatedSchedule");
       store.dispatch("clearCreatedAccountingSchedule");

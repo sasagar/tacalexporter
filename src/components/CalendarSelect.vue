@@ -2,8 +2,7 @@
   <select
     class="custom-select my-1 mr-sm-2 col-5"
     id="calSelect"
-    :value="props.sel"
-    @change="update"
+    v-model="selComputed"
   >
     <template v-for="calendar in props.calList" :key="calendar.etag">
       <option :value="calendar.id">
@@ -17,7 +16,7 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, toRefs, computed } from "vue";
 
 export default defineComponent({
   props: {
@@ -28,14 +27,21 @@ export default defineComponent({
       type: String
     }
   },
-  emits: ["update"],
-  setup(props, context) {
-    const update = val => {
-      context.emit("update", val.target.value);
-    };
+  emits: ["update:sel"],
+  setup(props, { emit }) {
+    const { sel } = toRefs(props);
+    const selComputed = computed({
+      get: () => {
+        return sel.value;
+      },
+      set: value => {
+        emit("update:sel", value);
+      }
+    });
+
     return {
       props,
-      update
+      selComputed
     };
   }
 });

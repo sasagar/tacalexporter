@@ -89,6 +89,7 @@
         <button
           class="btn btn-primary btn-pill text-secondary"
           @click="makeSchedule"
+          v-bind:disabled="!state.notInProgres"
         >
           スケジュール生成
         </button>
@@ -123,11 +124,7 @@
       <div class="submit">
         <div class="form-group">
           <label class="my-1 mr-2" for="calSelect">登録するカレンダー</label>
-          <CalendarSelect
-            :calList="calList"
-            :sel="selectedCalendar"
-            @update="changeCal"
-          />
+          <CalendarSelect :calList="calList" v-model:sel="changeCal" />
         </div>
         <button
           class="btn btn-primary btn-pill text-secondary"
@@ -142,7 +139,14 @@
 </template>
 
 <script>
-import { defineComponent, computed, reactive, onUnmounted } from "vue";
+import {
+  defineComponent,
+  computed,
+  ref,
+  reactive,
+  onMounted,
+  onUnmounted
+} from "vue";
 import { useStore } from "vuex";
 
 import dayjs from "dayjs";
@@ -178,7 +182,8 @@ export default defineComponent({
 
     const state = reactive({
       selectedMonth: nextMonth.format("YYYY/M/D"),
-      submitReady: false
+      submitReady: false,
+      notInProgres: true
     });
 
     const calList = computed(() => store.state.calendarList);
@@ -190,18 +195,15 @@ export default defineComponent({
       }
     });
 
-    const selectedCalendar = computed(() => {
-      let selected = store.getters.getShiftCalSelect;
-      if (selected === "") {
-        selected = calList.value[0].id;
-        store.dispatch("updateShiftCalSelect", selected);
-      }
-      return selected;
-    });
+    const selectedCalendar = ref("");
 
-    const changeCal = id => {
-      store.dispatch("updateShiftCalSelect", id);
-    };
+    const changeCal = computed({
+      get: () => selectedCalendar.value,
+      set: id => {
+        selectedCalendar.value = id;
+        store.dispatch("updateShiftCalSelect", id);
+      }
+    });
 
     const makeSchedule = () => {
       // 月間初日
@@ -303,6 +305,15 @@ export default defineComponent({
       obj.status = "standby";
       obj.regFlag = true;
 
+      // 年末年始対応
+      // 12月28日以降か、1月4日以前ならflagをfalseに
+      if (
+        (obj.start.getMonth() == 11 && obj.start.getDate() >= 28) ||
+        (obj.start.getMonth() == 0 && obj.start.getDate() < 4)
+      ) {
+        obj.regFlag = false;
+      }
+
       return obj;
     };
 
@@ -316,6 +327,7 @@ export default defineComponent({
     const registSchedule = async () => {
       // ステータスを変更
       state.submitReady = false;
+      state.notInProgres = false;
 
       const shifts = store.getters.getCreatedSchedule;
 
@@ -350,7 +362,12 @@ export default defineComponent({
       }
       // ステータスを変更
       state.submitReady = true;
+      state.notInProgres = true;
     };
+
+    onMounted(() => {
+      selectedCalendar.value = store.getters.getShiftCalSelect;
+    });
 
     onUnmounted(() => {
       store.dispatch("clearCreatedSchedule");

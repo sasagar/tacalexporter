@@ -76,6 +76,13 @@ export default defineComponent({
 
       store.dispatch("updateShiftCalSelect", shiftCalSelect);
 
+      const mentoringCalSelect = await ipcRenderer.invoke(
+        "get-settings",
+        "mentoringSelectedCal"
+      );
+
+      store.dispatch("updateMentoringCalSelect", mentoringCalSelect);
+
       if (!store.state.launchCheck) {
         router.push("google");
       }

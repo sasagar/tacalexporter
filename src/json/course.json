@@ -142,5 +142,11 @@
     "key": "FD",
     "perWeek": 2,
     "fixed": true
+  },
+  {
+    "fullname": "はじめての副業コース",
+    "key": "FS",
+    "perWeek": 2,
+    "fixed": false
   }
 ]

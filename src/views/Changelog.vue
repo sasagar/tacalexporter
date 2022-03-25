@@ -9,6 +9,22 @@
       <!-- miners -->
       <hr />
       <div class="row miners">
+        <div class="col"><h3>v5.3.3</h3></div>
+      </div>
+      <div class="row">
+        <div class="col"><h5>コース追加</h5></div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <ul>
+            <li>Linuxコース追加（ID: LX）</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- miners -->
+      <hr />
+      <div class="row miners">
         <div class="col"><h3>v5.3.2</h3></div>
       </div>
       <div class="row">

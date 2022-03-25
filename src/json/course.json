@@ -148,5 +148,11 @@
     "key": "FS",
     "perWeek": 2,
     "fixed": false
+  },
+  {
+    "fullname": "Linuxコース",
+    "key": "LX",
+    "perWeek": 2,
+    "fixed": true
   }
 ]

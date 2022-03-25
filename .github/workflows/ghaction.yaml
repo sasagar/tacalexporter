@@ -14,14 +14,10 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v2
-<<<<<<< HEAD
       - name: Use Node.js 15.x
-=======
-      - name: Use Node.js 16.x
->>>>>>> 49a648ba32c133b252210b6f7619b1a4f24fc24f
         uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 15.x
       - name: npm install
         run: npm install
       - name: License Generator
@@ -52,14 +48,10 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v2
-<<<<<<< HEAD
       - name: Use Node.js 15.x
-=======
-      - name: Use Node.js 16.x
->>>>>>> 49a648ba32c133b252210b6f7619b1a4f24fc24f
         uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 15.x
       - name: npm install
         run: npm install
       - name: License Generator

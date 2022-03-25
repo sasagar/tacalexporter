@@ -12,6 +12,25 @@
         <div class="col"><h3>v5.4.0</h3></div>
       </div>
       <div class="row">
+<<<<<<< HEAD
+=======
+        <div class="col"><h5>Node.jsアップデート</h5></div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <ul>
+            <li>Node.js v16系にアップデート。</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- miners -->
+      <hr />
+      <div class="row miners">
+        <div class="col"><h3>v5.3.3</h3></div>
+      </div>
+      <div class="row">
+>>>>>>> 49a648ba32c133b252210b6f7619b1a4f24fc24f
         <div class="col"><h5>コース追加</h5></div>
       </div>
       <div class="row">
@@ -380,8 +399,8 @@ export default {
   setup() {},
   name: "changelog",
   components: {
-    NavToHome,
-  },
+    NavToHome
+  }
 };
 </script>
 
